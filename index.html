@@ -448,6 +448,204 @@
       border-bottom: 1px solid var(--border);
       gap: 18px; z-index: 99;
     }
+
+    /* ── PROPERTY DETAIL POPUP ── */
+    .popup-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .popup-overlay.open { display: flex; }
+
+    .popup-box {
+      background: var(--white); border-radius: var(--radius-lg);
+      width: 100%; max-width: 780px; max-height: 90vh;
+      overflow-y: auto; position: relative;
+      animation: popIn .25s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+
+    .popup-close {
+      position: absolute; top: 16px; right: 16px; z-index: 10;
+      background: rgba(0,0,0,0.4); color: #fff; border: none;
+      width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .popup-close:hover { background: rgba(0,0,0,0.7); }
+
+    .popup-hero {
+      height: 260px; background: linear-gradient(135deg, #254d3c, #1B3A2D);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      position: relative;
+    }
+    .popup-badge {
+      position: absolute; top: 16px; left: 16px;
+      background: var(--earth); color: #fff;
+      font-size: 0.75rem; font-weight: 600; padding: 5px 12px;
+      border-radius: 7px; text-transform: uppercase; letter-spacing: .05em;
+    }
+    .popup-verified {
+      position: absolute; top: 16px; right: 56px;
+      background: rgba(255,255,255,0.92); color: #2a7a4a;
+      font-size: 0.75rem; font-weight: 600; padding: 5px 10px;
+      border-radius: 7px; display: flex; align-items: center; gap: 5px;
+    }
+
+    .popup-body { padding: 28px; }
+    .popup-price {
+      font-family: 'Playfair Display', serif; font-size: 1.9rem;
+      color: var(--forest); font-weight: 700; margin-bottom: 4px;
+    }
+    .popup-price span { font-family: Inter,sans-serif; font-size: 0.85rem; color: var(--muted); font-weight: 400; }
+    .popup-title { font-size: 1.15rem; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .popup-location {
+      display: flex; align-items: center; gap: 6px;
+      color: var(--muted); font-size: 0.88rem; margin-bottom: 20px;
+    }
+
+    .popup-features {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px;
+    }
+    .popup-feat {
+      background: var(--sand); border-radius: 8px;
+      padding: 8px 14px; font-size: 0.83rem; font-weight: 500; color: var(--forest);
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .popup-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    .popup-section-title { font-weight: 700; font-size: 0.95rem; color: var(--dark); margin-bottom: 10px; }
+    .popup-desc { font-size: 0.9rem; color: var(--stone); line-height: 1.7; margin-bottom: 22px; }
+
+    .popup-details-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px;
+    }
+    .popup-detail-item { background: var(--sand); border-radius: 10px; padding: 12px 16px; }
+    .popup-detail-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 3px; }
+    .popup-detail-value { font-size: 0.9rem; font-weight: 600; color: var(--dark); }
+
+    .popup-landlord {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--sand); border-radius: var(--radius); padding: 16px;
+      margin-bottom: 22px;
+    }
+    .landlord-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--forest); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1.1rem; flex-shrink: 0;
+    }
+    .landlord-name { font-weight: 700; font-size: 0.95rem; color: var(--dark); }
+    .landlord-tag { font-size: 0.78rem; color: var(--muted); }
+
+    .popup-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .popup-actions .btn-primary { flex: 1; justify-content: center; min-width: 160px; }
+    .popup-actions .whatsapp-btn { flex: 1; justify-content: center; min-width: 160px; }
+
+    /* ── LIST PROPERTY PAGE ── */
+    .list-page {
+      display: none; position: fixed; inset: 0; z-index: 300;
+      background: var(--white); overflow-y: auto;
+    }
+    .list-page.open { display: block; }
+
+    .list-header {
+      background: var(--forest); padding: 20px 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .list-header-title {
+      font-family: 'Playfair Display', serif; color: #fff;
+      font-size: 1.2rem; font-weight: 700;
+    }
+    .list-close {
+      background: rgba(255,255,255,0.15); color: #fff; border: none;
+      padding: 8px 16px; border-radius: 8px; cursor: pointer;
+      font-size: 0.85rem; font-weight: 600; transition: background .2s;
+    }
+    .list-close:hover { background: rgba(255,255,255,0.25); }
+
+    .list-body { max-width: 680px; margin: 0 auto; padding: 40px 5% 60px; }
+
+    .list-intro { margin-bottom: 36px; }
+    .list-intro h2 {
+      font-family: 'Playfair Display', serif; font-size: 1.8rem;
+      color: var(--forest); font-weight: 700; margin-bottom: 8px;
+    }
+    .list-intro p { color: var(--stone); font-size: 0.95rem; }
+
+    .form-section { margin-bottom: 32px; }
+    .form-section-title {
+      font-weight: 700; font-size: 0.8rem; color: var(--earth);
+      text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 16px; padding-bottom: 8px;
+      border-bottom: 2px solid var(--sand);
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field.full { grid-column: span 2; }
+    .form-field label { font-size: 0.82rem; font-weight: 600; color: var(--dark); }
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: var(--radius); font-size: 0.9rem;
+      font-family: 'Inter', sans-serif; color: var(--dark);
+      background: var(--white); transition: border-color .2s;
+      -webkit-appearance: none;
+    }
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus { outline: none; border-color: var(--forest); }
+    .form-field textarea { resize: vertical; min-height: 100px; }
+    .form-hint { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
+
+    .form-submit {
+      width: 100%; padding: 16px; background: var(--forest); color: #fff;
+      border: none; border-radius: var(--radius); font-size: 1rem;
+      font-weight: 700; cursor: pointer; transition: background .2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .form-submit:hover { background: #254d3c; }
+
+    /* ── THANK YOU PAGE ── */
+    .thankyou-page {
+      display: none; position: fixed; inset: 0; z-index: 400;
+      background: var(--white); align-items: center; justify-content: center;
+      text-align: center; padding: 40px 5%;
+    }
+    .thankyou-page.open { display: flex; }
+    .thankyou-inner { max-width: 480px; }
+    .thankyou-icon {
+      width: 80px; height: 80px; background: #e8f5ee;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px; font-size: 2.5rem;
+    }
+    .thankyou-inner h1 {
+      font-family: 'Playfair Display', serif; font-size: 2rem;
+      color: var(--forest); font-weight: 700; margin-bottom: 14px;
+    }
+    .thankyou-inner p { color: var(--stone); font-size: 0.97rem; line-height: 1.7; margin-bottom: 32px; }
+    .thankyou-steps {
+      background: var(--sand); border-radius: var(--radius-lg);
+      padding: 24px; text-align: left; margin-bottom: 32px;
+    }
+    .thankyou-steps h3 { font-size: 0.85rem; font-weight: 700; color: var(--forest); margin-bottom: 14px; text-transform: uppercase; letter-spacing: .06em; }
+    .thankyou-step {
+      display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px;
+    }
+    .thankyou-step:last-child { margin-bottom: 0; }
+    .tstep-num {
+      width: 24px; height: 24px; background: var(--forest); color: #fff;
+      border-radius: 50%; font-size: 0.72rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .tstep-text { font-size: 0.87rem; color: var(--stone); padding-top: 3px; }
   </style>
 </head>
 <body>
@@ -894,6 +1092,251 @@
   </div>
 </footer>
 
+<!-- ── PROPERTY DETAIL POPUP ── -->
+<div class="popup-overlay" id="propertyPopup">
+  <div class="popup-box">
+    <button class="popup-close" id="popupClose">✕</button>
+    <div class="popup-hero" id="popupHero">🏠
+      <div class="popup-badge" id="popupBadge">For Rent</div>
+      <div class="popup-verified">✓ Verified</div>
+    </div>
+    <div class="popup-body">
+      <div class="popup-price" id="popupPrice">85,000 XAF <span>/month</span></div>
+      <div class="popup-title" id="popupTitle">Modern 3-Bedroom Apartment</div>
+      <div class="popup-location">📍 <span id="popupLocation">Molyko, Buea</span></div>
+
+      <div class="popup-features" id="popupFeatures">
+        <div class="popup-feat">🛏 3 Bedrooms</div>
+        <div class="popup-feat">🚿 2 Bathrooms</div>
+        <div class="popup-feat">📐 120 sqm</div>
+        <div class="popup-feat">✅ Available Now</div>
+      </div>
+
+      <hr class="popup-divider"/>
+
+      <div class="popup-section-title">About This Property</div>
+      <div class="popup-desc" id="popupDesc">
+        A well-maintained modern apartment located in the heart of Molyko, close to the University of Buea. The apartment features spacious rooms, running water, 24-hour security, and reliable electricity connection. Ideal for families or working professionals. Landlord is responsive and trustworthy.
+      </div>
+
+      <div class="popup-details-grid">
+        <div class="popup-detail-item">
+          <div class="popup-detail-label">Property Type</div>
+          <div class="popup-detail-value" id="popupType">Apartment</div>
+        </div>
+        <div class="popup-detail-item">
+          <div class="popup-detail-label">City</div>
+          <div class="popup-detail-value" id="popupCity">Buea</div>
+        </div>
+        <div class="popup-detail-item">
+          <div class="popup-detail-label">Listed</div>
+          <div class="popup-detail-value">2 days ago</div>
+        </div>
+        <div class="popup-detail-item">
+          <div class="popup-detail-label">Status</div>
+          <div class="popup-detail-value" style="color:#2a7a4a">✓ Verified</div>
+        </div>
+      </div>
+
+      <hr class="popup-divider"/>
+
+      <div class="popup-section-title">Landlord</div>
+      <div class="popup-landlord">
+        <div class="landlord-avatar">JN</div>
+        <div>
+          <div class="landlord-name">Jean Nkematu</div>
+          <div class="landlord-tag">Property Owner · Member since 2024</div>
+        </div>
+      </div>
+
+      <div class="popup-actions">
+        <a href="tel:+237000000000" class="btn-primary">
+          📞 Call Landlord
+        </a>
+        <a href="https://wa.me/237000000000?text=Hello%2C%20I%20saw%20your%20listing%20on%20SeedStone%20and%20I%20am%20interested." target="_blank" class="whatsapp-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LIST A PROPERTY PAGE ── -->
+<div class="list-page" id="listPage">
+  <div class="list-header">
+    <div class="list-header-title">📋 List Your Property</div>
+    <button class="list-close" id="listClose">✕ Close</button>
+  </div>
+  <div class="list-body">
+    <div class="list-intro">
+      <h2>List Your Property on SeedStone</h2>
+      <p>Fill in the details below. Our team will verify your listing and publish it within 24 hours. Listing is 100% free.</p>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">📍 Property Location</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>City *</label>
+          <select id="fCity">
+            <option value="">Select city</option>
+            <option>Buea</option>
+            <option>Limbe</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Neighbourhood *</label>
+          <input type="text" placeholder="e.g. Molyko, Down Beach, Bonduma"/>
+        </div>
+        <div class="form-field full">
+          <label>Full Address / Landmark</label>
+          <input type="text" placeholder="e.g. Behind Fidelity Bank, Molyko"/>
+          <span class="form-hint">Help seekers find the property easily</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">🏠 Property Details</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Property Type *</label>
+          <select>
+            <option value="">Select type</option>
+            <option>Room</option>
+            <option>Self-Contain</option>
+            <option>Apartment</option>
+            <option>Full House</option>
+            <option>Land</option>
+            <option>Commercial Space</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Purpose *</label>
+          <select>
+            <option value="">For Rent or Sale?</option>
+            <option>For Rent</option>
+            <option>For Sale</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Bedrooms</label>
+          <select>
+            <option value="">Select</option>
+            <option>Studio / 1 Room</option>
+            <option>1 Bedroom</option>
+            <option>2 Bedrooms</option>
+            <option>3 Bedrooms</option>
+            <option>4+ Bedrooms</option>
+            <option>Not Applicable (Land)</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Bathrooms</label>
+          <select>
+            <option value="">Select</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3+</option>
+            <option>Shared</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label>Description *</label>
+          <textarea placeholder="Describe your property — water supply, electricity, security, nearby landmarks, special features..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">💰 Pricing</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Price (XAF) *</label>
+          <input type="number" placeholder="e.g. 85000"/>
+        </div>
+        <div class="form-field">
+          <label>Payment Period</label>
+          <select>
+            <option value="">Select</option>
+            <option>Per Month</option>
+            <option>Per Year</option>
+            <option>One-Time (Sale)</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label>Negotiable?</label>
+          <select>
+            <option>Yes, price is negotiable</option>
+            <option>No, fixed price</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">👤 Your Contact Details</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Full Name *</label>
+          <input type="text" placeholder="Your full name"/>
+        </div>
+        <div class="form-field">
+          <label>Phone Number *</label>
+          <input type="tel" placeholder="e.g. 6XX XXX XXX"/>
+          <span class="form-hint">Seekers will contact you on this number</span>
+        </div>
+        <div class="form-field">
+          <label>WhatsApp Number</label>
+          <input type="tel" placeholder="If different from above"/>
+        </div>
+        <div class="form-field">
+          <label>Your Role</label>
+          <select>
+            <option>Property Owner</option>
+            <option>Agent / Caretaker</option>
+            <option>Family Member</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button class="form-submit" id="formSubmit">
+      Submit Listing for Verification →
+    </button>
+  </div>
+</div>
+
+<!-- ── THANK YOU PAGE ── -->
+<div class="thankyou-page" id="thankyouPage">
+  <div class="thankyou-inner">
+    <div class="thankyou-icon">🎉</div>
+    <h1>Listing Submitted!</h1>
+    <p>Thank you for listing your property on SeedStone. Our team will review and verify your listing within <strong>24 hours</strong>. We will contact you on the phone number you provided.</p>
+
+    <div class="thankyou-steps">
+      <h3>What Happens Next</h3>
+      <div class="thankyou-step">
+        <div class="tstep-num">1</div>
+        <div class="tstep-text">Our team reviews your listing details for accuracy</div>
+      </div>
+      <div class="thankyou-step">
+        <div class="tstep-num">2</div>
+        <div class="tstep-text">We call you to confirm ownership and schedule a quick verification visit</div>
+      </div>
+      <div class="thankyou-step">
+        <div class="tstep-num">3</div>
+        <div class="tstep-text">Your listing goes live and seekers start contacting you directly</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="backHome" style="width:100%;justify-content:center;font-size:1rem;padding:16px;">
+      ← Back to SeedStone
+    </button>
+  </div>
+</div>
+
 <script>
   // Tab switching
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -919,6 +1362,111 @@
       svg.setAttribute('fill', isSaved ? 'none' : 'red');
       svg.setAttribute('stroke', isSaved ? '#666' : 'red');
     });
+  });
+
+  // ── PROPERTY POPUP DATA ──
+  const properties = [
+    {
+      emoji: '🏠', badge: 'For Rent', price: '85,000 XAF', period: '/month',
+      title: 'Modern 3-Bedroom Apartment', location: 'Molyko, Buea', city: 'Buea',
+      type: 'Apartment', features: ['🛏 3 Bedrooms','🚿 2 Bathrooms','📐 120 sqm','✅ Available Now'],
+      desc: 'A well-maintained modern apartment in the heart of Molyko, close to the University of Buea. Features spacious rooms, running water, 24-hour security, and reliable electricity. Ideal for families or professionals.',
+      bg: 'linear-gradient(135deg,#254d3c,#1B3A2D)'
+    },
+    {
+      emoji: '🏘', badge: 'For Sale', price: '18,500,000 XAF', period: '',
+      title: '4-Bedroom Family House', location: 'Bongola, Limbe', city: 'Limbe',
+      type: 'Full House', features: ['🛏 4 Bedrooms','🚿 3 Bathrooms','📄 Title Deed','🌳 Large Compound'],
+      desc: 'Spacious family home in a quiet neighbourhood in Bongola. The property has a large compound, borehole water, and comes with a clean title deed. Great investment opportunity in Limbe.',
+      bg: 'linear-gradient(135deg,#4a3a1a,#3a2a10)'
+    },
+    {
+      emoji: '🌿', badge: 'Land', price: '7,200,000 XAF', period: '',
+      title: '500 sqm Residential Plot', location: 'Great Soppo, Buea', city: 'Buea',
+      type: 'Land', features: ['📐 500 sqm','📄 Freehold','🏗 Ready to Build','🛣 Road Access'],
+      desc: 'A flat, well-situated residential plot in Great Soppo with easy road access. The land has clear boundaries and the owner holds a freehold title. Perfect for building your dream home.',
+      bg: 'linear-gradient(135deg,#1a3a1a,#102810)'
+    },
+    {
+      emoji: '🏢', badge: 'For Rent', price: '35,000 XAF', period: '/month',
+      title: 'Self-Contain Room', location: 'Bonduma, Buea', city: 'Buea',
+      type: 'Self-Contain', features: ['🛏 1 Bedroom','🚿 Private Bath','📶 WiFi Ready','🔒 Secure'],
+      desc: 'A clean, self-contained room in a quiet compound in Bonduma. The room has a private bathroom, is WiFi-ready, and has access to constant water. Ideal for a student or young professional.',
+      bg: 'linear-gradient(135deg,#2a1a4a,#1a1030)'
+    },
+    {
+      emoji: '🏖', badge: 'For Sale', price: '25,000,000 XAF', period: '',
+      title: 'Beachside 3-Bedroom Villa', location: 'Down Beach, Limbe', city: 'Limbe',
+      type: 'Villa', features: ['🛏 3 Bedrooms','🚿 2 Bathrooms','🌊 Ocean View','🅿 Parking'],
+      desc: 'A rare beachside villa in Down Beach, Limbe with a stunning ocean view. The property features a large veranda, modern finishes, and a private parking space. A premium property at a competitive price.',
+      bg: 'linear-gradient(135deg,#1a3a4a,#102030)'
+    },
+    {
+      emoji: '🏫', badge: 'For Rent', price: '50,000 XAF', period: '/month',
+      title: '2-Bedroom Apartment', location: 'Mile 4, Limbe', city: 'Limbe',
+      type: 'Apartment', features: ['🛏 2 Bedrooms','🚿 1 Bathroom','🅿 Parking','💡 ENEO Connected'],
+      desc: 'A comfortable 2-bedroom apartment on a quiet street in Mile 4. The property has dedicated parking, reliable ENEO connection, and is close to the main market and transport links.',
+      bg: 'linear-gradient(135deg,#1a2a4a,#101830)'
+    }
+  ];
+
+  // Open popup when card is clicked
+  document.querySelectorAll('.property-card').forEach((card, i) => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.card-save')) return;
+      const p = properties[i];
+      document.getElementById('popupHero').style.background = p.bg;
+      document.getElementById('popupHero').childNodes[0].textContent = p.emoji;
+      document.getElementById('popupBadge').textContent = p.badge;
+      document.getElementById('popupPrice').innerHTML = p.price + (p.period ? ` <span>${p.period}</span>` : '');
+      document.getElementById('popupTitle').textContent = p.title;
+      document.getElementById('popupLocation').textContent = p.location;
+      document.getElementById('popupType').textContent = p.type;
+      document.getElementById('popupCity').textContent = p.city;
+      document.getElementById('popupDesc').textContent = p.desc;
+      const feats = document.getElementById('popupFeatures');
+      feats.innerHTML = p.features.map(f => `<div class="popup-feat">${f}</div>`).join('');
+      document.getElementById('propertyPopup').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  // Close popup
+  document.getElementById('popupClose').addEventListener('click', closePopup);
+  document.getElementById('propertyPopup').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('propertyPopup')) closePopup();
+  });
+  function closePopup() {
+    document.getElementById('propertyPopup').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Open List Property page
+  document.querySelectorAll('a[href="#list"], .nav-cta').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('listPage').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  // Close List Property page
+  document.getElementById('listClose').addEventListener('click', () => {
+    document.getElementById('listPage').classList.remove('open');
+    document.body.style.overflow = '';
+  });
+
+  // Submit form → Thank You page
+  document.getElementById('formSubmit').addEventListener('click', () => {
+    document.getElementById('listPage').classList.remove('open');
+    document.getElementById('thankyouPage').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  // Back to home from Thank You
+  document.getElementById('backHome').addEventListener('click', () => {
+    document.getElementById('thankyouPage').classList.remove('open');
+    document.body.style.overflow = '';
   });
 </script>
 </body>
