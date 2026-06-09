@@ -1339,8 +1339,6 @@
 
 <script>
   // ── SUPABASE CONFIG (your keys are already in the file above this line) ──
-  const SUPABASE_URL = 'https://imlbkwiopnvqflibbhss.supabase.co';
-  const SUPABASE_KEY = 'eyjhbGciOiJIUzI1NiIsInR5cC16IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbGJrd2lvcG52cWZsaWJiaHNzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY5ODQ4ODQyNSwiZXhwIjoxOTk0NDg0NDI1fQ.7n8j8lHqjKqLh7u1a3eXo5nN8r2b1vO-9w5t3vV4A';
 
   // ── TAB SWITCHING ──
   let currentFilter = 'All';
@@ -1468,9 +1466,10 @@
         }
       });
       const data = await res.json();
-      allListings = data;
-      renderListings(data);
-      document.getElementById('listingCount').textContent = data.length + '+';
+      const listings = Array.isArray(data) ? data : [];
+      allListings = listings;
+      renderListings(listings);
+      document.getElementById('listingCount').textContent = (listings.length || 0) + '+';
     } catch (err) {
       grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)">
         Could not load listings. Please check your connection.</div>`;
