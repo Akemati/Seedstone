@@ -1577,7 +1577,7 @@
       <div style="font-size:2rem;margin-bottom:12px">⏳</div>Loading listings...</div>`;
 
     try {
-      let url = `${SUPABASE_URL}/rest/v1/listings?select=*&order=created_at.desc`;
+      let url = `${SUPABASE_URL}/rest/v1/listings?select=*&verified=eq.true&order=created_at.desc`;
       if (filter === 'For Rent') url += '&purpose=eq.For Rent';
       else if (filter === 'For Sale') url += '&purpose=eq.For Sale';
       else if (filter === 'Land') url += '&type=eq.Land';
