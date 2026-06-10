@@ -203,20 +203,28 @@
     }
 
     /* ── SEARCH BAR ── */
-    .search-section {
-      background: var(--sand); padding: 40px 5%;
-    }
+    .search-section { background: var(--sand); padding: 40px 5%; }
     .search-wrap {
-      max-width: 900px; margin: 0 auto;
+      max-width: 1000px; margin: 0 auto;
       background: var(--white); border-radius: var(--radius-lg);
       padding: 28px; box-shadow: 0 4px 30px rgba(27,58,45,0.08);
     }
-    .search-wrap h2 {
-      font-family: 'Playfair Display', serif; font-size: 1.4rem;
-      color: var(--forest); margin-bottom: 20px; font-weight: 700;
+    .search-wrap-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
     }
+    .search-wrap-top h2 {
+      font-family: 'Playfair Display', serif; font-size: 1.4rem;
+      color: var(--forest); font-weight: 700;
+    }
+    .search-results-count { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    .search-results-count span { color: var(--forest); font-weight: 700; }
     .search-grid {
-      display: grid; grid-template-columns: 2fr 1fr 1fr auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 12px; align-items: end; margin-bottom: 14px;
+    }
+    .search-grid-row2 {
+      display: grid; grid-template-columns: 1fr 1fr auto;
       gap: 12px; align-items: end;
     }
     .search-field { display: flex; flex-direction: column; gap: 6px; }
@@ -225,12 +233,29 @@
       padding: 12px 14px; border: 1.5px solid var(--border);
       border-radius: var(--radius); font-size: 0.9rem; color: var(--dark);
       font-family: 'Inter', sans-serif; background: var(--white);
-      transition: border-color .2s;
-      -webkit-appearance: none;
+      transition: border-color .2s; -webkit-appearance: none;
     }
-    .search-field input:focus, .search-field select:focus {
-      outline: none; border-color: var(--forest);
+    .search-field input:focus, .search-field select:focus { outline: none; border-color: var(--forest); }
+    .search-field input::placeholder { color: var(--muted); }
+    .search-clear-btn {
+      background: var(--sand); color: var(--stone);
+      padding: 12px 20px; border-radius: var(--radius);
+      font-weight: 600; font-size: 0.88rem; border: 1.5px solid var(--border);
+      cursor: pointer; transition: all .2s; white-space: nowrap; height: 46px;
+      font-family: 'Inter', sans-serif;
     }
+    .search-clear-btn:hover { border-color: var(--forest); color: var(--forest); }
+    .search-active-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .active-filter-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--forest); color: var(--white);
+      padding: 5px 12px; border-radius: 100px; font-size: 0.78rem; font-weight: 600;
+    }
+    .active-filter-tag button {
+      background: none; border: none; color: rgba(255,255,255,0.7);
+      cursor: pointer; font-size: 0.9rem; padding: 0; line-height: 1;
+    }
+    .active-filter-tag button:hover { color: var(--white); }
     .search-btn {
       background: var(--forest); color: var(--white);
       padding: 12px 24px; border-radius: var(--radius);
@@ -424,7 +449,8 @@
       .hero-inner { grid-template-columns: 1fr; gap: 48px; }
       .hero-visual { display: none; }
       .search-grid { grid-template-columns: 1fr 1fr; }
-      .search-grid .search-btn { grid-column: span 2; }
+      .search-grid-row2 { grid-template-columns: 1fr 1fr; }
+      .search-grid-row2 .search-clear-btn { grid-column: span 2; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
     }
 
@@ -434,7 +460,8 @@
       .hero { padding: 90px 5% 50px; }
       .hero-stats { gap: 20px; }
       .search-grid { grid-template-columns: 1fr; }
-      .search-grid .search-btn { grid-column: span 1; }
+      .search-grid-row2 { grid-template-columns: 1fr; }
+      .search-grid-row2 .search-clear-btn { width: 100%; }
       .property-grid { grid-template-columns: 1fr; }
       .footer-grid { grid-template-columns: 1fr; }
       .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
@@ -732,37 +759,58 @@
 </section>
 
 <!-- SEARCH -->
-<div class="search-section">
+<div class="search-section" id="searchSection">
   <div class="search-wrap">
-    <h2>Search Properties</h2>
+    <div class="search-wrap-top">
+      <h2>Search Properties</h2>
+      <div class="search-results-count" id="searchCount"></div>
+    </div>
     <div class="search-grid">
       <div class="search-field">
         <label>Location</label>
-        <input type="text" placeholder="e.g. Molyko, Down Beach, Bonduma…" />
+        <input type="text" id="sLocation" placeholder="e.g. Molyko, Down Beach, Buea…" oninput="applySearch()"/>
+      </div>
+      <div class="search-field">
+        <label>City</label>
+        <select id="sCity" onchange="applySearch()">
+          <option value="">All Cities</option>
+          <option>Buea</option>
+          <option>Limbe</option>
+        </select>
       </div>
       <div class="search-field">
         <label>Type</label>
-        <select>
+        <select id="sType" onchange="applySearch()">
           <option value="">All Types</option>
           <option>Room</option>
           <option>Self-Contain</option>
           <option>Apartment</option>
           <option>Full House</option>
           <option>Land</option>
-          <option>Commercial</option>
+          <option>Commercial Space</option>
         </select>
       </div>
       <div class="search-field">
         <label>Purpose</label>
-        <select>
+        <select id="sPurpose" onchange="applySearch()">
           <option value="">Rent or Buy</option>
           <option>For Rent</option>
           <option>For Sale</option>
-          <option>Land</option>
         </select>
       </div>
-      <button class="search-btn">Search</button>
     </div>
+    <div class="search-grid-row2">
+      <div class="search-field">
+        <label>Min Price (XAF)</label>
+        <input type="number" id="sMinPrice" placeholder="e.g. 20000" oninput="applySearch()"/>
+      </div>
+      <div class="search-field">
+        <label>Max Price (XAF)</label>
+        <input type="number" id="sMaxPrice" placeholder="e.g. 500000" oninput="applySearch()"/>
+      </div>
+      <button class="search-clear-btn" onclick="clearSearch()">✕ Clear</button>
+    </div>
+    <div class="search-active-filters" id="activeFilters"></div>
   </div>
 </div>
 
@@ -1339,9 +1387,81 @@
 
 <script>
   // ── SUPABASE CONFIG (your keys are already in the file above this line) ──
-  const SUPABASE_URL = 'https://imlbkwiopnvqflibbhss.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbGJrd2lvcG52cWZsaWJiaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjUwNTEsImV4cCI6MjA5NjYwMTA1MX0.D2e5Ybfd-SXcS4jFY9SgBaijRkYYF-hMaXfdZXnd8y0';
 
+  // ── REAL-TIME SEARCH ──
+  function applySearch() {
+    const location = document.getElementById('sLocation').value.trim().toLowerCase();
+    const city     = document.getElementById('sCity').value;
+    const type     = document.getElementById('sType').value;
+    const purpose  = document.getElementById('sPurpose').value;
+    const minPrice = parseInt(document.getElementById('sMinPrice').value) || 0;
+    const maxPrice = parseInt(document.getElementById('sMaxPrice').value) || Infinity;
+
+    const filtered = allListings.filter(p => {
+      const matchLoc     = !location || (p.neighbourhood || '').toLowerCase().includes(location) || (p.city || '').toLowerCase().includes(location) || (p.address || '').toLowerCase().includes(location);
+      const matchCity    = !city    || p.city === city;
+      const matchType    = !type    || p.type === type;
+      const matchPurpose = !purpose || p.purpose === purpose;
+      const matchMin     = !minPrice || p.price >= minPrice;
+      const matchMax     = maxPrice === Infinity || p.price <= maxPrice;
+      return matchLoc && matchCity && matchType && matchPurpose && matchMin && matchMax;
+    });
+
+    renderListings(filtered);
+    updateSearchCount(filtered.length);
+    updateActiveTags(location, city, type, purpose, minPrice, maxPrice);
+
+    // Scroll to listings
+    if (location || city || type || purpose || minPrice || maxPrice < Infinity) {
+      document.getElementById('listings').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function updateSearchCount(count) {
+    const el = document.getElementById('searchCount');
+    if (!el) return;
+    const total = allListings.length;
+    el.innerHTML = count === total
+      ? `Showing all <span>${total}</span> listings`
+      : `<span>${count}</span> of ${total} listings match`;
+  }
+
+  function updateActiveTags(location, city, type, purpose, minPrice, maxPrice) {
+    const wrap = document.getElementById('activeFilters');
+    if (!wrap) return;
+    const tags = [];
+    if (location) tags.push({ label: '📍 ' + location, clear: () => { document.getElementById('sLocation').value = ''; applySearch(); } });
+    if (city)     tags.push({ label: '🏙 ' + city,     clear: () => { document.getElementById('sCity').value = '';     applySearch(); } });
+    if (type)     tags.push({ label: '🏠 ' + type,     clear: () => { document.getElementById('sType').value = '';     applySearch(); } });
+    if (purpose)  tags.push({ label: '🔑 ' + purpose,  clear: () => { document.getElementById('sPurpose').value = '';  applySearch(); } });
+    if (minPrice) tags.push({ label: 'Min ' + minPrice.toLocaleString() + ' XAF', clear: () => { document.getElementById('sMinPrice').value = ''; applySearch(); } });
+    if (maxPrice < Infinity) tags.push({ label: 'Max ' + maxPrice.toLocaleString() + ' XAF', clear: () => { document.getElementById('sMaxPrice').value = ''; applySearch(); } });
+
+    wrap.innerHTML = tags.map((t, i) => `
+      <div class="active-filter-tag">
+        ${t.label}
+        <button onclick="clearTag(${i})">✕</button>
+      </div>`).join('');
+    window._searchTags = tags;
+  }
+
+  function clearTag(i) {
+    if (window._searchTags && window._searchTags[i]) {
+      window._searchTags[i].clear();
+    }
+  }
+
+  function clearSearch() {
+    document.getElementById('sLocation').value  = '';
+    document.getElementById('sCity').value      = '';
+    document.getElementById('sType').value      = '';
+    document.getElementById('sPurpose').value   = '';
+    document.getElementById('sMinPrice').value  = '';
+    document.getElementById('sMaxPrice').value  = '';
+    document.getElementById('activeFilters').innerHTML = '';
+    document.getElementById('searchCount').innerHTML   = '';
+    renderListings(allListings);
+  }
 
   // ── TAB SWITCHING ──
   let currentFilter = 'All';
@@ -1455,7 +1575,7 @@
       <div style="font-size:2rem;margin-bottom:12px">⏳</div>Loading listings...</div>`;
 
     try {
-      let url = `${SUPABASE_URL}/rest/v1/listings?select=*&order=created_at.desc&verified=eq.true`;
+      let url = `${SUPABASE_URL}/rest/v1/listings?select=*&order=created_at.desc`;
       if (filter === 'For Rent') url += '&purpose=eq.For Rent';
       else if (filter === 'For Sale') url += '&purpose=eq.For Sale';
       else if (filter === 'Land') url += '&type=eq.Land';
