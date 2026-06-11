@@ -1239,7 +1239,7 @@
         </div>
         <div class="form-field full">
           <label>Full Address / Landmark</label>
-          <input type="text" placeholder="e.g. Behind Fidelity Bank, Molyko"/>
+          <input type="text" id="fAddress" placeholder="e.g. Behind Fidelity Bank, Molyko"/>
           <span class="form-hint">Help seekers find the property easily</span>
         </div>
       </div>
@@ -1250,7 +1250,7 @@
       <div class="form-grid">
         <div class="form-field">
           <label>Property Type *</label>
-          <select>
+          <select id="fType">
             <option value="">Select type</option>
             <option>Room</option>
             <option>Self-Contain</option>
@@ -1262,7 +1262,7 @@
         </div>
         <div class="form-field">
           <label>Purpose *</label>
-          <select>
+          <select id="fPurpose">
             <option value="">For Rent or Sale?</option>
             <option>For Rent</option>
             <option>For Sale</option>
@@ -1270,7 +1270,7 @@
         </div>
         <div class="form-field">
           <label>Bedrooms</label>
-          <select>
+          <select id="fBedrooms">
             <option value="">Select</option>
             <option>Studio / 1 Room</option>
             <option>1 Bedroom</option>
@@ -1282,7 +1282,7 @@
         </div>
         <div class="form-field">
           <label>Bathrooms</label>
-          <select>
+          <select id="fBathrooms">
             <option value="">Select</option>
             <option>1</option>
             <option>2</option>
@@ -1292,7 +1292,7 @@
         </div>
         <div class="form-field full">
           <label>Description *</label>
-          <textarea placeholder="Describe your property — water supply, electricity, security, nearby landmarks, special features..."></textarea>
+          <textarea id="fDesc" placeholder="Describe your property — water supply, electricity, security, nearby landmarks, special features..."></textarea>
         </div>
       </div>
     </div>
@@ -1302,11 +1302,11 @@
       <div class="form-grid">
         <div class="form-field">
           <label>Price (XAF) *</label>
-          <input type="number" placeholder="e.g. 85000"/>
+          <input type="number" id="fPrice" placeholder="e.g. 85000"/>
         </div>
         <div class="form-field">
           <label>Payment Period</label>
-          <select>
+          <select id="fPeriod">
             <option value="">Select</option>
             <option>Per Month</option>
             <option>Per Year</option>
@@ -1328,16 +1328,16 @@
       <div class="form-grid">
         <div class="form-field">
           <label>Full Name *</label>
-          <input type="text" placeholder="Your full name"/>
+          <input type="text" id="fName" placeholder="Your full name"/>
         </div>
         <div class="form-field">
           <label>Phone Number *</label>
-          <input type="tel" placeholder="e.g. 6XX XXX XXX"/>
+          <input type="tel" id="fPhone" placeholder="e.g. 6XX XXX XXX"/>
           <span class="form-hint">Seekers will contact you on this number</span>
         </div>
         <div class="form-field">
           <label>WhatsApp Number</label>
-          <input type="tel" placeholder="If different from above"/>
+          <input type="tel" id="fWhatsapp" placeholder="If different from above"/>
         </div>
         <div class="form-field">
           <label>Your Role</label>
@@ -1669,20 +1669,20 @@
   document.getElementById('formSubmit').addEventListener('click', async () => {
     const btn = document.getElementById('formSubmit');
 
-    // Collect form values
-    const city       = document.getElementById('fCity').value;
-    const hood       = document.querySelector('input[placeholder*="Molyko"]').value;
-    const address    = document.querySelector('input[placeholder*="Fidelity"]').value;
-    const type       = document.querySelectorAll('.form-field select')[1].value;
-    const purpose    = document.querySelectorAll('.form-field select')[2].value;
-    const bedrooms   = document.querySelectorAll('.form-field select')[3].value;
-    const bathrooms  = document.querySelectorAll('.form-field select')[4].value;
-    const desc       = document.querySelector('textarea').value;
-    const price      = document.querySelector('input[type="number"]').value;
-    const period     = document.querySelectorAll('.form-field select')[5].value;
-    const name       = document.querySelector('input[placeholder="Your full name"]').value;
-    const phone      = document.querySelector('input[placeholder*="6XX"]').value;
-    const whatsapp   = document.querySelectorAll('input[type="tel"]')[1].value;
+    // Collect form values using IDs
+    const city      = document.getElementById('fCity').value;
+    const hood      = document.getElementById('fHood').value;
+    const address   = document.getElementById('fAddress').value;
+    const type      = document.getElementById('fType').value;
+    const purpose   = document.getElementById('fPurpose').value;
+    const bedrooms  = document.getElementById('fBedrooms').value;
+    const bathrooms = document.getElementById('fBathrooms').value;
+    const desc      = document.getElementById('fDesc').value;
+    const price     = document.getElementById('fPrice').value;
+    const period    = document.getElementById('fPeriod').value;
+    const name      = document.getElementById('fName').value;
+    const phone     = document.getElementById('fPhone').value;
+    const whatsapp  = document.getElementById('fWhatsapp').value;
 
     // Basic validation
     if (!city || !type || !purpose || !price || !name || !phone) {
