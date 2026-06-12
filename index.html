@@ -476,6 +476,43 @@
       gap: 18px; z-index: 99;
     }
 
+    /* ── IMAGE UPLOAD ── */
+    .img-upload-area {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 24px; text-align: center; cursor: pointer;
+      transition: border-color .2s, background .2s;
+      background: var(--sand); position: relative;
+    }
+    .img-upload-area:hover { border-color: var(--forest); background: #f0f7f2; }
+    .img-upload-area.dragover { border-color: var(--forest); background: #e8f5ee; }
+    .img-upload-icon { font-size: 2rem; margin-bottom: 8px; }
+    .img-upload-text { font-size: 0.88rem; color: var(--stone); }
+    .img-upload-text strong { color: var(--forest); }
+    .img-upload-input { display: none; }
+    .img-previews {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px; margin-top: 12px;
+    }
+    .img-preview-item {
+      position: relative; border-radius: 8px; overflow: hidden;
+      aspect-ratio: 1; background: var(--border);
+    }
+    .img-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .img-preview-item .img-remove {
+      position: absolute; top: 4px; right: 4px;
+      background: rgba(0,0,0,0.6); color: #fff; border: none;
+      width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+      font-size: 0.75rem; display: flex; align-items: center; justify-content: center;
+    }
+    .img-preview-item .img-uploading {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 0.75rem; font-weight: 600;
+    }
+    .img-upload-progress {
+      font-size: 0.82rem; color: var(--stone); margin-top: 8px; text-align: center;
+    }
+
     /* ── PROPERTY DETAIL POPUP ── */
     .popup-overlay {
       display: none; position: fixed; inset: 0; z-index: 200;
@@ -768,7 +805,7 @@
     <div class="search-grid">
       <div class="search-field">
         <label>Location</label>
-        <input type="text" id="sLocation" id="fHood" placeholder="e.g. Molyko, Down Beach, Buea…" oninput="applySearch()"/>
+        <input type="text" id="sLocation" placeholder="e.g. Molyko, Down Beach, Buea…" oninput="applySearch()"/>
       </div>
       <div class="search-field">
         <label>City</label>
@@ -1235,7 +1272,7 @@
         </div>
         <div class="form-field">
           <label>Neighbourhood *</label>
-          <input type="text" id="fHood" placeholder="e.g. Molyko, Down Beach, Bonduma"/>
+          <input type="text" placeholder="e.g. Molyko, Down Beach, Bonduma"/>
         </div>
         <div class="form-field full">
           <label>Full Address / Landmark</label>
@@ -1293,6 +1330,16 @@
         <div class="form-field full">
           <label>Description *</label>
           <textarea id="fDesc" placeholder="Describe your property — water supply, electricity, security, nearby landmarks, special features..."></textarea>
+        </div>
+        <div class="form-field full">
+          <label>Property Photos <span style="font-weight:400;color:var(--muted)">(up to 5 photos)</span></label>
+          <div class="img-upload-area" id="uploadArea">
+            <div class="img-upload-icon">📸</div>
+            <div class="img-upload-text"><strong>Click to upload photos</strong> or drag and drop<br>JPG, PNG — max 5MB each</div>
+            <input type="file" id="fPhotos" class="img-upload-input" accept="image/*" multiple/>
+          </div>
+          <div class="img-previews" id="imgPreviews"></div>
+          <div class="img-upload-progress" id="uploadProgress"></div>
         </div>
       </div>
     </div>
@@ -1389,6 +1436,10 @@
   // ── SUPABASE CONFIG ──
   const SUPABASE_URL = 'https://imlbkwiopnvqflibbhss.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbGJrd2lvcG52cWZsaWJiaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjUwNTEsImV4cCI6MjA5NjYwMTA1MX0.D2e5Ybfd-SXcS4jFY9SgBaijRkYYF-hMaXfdZXnd8y0';
+
+  // ── CLOUDINARY CONFIG ──
+  const CLOUDINARY_CLOUD = 'dzeyxviu4';
+  const CLOUDINARY_PRESET = 'Seedstone_uploads';
 
   // ── REAL-TIME SEARCH ──
   function applySearch() {
@@ -1519,7 +1570,8 @@
     grid.innerHTML = listings.map((p, i) => `
       <div class="property-card" data-index="${i}">
         <div class="card-img" style="background:${getBg(p.type)}">
-          <span style="font-size:3rem">${getEmoji(p.type)}</span>
+          ${p.image_urls ? `<img src="${JSON.parse(p.image_urls)[0]}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="this.style.display='none'"/>` : ''}
+          <span style="font-size:3rem;position:relative">${getEmoji(p.type)}</span>
           <div class="card-img-overlay"></div>
           <div class="card-badge ${getBadgeClass(p.purpose)}">${p.purpose || 'For Rent'}</div>
           ${p.verified ? '<div class="card-verified">✓ Verified</div>' : ''}
@@ -1603,10 +1655,26 @@
 
   // ── OPEN POPUP ──
   function openPopup(p) {
-    document.getElementById('popupHero').style.background = getBg(p.type);
-    document.getElementById('popupHero').querySelector('span') ?
-      document.getElementById('popupHero').querySelector('span').textContent = getEmoji(p.type) :
-      document.getElementById('popupHero').insertAdjacentHTML('afterbegin', `<span style="font-size:4rem">${getEmoji(p.type)}</span>`);
+    const hero = document.getElementById('popupHero');
+    hero.style.background = getBg(p.type);
+    // Show real photo if available
+    const existingImg = hero.querySelector('.hero-real-img');
+    if (existingImg) existingImg.remove();
+    if (p.image_urls) {
+      const imgs = JSON.parse(p.image_urls);
+      if (imgs.length > 0) {
+        const img = document.createElement('img');
+        img.src = imgs[0];
+        img.className = 'hero-real-img';
+        img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;';
+        hero.insertBefore(img, hero.firstChild);
+      }
+    }
+    if (hero.querySelector('span')) {
+      hero.querySelector('span').textContent = getEmoji(p.type);
+    } else {
+      hero.insertAdjacentHTML('afterbegin', `<span style="font-size:4rem;position:relative">${getEmoji(p.type)}</span>`);
+    }
     document.getElementById('popupBadge').textContent = p.purpose || 'For Rent';
     document.getElementById('popupPrice').innerHTML =
       Number(p.price).toLocaleString() + ' XAF' +
@@ -1665,6 +1733,104 @@
     document.body.style.overflow = '';
   });
 
+  // ── IMAGE UPLOAD ──
+  let uploadedImageUrls = [];
+
+  const uploadArea = document.getElementById('uploadArea');
+  const photosInput = document.getElementById('fPhotos');
+
+  uploadArea.addEventListener('click', () => photosInput.click());
+
+  uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+  });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  photosInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+  async function handleFiles(files) {
+    const maxFiles = 5;
+    const remaining = maxFiles - uploadedImageUrls.length;
+    if (remaining <= 0) {
+      alert('Maximum 5 photos allowed.');
+      return;
+    }
+    const toUpload = Array.from(files).slice(0, remaining);
+    document.getElementById('uploadProgress').textContent = `Uploading ${toUpload.length} photo(s)...`;
+
+    for (let i = 0; i < toUpload.length; i++) {
+      const file = toUpload[i];
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`${file.name} is too large. Max 5MB.`);
+        continue;
+      }
+      const previewId = 'prev_' + Date.now() + i;
+      addPreview(previewId, URL.createObjectURL(file), true);
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_PRESET);
+        formData.append('folder', 'seedstone');
+
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+          method: 'POST', body: formData
+        });
+        const data = await res.json();
+        if (data.secure_url) {
+          uploadedImageUrls.push(data.secure_url);
+          updatePreview(previewId, data.secure_url);
+        }
+      } catch (e) {
+        removePreview(previewId);
+        alert('Upload failed for ' + file.name);
+      }
+    }
+    document.getElementById('uploadProgress').textContent =
+      uploadedImageUrls.length > 0 ? `✅ ${uploadedImageUrls.length} photo(s) uploaded` : '';
+  }
+
+  function addPreview(id, src, loading) {
+    const wrap = document.createElement('div');
+    wrap.className = 'img-preview-item';
+    wrap.id = id;
+    wrap.innerHTML = `<img src="${src}"/>
+      ${loading ? '<div class="img-uploading">Uploading...</div>' : ''}
+      <button class="img-remove" onclick="removeImage('${id}')">✕</button>`;
+    document.getElementById('imgPreviews').appendChild(wrap);
+  }
+
+  function updatePreview(id, src) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.querySelector('img').src = src;
+      const uploading = el.querySelector('.img-uploading');
+      if (uploading) uploading.remove();
+    }
+  }
+
+  function removePreview(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  function removeImage(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      const src = el.querySelector('img').src;
+      uploadedImageUrls = uploadedImageUrls.filter(u => u !== src);
+      el.remove();
+      document.getElementById('uploadProgress').textContent =
+        uploadedImageUrls.length > 0 ? `✅ ${uploadedImageUrls.length} photo(s) uploaded` : '';
+    }
+  }
+
   // ── SUBMIT FORM TO SUPABASE ──
   document.getElementById('formSubmit').addEventListener('click', async () => {
     const btn = document.getElementById('formSubmit');
@@ -1710,11 +1876,15 @@
           city, neighbourhood: hood, address, bedrooms, bathrooms,
           description: desc, landlord_name: name,
           landlord_phone: phone, landlord_whatsapp: whatsapp || phone,
+          image_urls: uploadedImageUrls.length > 0 ? JSON.stringify(uploadedImageUrls) : null,
           verified: false
         })
       });
 
       if (res.ok) {
+        uploadedImageUrls = [];
+        document.getElementById('imgPreviews').innerHTML = '';
+        document.getElementById('uploadProgress').textContent = '';
         document.getElementById('listPage').classList.remove('open');
         document.getElementById('thankyouPage').classList.add('open');
         loadListings('All'); // Refresh listings
@@ -1742,7 +1912,3 @@
 </script>
 </body>
 </html>
-
-
-
-
