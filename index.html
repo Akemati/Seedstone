@@ -728,7 +728,7 @@
     <a href="#how">How it Works</a>
     <a href="#">Buea</a>
     <a href="#">Limbe</a>
-    <a href="#" class="nav-cta">List Property</a>
+    <a href="dashboard.html" class="nav-cta" style="background:transparent;border:1.5px solid rgba(27,58,45,0.2);color:var(--forest);margin-right:6px">My Dashboard</a><a href="#" class="nav-cta">List Property</a>
   </div>
 
   <button class="hamburger" id="hamburger" aria-label="Menu">
@@ -1272,7 +1272,7 @@
         </div>
         <div class="form-field">
           <label>Neighbourhood *</label>
-          <input type="text" id="fHood" placeholder="e.g. Molyko, Down Beach, Bonduma"/>
+          <input type="text" placeholder="e.g. Molyko, Down Beach, Bonduma"/>
         </div>
         <div class="form-field full">
           <label>Full Address / Landmark</label>
@@ -1376,6 +1376,11 @@
         <div class="form-field">
           <label>Full Name *</label>
           <input type="text" id="fName" placeholder="Your full name"/>
+        </div>
+        <div class="form-field">
+          <label>Email Address</label>
+          <input type="email" id="fEmail" placeholder="your@email.com"/>
+          <span class="form-hint">Used to link listing to your dashboard account</span>
         </div>
         <div class="form-field">
           <label>Phone Number *</label>
@@ -1876,7 +1881,9 @@
           city, neighbourhood: hood, address, bedrooms, bathrooms,
           description: desc, landlord_name: name,
           landlord_phone: phone, landlord_whatsapp: whatsapp || phone,
+          landlord_email: document.getElementById('fEmail') ? document.getElementById('fEmail').value : null,
           image_urls: uploadedImageUrls.length > 0 ? JSON.stringify(uploadedImageUrls) : null,
+          views: 0,
           verified: false
         })
       });
@@ -1912,4 +1919,3 @@
 </script>
 </body>
 </html>
-

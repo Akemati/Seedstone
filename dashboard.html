@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SeedStone — Landlord Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --forest: #1B3A2D; --earth: #C47C3E; --sand: #F5EFE4;
+      --stone: #6B7B6E; --white: #FFFFFF; --dark: #111714;
+      --muted: #8A9B8D; --border: #DDE5DC; --red: #e53e3e;
+      --green: #2a7a4a; --radius: 10px; --radius-lg: 16px;
+    }
+    body { font-family: 'Inter', sans-serif; background: #f0f4f1; color: var(--dark); min-height: 100vh; }
+
+    /* ── AUTH PAGES ── */
+    .auth-page {
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; background: var(--forest); padding: 20px;
+    }
+    .auth-box {
+      background: var(--white); border-radius: 20px;
+      padding: 40px; width: 100%; max-width: 420px;
+    }
+    .auth-logo {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+      text-decoration: none;
+    }
+    .auth-logo-icon {
+      width: 38px; height: 38px; background: var(--forest);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    }
+    .auth-logo-icon svg { width: 20px; height: 20px; fill: var(--earth); }
+    .auth-logo-text { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--forest); }
+    .auth-logo-text span { color: var(--earth); }
+    .auth-subtitle { color: var(--stone); font-size: 0.88rem; margin-bottom: 28px; }
+    .auth-tabs {
+      display: flex; gap: 0; margin-bottom: 24px;
+      border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden;
+    }
+    .auth-tab {
+      flex: 1; padding: 10px; text-align: center; cursor: pointer;
+      font-size: 0.88rem; font-weight: 600; color: var(--stone);
+      background: var(--white); border: none; font-family: 'Inter', sans-serif;
+      transition: all .2s;
+    }
+    .auth-tab.active { background: var(--forest); color: var(--white); }
+    .auth-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .auth-field label { font-size: 0.8rem; font-weight: 600; color: var(--dark); }
+    .auth-field input {
+      padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: var(--radius); font-size: 0.92rem;
+      font-family: 'Inter', sans-serif; transition: border-color .2s;
+    }
+    .auth-field input:focus { outline: none; border-color: var(--forest); }
+    .auth-error {
+      background: #fff5f5; color: var(--red); border: 1px solid #fed7d7;
+      border-radius: 8px; padding: 10px 14px; font-size: 0.83rem;
+      margin-bottom: 14px; display: none;
+    }
+    .auth-error.show { display: block; }
+    .auth-success {
+      background: #f0fff4; color: var(--green); border: 1px solid #c6f6d5;
+      border-radius: 8px; padding: 10px 14px; font-size: 0.83rem;
+      margin-bottom: 14px; display: none;
+    }
+    .auth-success.show { display: block; }
+    .auth-btn {
+      width: 100%; padding: 13px; background: var(--forest); color: var(--white);
+      border: none; border-radius: var(--radius); font-size: 0.95rem;
+      font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: background .2s; margin-top: 4px;
+    }
+    .auth-btn:hover { background: #254d3c; }
+    .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .auth-footer { text-align: center; margin-top: 16px; font-size: 0.83rem; color: var(--muted); }
+    .auth-footer a { color: var(--forest); font-weight: 600; text-decoration: none; }
+
+    /* ── DASHBOARD ── */
+    .dashboard { display: none; min-height: 100vh; }
+
+    .dash-nav {
+      background: var(--forest); padding: 16px 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .dash-nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .dash-nav-logo-icon {
+      width: 32px; height: 32px; background: var(--earth);
+      border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    }
+    .dash-nav-logo-icon svg { width: 18px; height: 18px; fill: var(--white); }
+    .dash-nav-title { color: var(--white); font-weight: 700; font-size: 1rem; }
+    .dash-nav-title span { color: var(--earth); }
+    .dash-nav-right { display: flex; align-items: center; gap: 14px; }
+    .dash-user { color: rgba(255,255,255,0.7); font-size: 0.85rem; }
+    .dash-nav-btn {
+      background: rgba(255,255,255,0.12); color: var(--white);
+      border: 1px solid rgba(255,255,255,0.2); padding: 7px 16px;
+      border-radius: 8px; font-size: 0.82rem; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: background .2s;
+      text-decoration: none; display: inline-block;
+    }
+    .dash-nav-btn:hover { background: rgba(255,255,255,0.2); }
+
+    .dash-body { padding: 32px 5%; max-width: 1100px; margin: 0 auto; }
+
+    .dash-welcome {
+      background: var(--forest); border-radius: var(--radius-lg);
+      padding: 28px 32px; margin-bottom: 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .dash-welcome h1 {
+      font-family: 'Playfair Display', serif; color: var(--white);
+      font-size: 1.5rem; margin-bottom: 4px;
+    }
+    .dash-welcome p { color: rgba(255,255,255,0.6); font-size: 0.88rem; }
+    .new-listing-btn {
+      background: var(--earth); color: var(--white);
+      padding: 12px 24px; border-radius: var(--radius);
+      font-weight: 700; font-size: 0.9rem; text-decoration: none;
+      border: none; cursor: pointer; transition: background .2s;
+      font-family: 'Inter', sans-serif; white-space: nowrap;
+    }
+    .new-listing-btn:hover { background: #d4883f; }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px; margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 20px; border: 1px solid var(--border);
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif; font-size: 2rem;
+      font-weight: 700; color: var(--forest); line-height: 1;
+    }
+    .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: .05em; }
+
+    .section-title {
+      font-weight: 700; font-size: 1rem; color: var(--dark);
+      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+    }
+
+    .listings-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .my-listing-card {
+      background: var(--white); border-radius: var(--radius-lg);
+      border: 1px solid var(--border); overflow: hidden;
+      transition: box-shadow .2s;
+    }
+    .my-listing-card:hover { box-shadow: 0 4px 20px rgba(27,58,45,0.08); }
+
+    .mlc-img {
+      height: 160px; background: linear-gradient(135deg, #254d3c, #1B3A2D);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; position: relative; overflow: hidden;
+    }
+    .mlc-img img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    }
+    .mlc-status {
+      position: absolute; top: 10px; left: 10px;
+      padding: 4px 10px; border-radius: 6px; font-size: 0.7rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+    }
+    .mlc-status.pending { background: #fef3c7; color: #d97706; }
+    .mlc-status.approved { background: #d1fae5; color: var(--green); }
+    .mlc-status.rejected { background: #fee2e2; color: var(--red); }
+
+    .mlc-views {
+      position: absolute; bottom: 10px; right: 10px;
+      background: rgba(0,0,0,0.5); color: #fff;
+      padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 600;
+    }
+
+    .mlc-body { padding: 16px; }
+    .mlc-price {
+      font-family: 'Playfair Display', serif; font-size: 1.2rem;
+      color: var(--forest); font-weight: 700; margin-bottom: 2px;
+    }
+    .mlc-title { font-weight: 600; font-size: 0.9rem; color: var(--dark); margin-bottom: 3px; }
+    .mlc-location { font-size: 0.78rem; color: var(--muted); margin-bottom: 12px; }
+    .mlc-actions { display: flex; gap: 8px; }
+    .mlc-btn {
+      flex: 1; padding: 8px; border-radius: 8px; font-size: 0.78rem;
+      font-weight: 600; cursor: pointer; border: none;
+      font-family: 'Inter', sans-serif; transition: all .2s; text-align: center;
+    }
+    .mlc-btn.edit { background: var(--sand); color: var(--forest); }
+    .mlc-btn.edit:hover { background: var(--forest); color: var(--white); }
+    .mlc-btn.delete { background: #fee2e2; color: var(--red); }
+    .mlc-btn.delete:hover { background: var(--red); color: var(--white); }
+
+    .empty-state {
+      text-align: center; padding: 60px 20px; color: var(--muted);
+      background: var(--white); border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+    }
+    .empty-state-icon { font-size: 3rem; margin-bottom: 14px; }
+    .empty-state-text { font-weight: 600; color: var(--stone); font-size: 1rem; margin-bottom: 6px; }
+    .empty-state-sub { font-size: 0.85rem; margin-bottom: 20px; }
+
+    /* ── EDIT MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--white); border-radius: var(--radius-lg);
+      width: 100%; max-width: 560px; max-height: 85vh; overflow-y: auto;
+      padding: 28px; position: relative; animation: popIn .2s ease;
+    }
+    @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-close {
+      position: absolute; top: 14px; right: 14px;
+      background: var(--sand); border: none; width: 30px; height: 30px;
+      border-radius: 50%; cursor: pointer; font-size: 0.9rem;
+    }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--forest); margin-bottom: 20px; }
+    .edit-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .edit-field label { font-size: 0.78rem; font-weight: 600; color: var(--dark); }
+    .edit-field input, .edit-field select, .edit-field textarea {
+      padding: 11px 13px; border: 1.5px solid var(--border);
+      border-radius: var(--radius); font-size: 0.88rem;
+      font-family: 'Inter', sans-serif; transition: border-color .2s;
+      -webkit-appearance: none;
+    }
+    .edit-field input:focus, .edit-field select:focus, .edit-field textarea:focus {
+      outline: none; border-color: var(--forest);
+    }
+    .edit-field textarea { min-height: 80px; resize: vertical; }
+    .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .edit-save-btn {
+      width: 100%; padding: 13px; background: var(--forest); color: var(--white);
+      border: none; border-radius: var(--radius); font-size: 0.95rem;
+      font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: background .2s; margin-top: 8px;
+    }
+    .edit-save-btn:hover { background: #254d3c; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      background: var(--forest); color: var(--white);
+      padding: 14px 20px; border-radius: 10px; font-size: 0.88rem; font-weight: 600;
+      transform: translateY(80px); opacity: 0; transition: all .3s; max-width: 320px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { background: var(--red); }
+
+    @media (max-width: 640px) {
+      .dash-body { padding: 20px 4%; }
+      .dash-welcome { flex-direction: column; }
+      .listings-grid { grid-template-columns: 1fr; }
+      .edit-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── AUTH PAGE ── -->
+<div class="auth-page" id="authPage">
+  <div class="auth-box">
+    <a href="index.html" class="auth-logo">
+      <div class="auth-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      </div>
+      <span class="auth-logo-text">Seed<span>Stone</span></span>
+    </a>
+    <p class="auth-subtitle">Landlord Portal — manage your listings</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="loginTab" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" id="signupTab" onclick="switchTab('signup')">Create Account</button>
+    </div>
+
+    <div id="authError" class="auth-error"></div>
+    <div id="authSuccess" class="auth-success"></div>
+
+    <!-- Login Form -->
+    <div id="loginForm">
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email"/>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Your password" autocomplete="current-password"/>
+      </div>
+      <button class="auth-btn" id="loginBtn">Sign In</button>
+      <div class="auth-footer">
+        Don't have an account? <a href="#" onclick="switchTab('signup')">Create one free</a>
+      </div>
+    </div>
+
+    <!-- Signup Form -->
+    <div id="signupForm" style="display:none">
+      <div class="auth-field">
+        <label>Full Name</label>
+        <input type="text" id="signupName" placeholder="Your full name"/>
+      </div>
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="signupEmail" placeholder="your@email.com" autocomplete="email"/>
+      </div>
+      <div class="auth-field">
+        <label>Phone Number</label>
+        <input type="tel" id="signupPhone" placeholder="e.g. 673000000"/>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="signupPassword" placeholder="Min 6 characters" autocomplete="new-password"/>
+      </div>
+      <button class="auth-btn" id="signupBtn">Create Account</button>
+      <div class="auth-footer">
+        Already have an account? <a href="#" onclick="switchTab('login')">Sign in</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ── -->
+<div class="dashboard" id="dashboard">
+  <nav class="dash-nav">
+    <a href="index.html" class="dash-nav-logo">
+      <div class="dash-nav-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      </div>
+      <span class="dash-nav-title">Seed<span>Stone</span></span>
+    </a>
+    <div class="dash-nav-right">
+      <span class="dash-user" id="dashUserEmail"></span>
+      <a href="index.html" class="dash-nav-btn">← Back to Site</a>
+      <button class="dash-nav-btn" id="signOutBtn">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="dash-body">
+    <div class="dash-welcome">
+      <div>
+        <h1>Welcome back! 👋</h1>
+        <p id="dashWelcomeName">Manage your SeedStone listings below.</p>
+      </div>
+      <a href="index.html#list" class="new-listing-btn">+ Add New Listing</a>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-label">Total Listings</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statLive" style="color:var(--green)">0</div>
+        <div class="stat-label">Live & Approved</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statPending" style="color:#d97706">0</div>
+        <div class="stat-label">Pending Review</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statViews" style="color:var(--earth)">0</div>
+        <div class="stat-label">Total Views</div>
+      </div>
+    </div>
+
+    <div class="section-title">🏠 My Listings</div>
+    <div class="listings-grid" id="myListingsGrid">
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">⏳ Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── EDIT MODAL ── -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <button class="modal-close" id="editModalClose">✕</button>
+    <div class="modal-title">Edit Listing</div>
+    <input type="hidden" id="editId"/>
+    <div class="edit-grid">
+      <div class="edit-field">
+        <label>Title</label>
+        <input type="text" id="editTitle"/>
+      </div>
+      <div class="edit-field">
+        <label>Price (XAF)</label>
+        <input type="number" id="editPrice"/>
+      </div>
+      <div class="edit-field">
+        <label>City</label>
+        <select id="editCity">
+          <option>Buea</option>
+          <option>Limbe</option>
+          <option>Douala</option>
+          <option>Yaoundé</option>
+          <option>Bamenda</option>
+        </select>
+      </div>
+      <div class="edit-field">
+        <label>Neighbourhood</label>
+        <input type="text" id="editHood"/>
+      </div>
+      <div class="edit-field">
+        <label>Type</label>
+        <select id="editType">
+          <option>Room</option>
+          <option>Self-Contain</option>
+          <option>Apartment</option>
+          <option>Full House</option>
+          <option>Land</option>
+          <option>Commercial Space</option>
+        </select>
+      </div>
+      <div class="edit-field">
+        <label>Purpose</label>
+        <select id="editPurpose">
+          <option>For Rent</option>
+          <option>For Sale</option>
+        </select>
+      </div>
+    </div>
+    <div class="edit-field">
+      <label>Description</label>
+      <textarea id="editDesc"></textarea>
+    </div>
+    <div class="edit-field">
+      <label>Phone Number</label>
+      <input type="tel" id="editPhone"/>
+    </div>
+    <button class="edit-save-btn" id="editSaveBtn">Save Changes</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── CONFIG ──
+  const SUPABASE_URL = 'https://imlbkwiopnvqflibbhss.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbGJrd2lvcG52cWZsaWJiaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjUwNTEsImV4cCI6MjA5NjYwMTA1MX0.D2e5Ybfd-SXcS4jFY9SgBaijRkYYF-hMaXfdZXnd8y0';
+
+  let currentUser = null;
+  let myListings = [];
+
+  // ── CHECK SESSION ──
+  async function checkSession() {
+    const session = localStorage.getItem('ss_session');
+    if (session) {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + session
+          }
+        });
+        if (res.ok) {
+          const user = await res.json();
+          currentUser = user;
+          showDashboard(user);
+          return;
+        }
+      } catch(e) {}
+      localStorage.removeItem('ss_session');
+    }
+    showAuth();
+  }
+
+  function showAuth() {
+    document.getElementById('authPage').style.display = 'flex';
+    document.getElementById('dashboard').style.display = 'none';
+  }
+
+  function showDashboard(user) {
+    document.getElementById('authPage').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('dashUserEmail').textContent = user.email;
+    document.getElementById('dashWelcomeName').textContent = `Managing listings for ${user.email}`;
+    loadMyListings(user.email);
+  }
+
+  // ── TAB SWITCH ──
+  function switchTab(tab) {
+    document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('signupForm').style.display = tab === 'signup' ? 'block' : 'none';
+    document.getElementById('loginTab').className = 'auth-tab' + (tab === 'login' ? ' active' : '');
+    document.getElementById('signupTab').className = 'auth-tab' + (tab === 'signup' ? ' active' : '');
+    clearMessages();
+  }
+
+  function clearMessages() {
+    document.getElementById('authError').classList.remove('show');
+    document.getElementById('authSuccess').classList.remove('show');
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('authError');
+    el.textContent = msg; el.classList.add('show');
+  }
+
+  function showSuccess(msg) {
+    const el = document.getElementById('authSuccess');
+    el.textContent = msg; el.classList.add('show');
+  }
+
+  // ── SIGN UP ──
+  document.getElementById('signupBtn').addEventListener('click', async () => {
+    clearMessages();
+    const name  = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const phone = document.getElementById('signupPhone').value.trim();
+    const pass  = document.getElementById('signupPassword').value;
+
+    if (!name || !email || !pass) { showError('Please fill in all required fields.'); return; }
+    if (pass.length < 6) { showError('Password must be at least 6 characters.'); return; }
+
+    const btn = document.getElementById('signupBtn');
+    btn.textContent = 'Creating account...'; btn.disabled = true;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email, password: pass,
+          data: { full_name: name, phone }
+        })
+      });
+      const data = await res.json();
+      if (data.user || data.id) {
+        showSuccess('Account created! Please check your email to confirm, then sign in.');
+        switchTab('login');
+      } else {
+        showError(data.msg || data.message || 'Signup failed. Try a different email.');
+      }
+    } catch(e) {
+      showError('Network error. Please try again.');
+    }
+    btn.textContent = 'Create Account'; btn.disabled = false;
+  });
+
+  // ── SIGN IN ──
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    clearMessages();
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPassword').value;
+
+    if (!email || !pass) { showError('Please enter your email and password.'); return; }
+
+    const btn = document.getElementById('loginBtn');
+    btn.textContent = 'Signing in...'; btn.disabled = true;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass })
+      });
+      const data = await res.json();
+      if (data.access_token) {
+        localStorage.setItem('ss_session', data.access_token);
+        currentUser = data.user;
+        showDashboard(data.user);
+      } else {
+        showError(data.error_description || data.msg || 'Invalid email or password.');
+      }
+    } catch(e) {
+      showError('Network error. Please try again.');
+    }
+    btn.textContent = 'Sign In'; btn.disabled = false;
+  });
+
+  // Enter key support
+  document.getElementById('loginPassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('loginBtn').click();
+  });
+
+  // ── SIGN OUT ──
+  document.getElementById('signOutBtn').addEventListener('click', () => {
+    localStorage.removeItem('ss_session');
+    currentUser = null;
+    showAuth();
+  });
+
+  // ── LOAD MY LISTINGS ──
+  async function loadMyListings(email) {
+    const grid = document.getElementById('myListingsGrid');
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">⏳ Loading your listings...</div>';
+
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/listings?landlord_email=eq.${encodeURIComponent(email)}&order=created_at.desc`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + localStorage.getItem('ss_session') } }
+      );
+      let data = await res.json();
+      if (!Array.isArray(data)) data = [];
+      myListings = data;
+      renderMyListings(data);
+      updateStats(data);
+    } catch(e) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">Could not load listings.</div>';
+    }
+  }
+
+  function updateStats(listings) {
+    const live    = listings.filter(l => l.verified).length;
+    const pending = listings.filter(l => !l.verified && !l.rejected).length;
+    const views   = listings.reduce((sum, l) => sum + (l.views || 0), 0);
+    document.getElementById('statTotal').textContent   = listings.length;
+    document.getElementById('statLive').textContent    = live;
+    document.getElementById('statPending').textContent = pending;
+    document.getElementById('statViews').textContent   = views;
+  }
+
+  function getEmoji(type) {
+    const map = { 'Room':'🏢','Self-Contain':'🏢','Apartment':'🏠','Full House':'🏘','Land':'🌿','Commercial Space':'🏪' };
+    return map[type] || '🏠';
+  }
+
+  function renderMyListings(listings) {
+    const grid = document.getElementById('myListingsGrid');
+    if (!listings.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+        <div class="empty-state-icon">🏠</div>
+        <div class="empty-state-text">No listings yet</div>
+        <div class="empty-state-sub">Add your first property to start reaching seekers</div>
+        <a href="index.html#list" class="new-listing-btn">+ Add Your First Listing</a>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = listings.map(l => {
+      const status = l.verified ? 'approved' : l.rejected ? 'rejected' : 'pending';
+      const label  = l.verified ? '✅ Live' : l.rejected ? '❌ Rejected' : '⏳ Pending';
+      const price  = Number(l.price).toLocaleString() + ' XAF';
+      const imgs   = l.image_urls ? JSON.parse(l.image_urls) : [];
+      const imgHtml = imgs.length > 0 ? `<img src="${imgs[0]}" onerror="this.style.display='none'"/>` : '';
+
+      return `<div class="my-listing-card">
+        <div class="mlc-img">
+          ${imgHtml}
+          <span style="position:relative">${getEmoji(l.type)}</span>
+          <div class="mlc-status ${status}">${label}</div>
+          <div class="mlc-views">👁 ${l.views || 0} views</div>
+        </div>
+        <div class="mlc-body">
+          <div class="mlc-price">${price}</div>
+          <div class="mlc-title">${l.title || '—'}</div>
+          <div class="mlc-location">📍 ${l.neighbourhood ? l.neighbourhood + ', ' : ''}${l.city || '—'}</div>
+          <div class="mlc-actions">
+            <button class="mlc-btn edit" onclick="openEdit('${l.id}')">✏️ Edit</button>
+            <button class="mlc-btn delete" onclick="deleteListing('${l.id}')">🗑 Delete</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── EDIT LISTING ──
+  function openEdit(id) {
+    const l = myListings.find(x => x.id === id);
+    if (!l) return;
+    document.getElementById('editId').value       = l.id;
+    document.getElementById('editTitle').value    = l.title || '';
+    document.getElementById('editPrice').value    = l.price || '';
+    document.getElementById('editCity').value     = l.city || 'Buea';
+    document.getElementById('editHood').value     = l.neighbourhood || '';
+    document.getElementById('editType').value     = l.type || 'Apartment';
+    document.getElementById('editPurpose').value  = l.purpose || 'For Rent';
+    document.getElementById('editDesc').value     = l.description || '';
+    document.getElementById('editPhone').value    = l.landlord_phone || '';
+    document.getElementById('editModal').classList.add('open');
+  }
+
+  document.getElementById('editModalClose').addEventListener('click', () => {
+    document.getElementById('editModal').classList.remove('open');
+  });
+
+  document.getElementById('editSaveBtn').addEventListener('click', async () => {
+    const id = document.getElementById('editId').value;
+    const btn = document.getElementById('editSaveBtn');
+    btn.textContent = 'Saving...'; btn.disabled = true;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/listings?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + localStorage.getItem('ss_session'),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title:        document.getElementById('editTitle').value,
+          price:        parseInt(document.getElementById('editPrice').value),
+          city:         document.getElementById('editCity').value,
+          neighbourhood: document.getElementById('editHood').value,
+          type:         document.getElementById('editType').value,
+          purpose:      document.getElementById('editPurpose').value,
+          description:  document.getElementById('editDesc').value,
+          landlord_phone: document.getElementById('editPhone').value,
+          verified: false // reset to pending after edit
+        })
+      });
+      if (res.ok) {
+        document.getElementById('editModal').classList.remove('open');
+        showToast('✅ Listing updated — pending re-approval.');
+        loadMyListings(currentUser.email);
+      } else {
+        showToast('Failed to save. Try again.', true);
+      }
+    } catch(e) {
+      showToast('Network error.', true);
+    }
+    btn.textContent = 'Save Changes'; btn.disabled = false;
+  });
+
+  // ── DELETE LISTING ──
+  async function deleteListing(id) {
+    if (!confirm('Delete this listing permanently?')) return;
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/listings?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + localStorage.getItem('ss_session')
+        }
+      });
+      showToast('🗑 Listing deleted.');
+      loadMyListings(currentUser.email);
+    } catch(e) {
+      showToast('Delete failed.', true);
+    }
+  }
+
+  // ── TOAST ──
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ── INIT ──
+  checkSession();
+</script>
+</body>
+</html>
