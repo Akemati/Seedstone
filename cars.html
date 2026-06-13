@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SeedStone Cars — Buy & Sell Cars in Cameroon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --forest: #1B3A2D; --earth: #C47C3E; --sand: #F5EFE4;
+      --stone: #6B7B6E; --white: #FFFFFF; --dark: #111714;
+      --muted: #8A9B8D; --border: #DDE5DC; --red: #e53e3e;
+      --green: #2a7a4a; --radius: 12px; --radius-lg: 20px;
+      --car-blue: #1a3a5c; --car-accent: #e8a020;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--dark); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 5%; background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px); border-bottom: 1px solid var(--border);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon {
+      width: 34px; height: 34px; background: var(--forest);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 18px; height: 18px; fill: var(--earth); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--forest); font-weight: 700; }
+    .logo-text span { color: var(--earth); }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-links a { text-decoration: none; font-size: 0.88rem; color: var(--stone); font-weight: 500; transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--forest); }
+    .nav-cta {
+      background: var(--earth) !important; color: var(--white) !important;
+      padding: 8px 18px; border-radius: 8px; font-size: 0.85rem !important;
+    }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--forest); border-radius: 2px; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 70vh; background: var(--car-blue);
+      display: flex; align-items: center; padding: 100px 5% 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg { position: absolute; inset: 0; opacity: 0.04; background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 28px 28px; }
+    .hero-accent { position: absolute; right: -60px; top: -60px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(232,160,32,0.2) 0%, transparent 70%); pointer-events: none; }
+    .hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,160,32,0.15); border: 1px solid rgba(232,160,32,0.3);
+      color: var(--car-accent); font-size: 0.75rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 100px; margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      color: var(--white); line-height: 1.15; font-weight: 700; margin-bottom: 18px;
+    }
+    .hero h1 em { color: var(--car-accent); font-style: normal; }
+    .hero p { color: rgba(255,255,255,0.6); font-size: 0.97rem; max-width: 500px; margin-bottom: 32px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--car-accent); color: var(--white);
+      padding: 13px 26px; border-radius: var(--radius);
+      font-weight: 700; font-size: 0.92rem; text-decoration: none;
+      border: none; cursor: pointer; transition: background .2s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { background: #d4901a; }
+    .btn-outline {
+      background: transparent; color: var(--white);
+      padding: 13px 26px; border-radius: var(--radius);
+      font-weight: 500; font-size: 0.92rem; text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.25); cursor: pointer;
+      transition: all .2s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
+    .hero-stats { display: flex; gap: 28px; margin-top: 40px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--white); font-weight: 700; }
+    .stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ── SEARCH ── */
+    .search-section { background: var(--sand); padding: 36px 5%; }
+    .search-wrap {
+      max-width: 1000px; margin: 0 auto; background: var(--white);
+      border-radius: var(--radius-lg); padding: 26px;
+      box-shadow: 0 4px 30px rgba(27,58,45,0.08);
+    }
+    .search-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+    .search-top h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--car-blue); font-weight: 700; }
+    .search-count { font-size: 0.82rem; color: var(--muted); }
+    .search-count span { color: var(--car-blue); font-weight: 700; }
+    .search-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .search-row2 { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; }
+    .sf { display: flex; flex-direction: column; gap: 5px; }
+    .sf label { font-size: 0.75rem; font-weight: 600; color: var(--stone); text-transform: uppercase; letter-spacing: .05em; }
+    .sf input, .sf select {
+      padding: 11px 13px; border: 1.5px solid var(--border); border-radius: var(--radius);
+      font-size: 0.88rem; color: var(--dark); font-family: 'Inter', sans-serif;
+      background: var(--white); transition: border-color .2s; -webkit-appearance: none;
+    }
+    .sf input:focus, .sf select:focus { outline: none; border-color: var(--car-blue); }
+    .sf input::placeholder { color: var(--muted); }
+    .clear-btn {
+      background: var(--sand); color: var(--stone); padding: 11px 18px;
+      border-radius: var(--radius); font-weight: 600; font-size: 0.85rem;
+      border: 1.5px solid var(--border); cursor: pointer; height: 44px;
+      font-family: 'Inter', sans-serif; transition: all .2s; white-space: nowrap;
+    }
+    .clear-btn:hover { border-color: var(--car-blue); color: var(--car-blue); }
+    .active-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--car-blue); color: var(--white);
+      padding: 4px 11px; border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+    }
+    .tag button { background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 0.85rem; padding: 0; }
+
+    /* ── CARS GRID ── */
+    .cars-section { padding: 56px 5%; }
+    .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 36px; flex-wrap: wrap; gap: 16px; }
+    .section-eyebrow { font-size: 0.72rem; font-weight: 600; color: var(--car-accent); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--car-blue); font-weight: 700; }
+    .section-sub { color: var(--stone); font-size: 0.9rem; margin-top: 6px; }
+    .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 28px; }
+    .tab-btn {
+      padding: 7px 16px; border-radius: 100px; font-size: 0.82rem; font-weight: 500;
+      border: 1.5px solid var(--border); background: var(--white); color: var(--stone);
+      cursor: pointer; transition: all .2s; font-family: 'Inter', sans-serif;
+    }
+    .tab-btn.active, .tab-btn:hover { background: var(--car-blue); color: var(--white); border-color: var(--car-blue); }
+    .cars-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 22px; }
+
+    /* ── CAR CARD ── */
+    .car-card {
+      background: var(--white); border-radius: var(--radius-lg);
+      border: 1px solid var(--border); overflow: hidden;
+      transition: transform .2s, box-shadow .2s; cursor: pointer;
+    }
+    .car-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(27,58,45,0.1); }
+    .card-img {
+      height: 200px; position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #1a3a5c 0%, #0f2340 100%);
+      display: flex; align-items: center; justify-content: center; font-size: 3.5rem;
+    }
+    .card-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .card-img-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.25) 100%); }
+    .card-badge {
+      position: absolute; top: 12px; left: 12px;
+      background: var(--car-blue); color: var(--white);
+      font-size: 0.7rem; font-weight: 700; padding: 4px 10px;
+      border-radius: 6px; text-transform: uppercase; letter-spacing: .04em;
+    }
+    .card-badge.new-car { background: var(--green); }
+    .card-badge.used { background: var(--car-accent); }
+    .card-verified {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(255,255,255,0.92); color: var(--green);
+      font-size: 0.7rem; font-weight: 700; padding: 4px 9px; border-radius: 6px;
+    }
+    .card-save {
+      position: absolute; bottom: 12px; right: 12px;
+      background: rgba(255,255,255,0.9); border: none; cursor: pointer;
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; transition: background .2s;
+    }
+    .card-save:hover { background: var(--white); }
+    .card-body { padding: 16px; }
+    .card-price { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--car-blue); font-weight: 700; margin-bottom: 3px; }
+    .card-name { font-weight: 600; font-size: 0.95rem; color: var(--dark); margin-bottom: 3px; }
+    .card-location { display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; }
+    .card-specs { display: flex; gap: 10px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--border); }
+    .spec { display: flex; align-items: center; gap: 4px; font-size: 0.78rem; color: var(--stone); font-weight: 500; }
+
+    /* ── LIST CAR PAGE ── */
+    .list-page {
+      display: none; position: fixed; inset: 0; z-index: 300;
+      background: var(--white); overflow-y: auto;
+    }
+    .list-page.open { display: block; }
+    .list-header {
+      background: var(--car-blue); padding: 18px 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .list-header-title { font-family: 'Playfair Display', serif; color: #fff; font-size: 1.15rem; font-weight: 700; }
+    .list-close {
+      background: rgba(255,255,255,0.15); color: #fff; border: none;
+      padding: 7px 16px; border-radius: 8px; cursor: pointer;
+      font-size: 0.85rem; font-weight: 600; font-family: 'Inter', sans-serif;
+    }
+    .list-body { max-width: 680px; margin: 0 auto; padding: 36px 5% 60px; }
+    .list-intro h2 { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--car-blue); font-weight: 700; margin-bottom: 8px; }
+    .list-intro p { color: var(--stone); font-size: 0.92rem; margin-bottom: 32px; }
+    .form-section { margin-bottom: 28px; }
+    .form-section-title {
+      font-weight: 700; font-size: 0.75rem; color: var(--car-accent);
+      text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--sand);
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field.full { grid-column: span 2; }
+    .form-field label { font-size: 0.8rem; font-weight: 600; color: var(--dark); }
+    .form-field input, .form-field select, .form-field textarea {
+      padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--radius);
+      font-size: 0.9rem; font-family: 'Inter', sans-serif; color: var(--dark);
+      background: var(--white); transition: border-color .2s; -webkit-appearance: none;
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: var(--car-blue); }
+    .form-field textarea { resize: vertical; min-height: 90px; }
+    .form-hint { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+
+    .img-upload-area {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 22px; text-align: center; cursor: pointer;
+      background: var(--sand); transition: all .2s;
+    }
+    .img-upload-area:hover { border-color: var(--car-blue); background: #eef3f8; }
+    .img-upload-icon { font-size: 1.8rem; margin-bottom: 6px; }
+    .img-upload-text { font-size: 0.85rem; color: var(--stone); }
+    .img-upload-text strong { color: var(--car-blue); }
+    .img-upload-input { display: none; }
+    .img-previews { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; margin-top: 10px; }
+    .img-preview-item { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 1; background: var(--border); }
+    .img-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .img-remove {
+      position: absolute; top: 3px; right: 3px;
+      background: rgba(0,0,0,0.6); color: #fff; border: none;
+      width: 20px; height: 20px; border-radius: 50%; cursor: pointer; font-size: 0.7rem;
+    }
+    .img-uploading { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.7rem; font-weight: 600; }
+    .upload-progress { font-size: 0.8rem; color: var(--stone); margin-top: 6px; text-align: center; }
+
+    .submit-btn {
+      width: 100%; padding: 15px; background: var(--car-blue); color: #fff;
+      border: none; border-radius: var(--radius); font-size: 0.97rem;
+      font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: background .2s;
+    }
+    .submit-btn:hover { background: #0f2340; }
+
+    /* ── CAR POPUP ── */
+    .popup-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .popup-overlay.open { display: flex; }
+    .popup-box {
+      background: var(--white); border-radius: var(--radius-lg);
+      width: 100%; max-width: 760px; max-height: 90vh; overflow-y: auto;
+      position: relative; animation: popIn .22s ease;
+    }
+    @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .popup-close {
+      position: absolute; top: 14px; right: 14px; z-index: 10;
+      background: rgba(0,0,0,0.4); color: #fff; border: none;
+      width: 34px; height: 34px; border-radius: 50%; font-size: 1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .popup-hero {
+      height: 250px; background: linear-gradient(135deg,#1a3a5c,#0f2340);
+      display: flex; align-items: center; justify-content: center; font-size: 5rem;
+      position: relative; overflow: hidden;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .popup-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .popup-badge {
+      position: absolute; top: 14px; left: 14px;
+      background: var(--car-accent); color: #fff;
+      font-size: 0.75rem; font-weight: 700; padding: 5px 12px; border-radius: 7px; text-transform: uppercase;
+    }
+    .popup-body { padding: 26px; }
+    .popup-price { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--car-blue); font-weight: 700; margin-bottom: 4px; }
+    .popup-name { font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 5px; }
+    .popup-location { color: var(--muted); font-size: 0.85rem; margin-bottom: 18px; }
+    .popup-specs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .popup-spec { background: var(--sand); border-radius: 8px; padding: 8px 14px; font-size: 0.82rem; font-weight: 600; color: var(--car-blue); }
+    .popup-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+    .popup-desc { font-size: 0.9rem; color: var(--stone); line-height: 1.7; margin-bottom: 20px; }
+    .popup-details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .pd-item { background: var(--sand); border-radius: 8px; padding: 11px 14px; }
+    .pd-label { font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px; }
+    .pd-value { font-size: 0.88rem; font-weight: 600; color: var(--dark); }
+    .popup-seller { display: flex; align-items: center; gap: 12px; background: var(--sand); border-radius: var(--radius); padding: 14px; margin-bottom: 20px; }
+    .seller-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--car-blue); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+    .seller-name { font-weight: 700; font-size: 0.92rem; }
+    .seller-tag { font-size: 0.76rem; color: var(--muted); }
+    .popup-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .popup-actions .btn-primary { flex: 1; justify-content: center; min-width: 140px; }
+    .whatsapp-btn {
+      flex: 1; min-width: 140px; display: inline-flex; align-items: center; justify-content: center;
+      gap: 7px; background: #25D366; color: #fff; padding: 13px 20px;
+      border-radius: var(--radius); font-size: 0.88rem; font-weight: 700; text-decoration: none;
+      transition: background .2s;
+    }
+    .whatsapp-btn:hover { background: #1da851; }
+
+    /* ── THANK YOU ── */
+    .thankyou-page {
+      display: none; position: fixed; inset: 0; z-index: 400;
+      background: var(--white); align-items: center; justify-content: center;
+      text-align: center; padding: 40px 5%;
+    }
+    .thankyou-page.open { display: flex; }
+    .thankyou-inner { max-width: 460px; }
+    .ty-icon { width: 76px; height: 76px; background: #e8f5ee; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 22px; font-size: 2.2rem; }
+    .thankyou-inner h1 { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--car-blue); font-weight: 700; margin-bottom: 12px; }
+    .thankyou-inner p { color: var(--stone); font-size: 0.94rem; line-height: 1.7; margin-bottom: 28px; }
+    .ty-steps { background: var(--sand); border-radius: var(--radius-lg); padding: 22px; text-align: left; margin-bottom: 28px; }
+    .ty-steps h3 { font-size: 0.8rem; font-weight: 700; color: var(--car-blue); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .06em; }
+    .ty-step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+    .ty-step:last-child { margin-bottom: 0; }
+    .ty-num { width: 22px; height: 22px; background: var(--car-blue); color: #fff; border-radius: 50%; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ty-text { font-size: 0.85rem; color: var(--stone); padding-top: 2px; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--dark); color: rgba(255,255,255,0.5); padding: 40px 5% 24px; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-links a { color: rgba(255,255,255,0.45); font-size: 0.82rem; text-decoration: none; transition: color .2s; }
+    .footer-links a:hover { color: var(--car-accent); }
+    .footer-bottom { margin-top: 20px; font-size: 0.8rem; text-align: center; }
+
+    /* ── EMPTY / LOADING ── */
+    .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--muted); }
+    .empty-icon { font-size: 3rem; margin-bottom: 14px; }
+    .empty-text { font-size: 1rem; font-weight: 600; color: var(--stone); margin-bottom: 6px; }
+    .empty-sub { font-size: 0.85rem; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .search-grid { grid-template-columns: 1fr 1fr; }
+      .search-row2 { grid-template-columns: 1fr 1fr; }
+      .search-row2 .clear-btn { grid-column: span 2; }
+      .popup-details { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .search-grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-field.full { grid-column: span 1; }
+      .cars-grid { grid-template-columns: 1fr; }
+    }
+    .nav-links.open {
+      display: flex; flex-direction: column; position: fixed;
+      top: 68px; left: 0; right: 0; background: var(--white);
+      padding: 18px 5%; border-bottom: 1px solid var(--border); gap: 16px; z-index: 99;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+    <span class="logo-text">Seed<span>Stone</span></span>
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Properties</a>
+    <a href="cars.html" class="active">🚗 Cars</a>
+    <a href="dashboard.html">My Dashboard</a>
+    <a href="#" class="nav-cta" id="sellCarBtn">Sell Your Car</a>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-accent"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">🚗 Cameroon Car Marketplace</div>
+    <h1>Buy & Sell Cars<br/><em>Across Cameroon</em></h1>
+    <p>Browse verified new and used cars from trusted sellers. Direct contact, no middlemen, no scams.</p>
+    <div class="hero-actions">
+      <a href="#cars" class="btn-primary">Browse Cars</a>
+      <a href="#" class="btn-outline" id="sellCarBtn2">+ Sell Your Car</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num" id="carCount">0+</div><div class="stat-label">Cars Listed</div></div>
+      <div><div class="stat-num">100%</div><div class="stat-label">Verified</div></div>
+      <div><div class="stat-num">Free</div><div class="stat-label">To List</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-wrap">
+    <div class="search-top">
+      <h2>Search Cars</h2>
+      <div class="search-count" id="searchCount"></div>
+    </div>
+    <div class="search-grid">
+      <div class="sf"><label>Make / Model</label><input type="text" id="sSearch" placeholder="e.g. Toyota, Honda Civic…" oninput="applySearch()"/></div>
+      <div class="sf"><label>City</label>
+        <select id="sCity" onchange="applySearch()">
+          <option value="">All Cities</option>
+          <option>Buea</option><option>Limbe</option><option>Douala</option>
+          <option>Yaoundé</option><option>Bamenda</option>
+        </select>
+      </div>
+      <div class="sf"><label>Condition</label>
+        <select id="sCondition" onchange="applySearch()">
+          <option value="">Any Condition</option>
+          <option>New</option><option>Used</option>
+        </select>
+      </div>
+      <div class="sf"><label>Fuel Type</label>
+        <select id="sFuel" onchange="applySearch()">
+          <option value="">Any Fuel</option>
+          <option>Petrol</option><option>Diesel</option><option>Electric</option><option>Hybrid</option>
+        </select>
+      </div>
+    </div>
+    <div class="search-row2">
+      <div class="sf"><label>Min Price (XAF)</label><input type="number" id="sMin" placeholder="e.g. 500000" oninput="applySearch()"/></div>
+      <div class="sf"><label>Max Price (XAF)</label><input type="number" id="sMax" placeholder="e.g. 10000000" oninput="applySearch()"/></div>
+      <button class="clear-btn" onclick="clearSearch()">✕ Clear</button>
+    </div>
+    <div class="active-tags" id="activeTags"></div>
+  </div>
+</div>
+
+<!-- CARS -->
+<section class="cars-section" id="cars">
+  <div class="section-header">
+    <div>
+      <div class="section-eyebrow">Available Now</div>
+      <div class="section-title">Cars in Cameroon</div>
+      <div class="section-sub">All listings verified before going live.</div>
+    </div>
+    <a href="#" class="btn-primary" id="sellCarBtn3">+ List Your Car Free</a>
+  </div>
+
+  <div class="filter-tabs">
+    <button class="tab-btn active" data-filter="All">All</button>
+    <button class="tab-btn" data-filter="New">New Cars</button>
+    <button class="tab-btn" data-filter="Used">Used Cars</button>
+    <button class="tab-btn" data-filter="Buea">Buea</button>
+    <button class="tab-btn" data-filter="Limbe">Limbe</button>
+    <button class="tab-btn" data-filter="Douala">Douala</button>
+  </div>
+
+  <div class="cars-grid" id="carsGrid">
+    <div class="empty-state">
+      <div class="empty-icon">⏳</div>
+      <div class="empty-text">Loading cars...</div>
+    </div>
+  </div>
+</section>
+
+<!-- CAR POPUP -->
+<div class="popup-overlay" id="carPopup">
+  <div class="popup-box">
+    <button class="popup-close" id="popupClose">✕</button>
+    <div class="popup-hero" id="popupHero">
+      <span id="popupEmoji" style="position:relative">🚗</span>
+      <div class="popup-badge" id="popupBadge">Used</div>
+    </div>
+    <div class="popup-body">
+      <div class="popup-price" id="popupPrice"></div>
+      <div class="popup-name" id="popupName"></div>
+      <div class="popup-location" id="popupLocation"></div>
+      <div class="popup-specs" id="popupSpecs"></div>
+      <hr class="popup-divider"/>
+      <div class="popup-desc" id="popupDesc"></div>
+      <div class="popup-details" id="popupDetails"></div>
+      <hr class="popup-divider"/>
+      <div class="popup-seller">
+        <div class="seller-avatar" id="sellerAvatar">SS</div>
+        <div>
+          <div class="seller-name" id="sellerName">Seller</div>
+          <div class="seller-tag">Verified Seller on SeedStone</div>
+        </div>
+      </div>
+      <div class="popup-actions">
+        <a href="#" class="btn-primary" id="popupCall">📞 Call Seller</a>
+        <a href="#" class="whatsapp-btn" id="popupWhatsapp" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIST A CAR PAGE -->
+<div class="list-page" id="listPage">
+  <div class="list-header">
+    <div class="list-header-title">🚗 List Your Car on SeedStone</div>
+    <button class="list-close" id="listClose">✕ Close</button>
+  </div>
+  <div class="list-body">
+    <div class="list-intro">
+      <h2>Sell Your Car Fast</h2>
+      <p>List your car free. Our team verifies it and publishes it within 24 hours. Reach thousands of genuine buyers across Cameroon.</p>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">🚗 Car Details</div>
+      <div class="form-grid">
+        <div class="form-field"><label>Make *</label><input type="text" id="cMake" placeholder="e.g. Toyota, Honda, Mercedes"/></div>
+        <div class="form-field"><label>Model *</label><input type="text" id="cModel" placeholder="e.g. Corolla, Civic, C-Class"/></div>
+        <div class="form-field"><label>Year *</label><input type="number" id="cYear" placeholder="e.g. 2019" min="1990" max="2026"/></div>
+        <div class="form-field">
+          <label>Condition *</label>
+          <select id="cCondition">
+            <option value="">Select</option>
+            <option>New</option><option>Used</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Fuel Type</label>
+          <select id="cFuel">
+            <option value="">Select</option>
+            <option>Petrol</option><option>Diesel</option><option>Electric</option><option>Hybrid</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Transmission</label>
+          <select id="cTransmission">
+            <option value="">Select</option>
+            <option>Automatic</option><option>Manual</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Mileage (km)</label><input type="number" id="cMileage" placeholder="e.g. 45000"/></div>
+        <div class="form-field"><label>Color</label><input type="text" id="cColor" placeholder="e.g. White, Black, Silver"/></div>
+        <div class="form-field full">
+          <label>Description *</label>
+          <textarea id="cDesc" placeholder="Describe the car — condition, history, features, any issues…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">📍 Location & Price</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>City *</label>
+          <select id="cCity">
+            <option value="">Select city</option>
+            <option>Buea</option><option>Limbe</option><option>Douala</option>
+            <option>Yaoundé</option><option>Bamenda</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Neighbourhood</label><input type="text" id="cHood" placeholder="e.g. Molyko, Akwa"/></div>
+        <div class="form-field"><label>Price (XAF) *</label><input type="number" id="cPrice" placeholder="e.g. 3500000"/></div>
+        <div class="form-field">
+          <label>Negotiable?</label>
+          <select id="cNegotiable">
+            <option>Yes, negotiable</option><option>Fixed price</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">📸 Car Photos</div>
+      <div class="img-upload-area" id="carUploadArea">
+        <div class="img-upload-icon">📸</div>
+        <div class="img-upload-text"><strong>Click to upload photos</strong> or drag and drop<br/>Up to 8 photos · JPG or PNG · Max 5MB each</div>
+        <input type="file" id="cPhotos" class="img-upload-input" accept="image/*" multiple/>
+      </div>
+      <div class="img-previews" id="carImgPreviews"></div>
+      <div class="upload-progress" id="carUploadProgress"></div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">👤 Your Contact Details</div>
+      <div class="form-grid">
+        <div class="form-field"><label>Full Name *</label><input type="text" id="cName" placeholder="Your full name"/></div>
+        <div class="form-field"><label>Phone Number *</label><input type="tel" id="cPhone" placeholder="e.g. 673000000"/></div>
+        <div class="form-field"><label>WhatsApp Number</label><input type="tel" id="cWhatsapp" placeholder="If different from above"/></div>
+        <div class="form-field">
+          <label>Your Role</label>
+          <select id="cRole">
+            <option>Car Owner</option><option>Dealer</option><option>Agent</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="carSubmitBtn">Submit Car for Verification →</button>
+  </div>
+</div>
+
+<!-- THANK YOU PAGE -->
+<div class="thankyou-page" id="thankyouPage">
+  <div class="thankyou-inner">
+    <div class="ty-icon">🎉</div>
+    <h1>Car Listing Submitted!</h1>
+    <p>Thank you for listing on SeedStone. Our team will verify your car within <strong>24 hours</strong> and contact you on the number provided.</p>
+    <div class="ty-steps">
+      <h3>What Happens Next</h3>
+      <div class="ty-step"><div class="ty-num">1</div><div class="ty-text">Our team reviews your listing details</div></div>
+      <div class="ty-step"><div class="ty-num">2</div><div class="ty-text">We call to confirm and verify the car</div></div>
+      <div class="ty-step"><div class="ty-num">3</div><div class="ty-text">Your listing goes live and buyers contact you directly</div></div>
+    </div>
+    <button class="btn-primary" id="backHome" style="width:100%;justify-content:center;padding:15px;font-size:0.97rem">← Back to Cars</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <a href="index.html" class="logo" style="filter:brightness(2)">
+      <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+      <span class="logo-text" style="color:#fff">Seed<span>Stone</span></span>
+    </a>
+    <div class="footer-links">
+      <a href="index.html">Properties</a>
+      <a href="cars.html">Cars</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 SeedStone. Cameroon's trusted marketplace.</div>
+</footer>
+
+<script>
+  const SUPABASE_URL = 'https://imlbkwiopnvqflibbhss.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbGJrd2lvcG52cWZsaWJiaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjUwNTEsImV4cCI6MjA5NjYwMTA1MX0.D2e5Ybfd-SXcS4jFY9SgBaijRkYYF-hMaXfdZXnd8y0';
+  const CLOUDINARY_CLOUD  = 'dzeyxviu4';
+  const CLOUDINARY_PRESET = 'Seedstone_uploads';
+
+  let allCars = [];
+  let carImgUrls = [];
+
+  // ── NAV ──
+  document.getElementById('hamburger').addEventListener('click', () =>
+    document.getElementById('navLinks').classList.toggle('open'));
+
+  // ── OPEN LIST PAGE ──
+  ['sellCarBtn','sellCarBtn2','sellCarBtn3'].forEach(id => {
+    document.getElementById(id).addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('listPage').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  document.getElementById('listClose').addEventListener('click', () => {
+    document.getElementById('listPage').classList.remove('open');
+    document.body.style.overflow = '';
+  });
+
+  // ── LOAD CARS ──
+  async function loadCars() {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/cars?select=*&verified=eq.true&order=created_at.desc`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
+      );
+      const data = await res.json();
+      allCars = Array.isArray(data) ? data : [];
+      renderCars(allCars);
+      document.getElementById('carCount').textContent = allCars.length + '+';
+    } catch(e) {
+      document.getElementById('carsGrid').innerHTML = `<div class="empty-state"><div class="empty-icon">🚗</div><div class="empty-text">Could not load cars</div></div>`;
+    }
+  }
+
+  // ── RENDER CARS ──
+  function renderCars(cars) {
+    const grid = document.getElementById('carsGrid');
+    if (!cars.length) {
+      grid.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">🚗</div>
+        <div class="empty-text">No cars listed yet</div>
+        <div class="empty-sub">Be the first to list a car on SeedStone!</div>
+      </div>`;
+      return;
+    }
+    grid.innerHTML = cars.map((c, i) => {
+      const imgs = c.image_urls ? JSON.parse(c.image_urls) : [];
+      const badge = c.condition === 'New' ? 'new-car' : 'used';
+      return `<div class="car-card" data-index="${i}">
+        <div class="card-img">
+          ${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'"/>` : ''}
+          <span style="position:relative">🚗</span>
+          <div class="card-img-overlay"></div>
+          <div class="card-badge ${badge}">${c.condition || 'Used'}</div>
+          ${c.verified ? '<div class="card-verified">✓ Verified</div>' : ''}
+          <button class="card-save" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" width="14" height="14">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-price">${Number(c.price).toLocaleString()} XAF</div>
+          <div class="card-name">${c.year || ''} ${c.make || ''} ${c.model || ''}</div>
+          <div class="card-location">📍 ${c.neighbourhood ? c.neighbourhood+', ':''} ${c.city||'—'}</div>
+          <div class="card-specs">
+            ${c.fuel_type ? `<div class="spec">⛽ ${c.fuel_type}</div>` : ''}
+            ${c.transmission ? `<div class="spec">⚙️ ${c.transmission}</div>` : ''}
+            ${c.mileage ? `<div class="spec">🛣 ${Number(c.mileage).toLocaleString()} km</div>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    grid.querySelectorAll('.car-card').forEach(card => {
+      card.addEventListener('click', e => {
+        if (e.target.closest('.card-save')) return;
+        openPopup(cars[parseInt(card.dataset.index)]);
+      });
+    });
+
+    grid.querySelectorAll('.card-save').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const svg = btn.querySelector('svg');
+        const saved = svg.getAttribute('fill') === 'red';
+        svg.setAttribute('fill', saved ? 'none' : 'red');
+        svg.setAttribute('stroke', saved ? '#666' : 'red');
+      });
+    });
+  }
+
+  // ── POPUP ──
+  function openPopup(c) {
+    const imgs = c.image_urls ? JSON.parse(c.image_urls) : [];
+    const hero = document.getElementById('popupHero');
+    const existImg = hero.querySelector('.real-img');
+    if (existImg) existImg.remove();
+    if (imgs.length) {
+      const img = document.createElement('img');
+      img.src = imgs[0]; img.className = 'real-img';
+      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+      hero.insertBefore(img, hero.firstChild);
+    }
+    document.getElementById('popupBadge').textContent = c.condition || 'Used';
+    document.getElementById('popupPrice').textContent = Number(c.price).toLocaleString() + ' XAF';
+    document.getElementById('popupName').textContent = `${c.year||''} ${c.make||''} ${c.model||''}`;
+    document.getElementById('popupLocation').textContent = `📍 ${c.neighbourhood ? c.neighbourhood+', ':''} ${c.city||'—'}`;
+    document.getElementById('popupDesc').textContent = c.description || 'No description provided.';
+
+    document.getElementById('popupSpecs').innerHTML = [
+      c.condition ? `<div class="popup-spec">🏷 ${c.condition}</div>` : '',
+      c.fuel_type  ? `<div class="popup-spec">⛽ ${c.fuel_type}</div>` : '',
+      c.transmission ? `<div class="popup-spec">⚙️ ${c.transmission}</div>` : '',
+      c.mileage ? `<div class="popup-spec">🛣 ${Number(c.mileage).toLocaleString()} km</div>` : '',
+      c.color ? `<div class="popup-spec">🎨 ${c.color}</div>` : '',
+    ].join('');
+
+    document.getElementById('popupDetails').innerHTML = `
+      <div class="pd-item"><div class="pd-label">Year</div><div class="pd-value">${c.year||'—'}</div></div>
+      <div class="pd-item"><div class="pd-label">Make</div><div class="pd-value">${c.make||'—'}</div></div>
+      <div class="pd-item"><div class="pd-label">City</div><div class="pd-value">${c.city||'—'}</div></div>
+      <div class="pd-item"><div class="pd-label">Negotiable</div><div class="pd-value">${c.negotiable||'—'}</div></div>
+    `;
+
+    const initials = c.seller_name ? c.seller_name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'SS';
+    document.getElementById('sellerAvatar').textContent = initials;
+    document.getElementById('sellerName').textContent = c.seller_name || 'SeedStone Verified Seller';
+    const phone = c.seller_whatsapp || c.seller_phone || '237000000000';
+    document.getElementById('popupCall').href = `tel:+${phone}`;
+    document.getElementById('popupWhatsapp').href = `https://wa.me/${phone.replace(/^0/,'237')}?text=Hello%2C%20I%20saw%20your%20car%20on%20SeedStone%3A%20${encodeURIComponent((c.year||'')+' '+(c.make||'')+' '+(c.model||''))}`;
+    document.getElementById('carPopup').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  document.getElementById('popupClose').addEventListener('click', closePopup);
+  document.getElementById('carPopup').addEventListener('click', e => {
+    if (e.target === document.getElementById('carPopup')) closePopup();
+  });
+  function closePopup() {
+    document.getElementById('carPopup').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ── FILTER TABS ──
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      let filtered = allCars;
+      if (f !== 'All') {
+        filtered = allCars.filter(c =>
+          c.condition === f || c.city === f
+        );
+      }
+      renderCars(filtered);
+    });
+  });
+
+  // ── REAL-TIME SEARCH ──
+  function applySearch() {
+    const search    = document.getElementById('sSearch').value.trim().toLowerCase();
+    const city      = document.getElementById('sCity').value;
+    const condition = document.getElementById('sCondition').value;
+    const fuel      = document.getElementById('sFuel').value;
+    const minP      = parseInt(document.getElementById('sMin').value) || 0;
+    const maxP      = parseInt(document.getElementById('sMax').value) || Infinity;
+
+    const filtered = allCars.filter(c => {
+      const matchS = !search || (c.make||'').toLowerCase().includes(search) || (c.model||'').toLowerCase().includes(search);
+      const matchC = !city      || c.city === city;
+      const matchCond = !condition || c.condition === condition;
+      const matchF = !fuel      || c.fuel_type === fuel;
+      const matchMin = c.price >= minP;
+      const matchMax = maxP === Infinity || c.price <= maxP;
+      return matchS && matchC && matchCond && matchF && matchMin && matchMax;
+    });
+    renderCars(filtered);
+    const count = document.getElementById('searchCount');
+    count.innerHTML = filtered.length === allCars.length
+      ? `Showing all <span>${allCars.length}</span> cars`
+      : `<span>${filtered.length}</span> of ${allCars.length} cars match`;
+  }
+
+  function clearSearch() {
+    ['sSearch','sMin','sMax'].forEach(id => document.getElementById(id).value = '');
+    ['sCity','sCondition','sFuel'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('searchCount').innerHTML = '';
+    renderCars(allCars);
+  }
+
+  // ── IMAGE UPLOAD ──
+  const carUploadArea = document.getElementById('carUploadArea');
+  const carPhotosInput = document.getElementById('cPhotos');
+  carUploadArea.addEventListener('click', () => carPhotosInput.click());
+  carUploadArea.addEventListener('dragover', e => { e.preventDefault(); carUploadArea.style.borderColor = 'var(--car-blue)'; });
+  carUploadArea.addEventListener('dragleave', () => carUploadArea.style.borderColor = '');
+  carUploadArea.addEventListener('drop', e => { e.preventDefault(); handleCarFiles(e.dataTransfer.files); });
+  carPhotosInput.addEventListener('change', e => handleCarFiles(e.target.files));
+
+  async function handleCarFiles(files) {
+    const max = 8;
+    const remaining = max - carImgUrls.length;
+    if (remaining <= 0) { alert('Maximum 8 photos.'); return; }
+    const toUpload = Array.from(files).slice(0, remaining);
+    document.getElementById('carUploadProgress').textContent = `Uploading ${toUpload.length} photo(s)...`;
+    for (let i = 0; i < toUpload.length; i++) {
+      const file = toUpload[i];
+      if (file.size > 5*1024*1024) { alert(`${file.name} too large.`); continue; }
+      const pid = 'cp_' + Date.now() + i;
+      addCarPreview(pid, URL.createObjectURL(file), true);
+      try {
+        const fd = new FormData();
+        fd.append('file', file);
+        fd.append('upload_preset', CLOUDINARY_PRESET);
+        fd.append('folder', 'seedstone_cars');
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method:'POST', body:fd });
+        const data = await res.json();
+        if (data.secure_url) { carImgUrls.push(data.secure_url); updateCarPreview(pid, data.secure_url); }
+      } catch(e) { removeCarPreview(pid); }
+    }
+    document.getElementById('carUploadProgress').textContent =
+      carImgUrls.length > 0 ? `✅ ${carImgUrls.length} photo(s) uploaded` : '';
+  }
+
+  function addCarPreview(id, src, loading) {
+    const wrap = document.createElement('div');
+    wrap.className = 'img-preview-item'; wrap.id = id;
+    wrap.innerHTML = `<img src="${src}"/>${loading?'<div class="img-uploading">Uploading...</div>':''}<button class="img-remove" onclick="removeCarImage('${id}')">✕</button>`;
+    document.getElementById('carImgPreviews').appendChild(wrap);
+  }
+  function updateCarPreview(id, src) {
+    const el = document.getElementById(id);
+    if (el) { el.querySelector('img').src = src; const u = el.querySelector('.img-uploading'); if(u) u.remove(); }
+  }
+  function removeCarPreview(id) { const el = document.getElementById(id); if(el) el.remove(); }
+  function removeCarImage(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      const src = el.querySelector('img').src;
+      carImgUrls = carImgUrls.filter(u => u !== src);
+      el.remove();
+      document.getElementById('carUploadProgress').textContent = carImgUrls.length > 0 ? `✅ ${carImgUrls.length} photo(s) uploaded` : '';
+    }
+  }
+
+  // ── SUBMIT CAR ──
+  document.getElementById('carSubmitBtn').addEventListener('click', async () => {
+    const make  = document.getElementById('cMake').value.trim();
+    const model = document.getElementById('cModel').value.trim();
+    const year  = document.getElementById('cYear').value.trim();
+    const cond  = document.getElementById('cCondition').value;
+    const price = document.getElementById('cPrice').value;
+    const city  = document.getElementById('cCity').value;
+    const name  = document.getElementById('cName').value.trim();
+    const phone = document.getElementById('cPhone').value.trim();
+
+    if (!make || !model || !year || !cond || !price || !city || !name || !phone) {
+      alert('Please fill in all required fields marked with *');
+      return;
+    }
+
+    const btn = document.getElementById('carSubmitBtn');
+    btn.textContent = 'Submitting...'; btn.disabled = true;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/cars`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json', 'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          make, model, year: parseInt(year), condition: cond,
+          fuel_type:    document.getElementById('cFuel').value,
+          transmission: document.getElementById('cTransmission').value,
+          mileage:      parseInt(document.getElementById('cMileage').value) || null,
+          color:        document.getElementById('cColor').value,
+          description:  document.getElementById('cDesc').value,
+          city, neighbourhood: document.getElementById('cHood').value,
+          price: parseInt(price),
+          negotiable:   document.getElementById('cNegotiable').value,
+          seller_name:  name, seller_phone: phone,
+          seller_whatsapp: document.getElementById('cWhatsapp').value || phone,
+          seller_role:  document.getElementById('cRole').value,
+          image_urls:   carImgUrls.length > 0 ? JSON.stringify(carImgUrls) : null,
+          verified: false
+        })
+      });
+
+      if (res.ok) {
+        carImgUrls = [];
+        document.getElementById('carImgPreviews').innerHTML = '';
+        document.getElementById('carUploadProgress').textContent = '';
+        document.getElementById('listPage').classList.remove('open');
+        document.getElementById('thankyouPage').classList.add('open');
+      } else {
+        alert('Submission failed. Please try again.');
+      }
+    } catch(e) {
+      alert('Network error. Please check your connection.');
+    }
+    btn.textContent = 'Submit Car for Verification →'; btn.disabled = false;
+  });
+
+  document.getElementById('backHome').addEventListener('click', () => {
+    document.getElementById('thankyouPage').classList.remove('open');
+    document.body.style.overflow = '';
+  });
+
+  loadCars();
+</script>
+</body>
+</html>
