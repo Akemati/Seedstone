@@ -332,6 +332,18 @@
       </div>
     </div>
 
+    <!-- Section switcher -->
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+      <button id="secProperties" onclick="switchSection('properties')"
+        style="padding:10px 22px;border-radius:100px;font-size:0.88rem;font-weight:700;border:2px solid var(--forest);background:var(--forest);color:#fff;cursor:pointer;font-family:Inter,sans-serif">
+        🏠 Properties
+      </button>
+      <button id="secCars" onclick="switchSection('cars')"
+        style="padding:10px 22px;border-radius:100px;font-size:0.88rem;font-weight:700;border:2px solid var(--border);background:var(--white);color:var(--stone);cursor:pointer;font-family:Inter,sans-serif">
+        🚗 Cars
+      </button>
+    </div>
+
     <!-- Filter bar -->
     <div class="filter-bar">
       <div class="filter-tabs">
@@ -372,13 +384,13 @@
     <div class="modal-title" id="modalTitle">—</div>
     <div class="modal-price" id="modalPrice">—</div>
     <div class="modal-grid">
-      <div class="modal-item"><div class="modal-item-label">Type</div><div class="modal-item-value" id="mType">—</div></div>
-      <div class="modal-item"><div class="modal-item-label">Purpose</div><div class="modal-item-value" id="mPurpose">—</div></div>
+      <div class="modal-item"><div class="modal-item-label" id="lType">Type</div><div class="modal-item-value" id="mType">—</div></div>
+      <div class="modal-item"><div class="modal-item-label" id="lPurpose">Purpose</div><div class="modal-item-value" id="mPurpose">—</div></div>
       <div class="modal-item"><div class="modal-item-label">City</div><div class="modal-item-value" id="mCity">—</div></div>
-      <div class="modal-item"><div class="modal-item-label">Neighbourhood</div><div class="modal-item-value" id="mHood">—</div></div>
-      <div class="modal-item"><div class="modal-item-label">Bedrooms</div><div class="modal-item-value" id="mBeds">—</div></div>
-      <div class="modal-item"><div class="modal-item-label">Bathrooms</div><div class="modal-item-value" id="mBaths">—</div></div>
-      <div class="modal-item"><div class="modal-item-label">Landlord</div><div class="modal-item-value" id="mLandlord">—</div></div>
+      <div class="modal-item"><div class="modal-item-label" id="lHood">Neighbourhood</div><div class="modal-item-value" id="mHood">—</div></div>
+      <div class="modal-item"><div class="modal-item-label" id="lBeds">Bedrooms</div><div class="modal-item-value" id="mBeds">—</div></div>
+      <div class="modal-item"><div class="modal-item-label" id="lBaths">Bathrooms</div><div class="modal-item-value" id="mBaths">—</div></div>
+      <div class="modal-item"><div class="modal-item-label" id="lContact">Landlord</div><div class="modal-item-value" id="mLandlord">—</div></div>
       <div class="modal-item"><div class="modal-item-label">Phone</div><div class="modal-item-value" id="mPhone">—</div></div>
     </div>
     <div class="modal-desc" id="mDesc">—</div>
@@ -396,7 +408,7 @@
 
   // ── ADMIN CREDENTIALS — CHANGE THESE ──
   const ADMIN_USERNAME = 'admin';
-  const ADMIN_PASSWORD = '@Predator198309';
+  const ADMIN_PASSWORD = 'seedstone2025';
 
   // ── STATE ──
   let allListings = [];
@@ -434,12 +446,27 @@
     document.getElementById('loginPage').style.display = 'flex';
   });
 
+  // ── SECTION SWITCHER ──
+  let currentSection = 'properties';
+
+  function switchSection(section) {
+    currentSection = section;
+    document.getElementById('secProperties').style.background = section === 'properties' ? 'var(--forest)' : 'var(--white)';
+    document.getElementById('secProperties').style.color = section === 'properties' ? '#fff' : 'var(--stone)';
+    document.getElementById('secProperties').style.borderColor = section === 'properties' ? 'var(--forest)' : 'var(--border)';
+    document.getElementById('secCars').style.background = section === 'cars' ? '#1a3a5c' : 'var(--white)';
+    document.getElementById('secCars').style.color = section === 'cars' ? '#fff' : 'var(--stone)';
+    document.getElementById('secCars').style.borderColor = section === 'cars' ? '#1a3a5c' : 'var(--border)';
+    loadListings();
+  }
+
   // ── LOAD LISTINGS ──
   async function loadListings() {
     document.getElementById('listingsBody').innerHTML =
-      '<tr class="loading-row"><td colspan="6">⏳ Loading listings...</td></tr>';
+      '<tr class="loading-row"><td colspan="6">⏳ Loading...</td></tr>';
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/listings?select=*&order=created_at.desc`, {
+      const endpoint = currentSection === 'cars' ? 'cars' : 'listings';
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}?select=*&order=created_at.desc`, {
         headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
       });
       const data = await res.json();
@@ -448,7 +475,7 @@
       renderTable(currentFilter);
     } catch (e) {
       document.getElementById('listingsBody').innerHTML =
-        '<tr class="loading-row"><td colspan="6">❌ Could not load listings. Check your Supabase keys.</td></tr>';
+        '<tr class="loading-row"><td colspan="6">❌ Could not load. Check your Supabase keys.</td></tr>';
     }
   }
 
@@ -457,10 +484,12 @@
     const pending  = allListings.filter(l => !l.verified && !l.rejected).length;
     const approved = allListings.filter(l => l.verified).length;
     const rejected = allListings.filter(l => l.rejected).length;
+    const label = currentSection === 'cars' ? 'Cars' : 'Listings';
     document.getElementById('statTotal').textContent    = allListings.length;
     document.getElementById('statPending').textContent  = pending;
     document.getElementById('statApproved').textContent = approved;
     document.getElementById('statRejected').textContent = rejected;
+    document.querySelector('.stat-card .stat-card-label').textContent = `Total ${label}`;
   }
 
   // ── RENDER TABLE ──
@@ -497,15 +526,23 @@
           <button class="action-btn delete" onclick="deleteListing('${l.id}')">Delete</button>
         </div>`;
 
+      const isCar = currentSection === 'cars';
+      const title = isCar ? `${l.year||''} ${l.make||''} ${l.model||''}`.trim() : (l.title || '—');
+      const meta  = isCar
+        ? `${l.city||'—'} · ${l.condition||'—'} · ${l.fuel_type||''}`
+        : `${l.neighbourhood ? l.neighbourhood + ', ' : ''}${l.city || '—'} · ${l.type || '—'}`;
+      const contactName  = isCar ? (l.seller_name  || '—') : (l.landlord_name  || '—');
+      const contactPhone = isCar ? (l.seller_phone || '—') : (l.landlord_phone || '—');
+
       return `<tr>
         <td>
-          <div class="listing-title">${l.title || '—'}</div>
-          <div class="listing-meta">${l.neighbourhood ? l.neighbourhood + ', ' : ''}${l.city || '—'} · ${l.type || '—'}</div>
+          <div class="listing-title">${title}</div>
+          <div class="listing-meta">${meta}</div>
         </td>
         <td>${price}</td>
         <td>
-          <div style="font-weight:600">${l.landlord_name || '—'}</div>
-          <div style="font-size:0.78rem;color:var(--muted)">${l.landlord_phone || '—'}</div>
+          <div style="font-weight:600">${contactName}</div>
+          <div style="font-size:0.78rem;color:var(--muted)">${contactPhone}</div>
         </td>
         <td style="color:var(--muted)">${date}</td>
         <td><span class="status-badge ${status}">${label}</span></td>
@@ -530,7 +567,7 @@
   // ── APPROVE ──
   async function approveListing(id) {
     try {
-      await fetch(`${SUPABASE_URL}/rest/v1/listings?id=eq.${id}`, {
+      await fetch(`${SUPABASE_URL}/rest/v1/${currentSection === 'cars' ? 'cars' : 'listings'}?id=eq.${id}`, {
         method: 'PATCH',
         headers: {
           'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
@@ -548,7 +585,7 @@
   async function rejectListing(id) {
     if (!confirm('Reject this listing? The landlord will not be notified automatically.')) return;
     try {
-      await fetch(`${SUPABASE_URL}/rest/v1/listings?id=eq.${id}`, {
+      await fetch(`${SUPABASE_URL}/rest/v1/${currentSection === 'cars' ? 'cars' : 'listings'}?id=eq.${id}`, {
         method: 'PATCH',
         headers: {
           'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
@@ -565,7 +602,7 @@
   // ── UNAPPROVE ──
   async function unapproveListing(id) {
     try {
-      await fetch(`${SUPABASE_URL}/rest/v1/listings?id=eq.${id}`, {
+      await fetch(`${SUPABASE_URL}/rest/v1/${currentSection === 'cars' ? 'cars' : 'listings'}?id=eq.${id}`, {
         method: 'PATCH',
         headers: {
           'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
@@ -582,7 +619,7 @@
   async function deleteListing(id) {
     if (!confirm('Permanently delete this listing? This cannot be undone.')) return;
     try {
-      await fetch(`${SUPABASE_URL}/rest/v1/listings?id=eq.${id}`, {
+      await fetch(`${SUPABASE_URL}/rest/v1/${currentSection === 'cars' ? 'cars' : 'listings'}?id=eq.${id}`, {
         method: 'DELETE',
         headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
       });
@@ -597,17 +634,34 @@
     const l = allListings.find(x => x.id === id);
     if (!l) return;
     selectedListing = l;
-    document.getElementById('modalTitle').textContent  = l.title || '—';
-    document.getElementById('modalPrice').textContent  = Number(l.price).toLocaleString() + ' XAF' + (l.period === 'Per Month' ? '/month' : '');
-    document.getElementById('mType').textContent       = l.type || '—';
-    document.getElementById('mPurpose').textContent    = l.purpose || '—';
+    const isCar = currentSection === 'cars';
+    document.getElementById('modalTitle').textContent  = isCar ? `${l.year||''} ${l.make||''} ${l.model||''}` : (l.title || '—');
+    document.getElementById('modalPrice').textContent  = Number(l.price).toLocaleString() + ' XAF' + (!isCar && l.period === 'Per Month' ? '/month' : '');
+    document.getElementById('mType').textContent       = isCar ? (l.condition || '—') : (l.type || '—');
+    document.getElementById('mPurpose').textContent    = isCar ? (l.fuel_type || '—') : (l.purpose || '—');
     document.getElementById('mCity').textContent       = l.city || '—';
-    document.getElementById('mHood').textContent       = l.neighbourhood || '—';
-    document.getElementById('mBeds').textContent       = l.bedrooms || '—';
-    document.getElementById('mBaths').textContent      = l.bathrooms || '—';
-    document.getElementById('mLandlord').textContent   = l.landlord_name || '—';
-    document.getElementById('mPhone').textContent      = l.landlord_phone || '—';
+    document.getElementById('mHood').textContent       = isCar ? (l.transmission || '—') : (l.neighbourhood || '—');
+    document.getElementById('mBeds').textContent       = isCar ? (l.mileage ? Number(l.mileage).toLocaleString()+' km' : '—') : (l.bedrooms || '—');
+    document.getElementById('mBaths').textContent      = isCar ? (l.color || '—') : (l.bathrooms || '—');
+    document.getElementById('mLandlord').textContent   = isCar ? (l.seller_name || '—') : (l.landlord_name || '—');
+    document.getElementById('mPhone').textContent      = isCar ? (l.seller_phone || '—') : (l.landlord_phone || '—');
     document.getElementById('mDesc').textContent       = l.description || 'No description provided.';
+    // Update labels for cars
+    if (isCar) {
+      document.getElementById('lType').textContent    = 'Condition';
+      document.getElementById('lPurpose').textContent = 'Fuel Type';
+      document.getElementById('lHood').textContent    = 'Transmission';
+      document.getElementById('lBeds').textContent    = 'Mileage';
+      document.getElementById('lBaths').textContent   = 'Color';
+      document.getElementById('lContact').textContent = 'Seller';
+    } else {
+      document.getElementById('lType').textContent    = 'Type';
+      document.getElementById('lPurpose').textContent = 'Purpose';
+      document.getElementById('lHood').textContent    = 'Neighbourhood';
+      document.getElementById('lBeds').textContent    = 'Bedrooms';
+      document.getElementById('lBaths').textContent   = 'Bathrooms';
+      document.getElementById('lContact').textContent = 'Landlord';
+    }
 
     const status = l.verified ? 'approved' : l.rejected ? 'rejected' : 'pending';
     document.getElementById('modalActions').innerHTML = `
