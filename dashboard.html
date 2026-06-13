@@ -318,7 +318,12 @@
       </div>
     </div>
 
-    <div class="section-title">🏠 My Listings</div>
+    <div style="display:flex; gap:8px; margin-bottom:20px;">
+  <button onclick="showTab('listings')" id="tabListings" style="padding:10px 20px; background:#059669; color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">🏠 My Listings</button>
+  <button onclick="showTab('inbox')" id="tabInbox" style="padding:10px 20px; background:#f3f4f6; color:#374151; border:none; border-radius:10px; font-weight:700; cursor:pointer;">📥 Inbox <span id="inboxBadge" style="display:none; background:#dc2626; color:white; border-radius:999px; padding:1px 7px; font-size:12px; margin-left:4px;"></span></button>
+</div>
+<div id="tabListingsContent">
+<div class="section-title">My Listings</div>
     <div class="listings-grid" id="myListingsGrid">
       <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">⏳ Loading...</div>
     </div>
