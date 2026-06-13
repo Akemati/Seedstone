@@ -319,8 +319,8 @@
     </div>
 
     <div style="display:flex; gap:8px; margin-bottom:20px;">
-  <button onclick="showTab('listings')" id="tabListings" style="padding:10px 20px; background:#059669; color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">🏠 My Listings</button>
-  <button onclick="showTab('inbox')" id="tabInbox" style="padding:10px 20px; background:#f3f4f6; color:#374151; border:none; border-radius:10px; font-weight:700; cursor:pointer;">📥 Inbox <span id="inboxBadge" style="display:none; background:#dc2626; color:white; border-radius:999px; padding:1px 7px; font-size:12px; margin-left:4px;"></span></button>
+  <button id="tabListings" style="padding:10px 20px; background:#059669; color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">🏠 My Listings</button>
+  <button id="tabInbox" style="padding:10px 20px; background:#f3f4f6; color:#374151; border:none; border-radius:10px; font-weight:700; cursor:pointer;">📥 Inbox <span id="inboxBadge" style="display:none; background:#dc2626; color:white; border-radius:999px; padding:1px 7px; font-size:12px; margin-left:4px;"></span></button>
 </div>
 <div id="tabListingsContent">
 <div class="section-title">My Listings</div>
@@ -328,6 +328,14 @@
       <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">⏳ Loading...</div>
     </div>
   </div>
+  </div>
+<!-- INBOX TAB -->
+<div id="tabInboxContent" style="display:none;">
+  <div class="section-title">📥 Inquiry Inbox</div>
+  <div id="inboxList" style="display:flex; flex-direction:column; gap:12px;">
+    <div style="text-align:center; padding:40px; color:#9ca3af;">Loading messages…</div>
+  </div>
+</div>
 </div>
 
 <!-- EDIT MODAL -->
@@ -638,6 +646,72 @@
     t.className = 'toast show' + (isError ? ' error' : '');
     setTimeout(() => t.classList.remove('show'), 3500);
   }
+  // — INBOX TABS —
+function showTab(tab) {
+  document.getElementById('tabListingsContent').style.display = tab === 'listings' ? 'block' : 'none';
+  document.getElementById('tabInboxContent').style.display = tab === 'inbox' ? 'block' : 'none';
+  document.getElementById('tabListings').style.background = tab === 'listings' ? '#059669' : '#f3f4f6';
+  document.getElementById('tabListings').style.color = tab === 'listings' ? 'white' : '#374151';
+  document.getElementById('tabInbox').style.background = tab === 'inbox' ? '#059669' : '#f3f4f6';
+  document.getElementById('tabInbox').style.color = tab === 'inbox' ? 'white' : '#374151';
+  if (tab === 'inbox' && currentUser) loadInbox(currentUser.phone);
+}
+
+async function loadInbox(phone) {
+  const list = document.getElementById('inboxList');
+  list.innerHTML = '<div style="text-align:center;padding:40px;color:#9ca3af;">Loading…</div>';
+  const SUPABASE_URL = "https://imlbkwiopnvqflibbhss.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbGJrd2lvcG52cWZsaWJiaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjUwNTEsImV4cCI6MjA5NjYwMTA1MX0.D2e5Ybfd-SXcS4jFY9SgBaijRkYYF-hMaXfdZXnd8y0";
+
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/inquiries?owner_phone=eq.${encodeURIComponent(phone)}&order=created_at.desc`,
+    { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }}
+  );
+  const data = await res.json();
+
+  if (!data.length) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:#9ca3af;">📭 No messages yet.</div>';
+    return;
+  }
+
+  // Update badge
+  const newCount = data.filter(i => i.status === 'new').length;
+  const badge = document.getElementById('inboxBadge');
+  if (newCount > 0) { badge.textContent = newCount; badge.style.display = 'inline'; }
+
+  list.innerHTML = data.map(i => `
+    <div style="border:1px solid ${i.status === 'new' ? '#059669' : '#e5e7eb'}; border-radius:12px; padding:16px; background:white;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-weight:700; color:#111;">${i.seeker_name}</span>
+        <span style="font-size:12px; padding:3px 10px; border-radius:999px; background:${i.status === 'new' ? '#dcfce7' : '#f3f4f6'}; color:${i.status === 'new' ? '#059669' : '#6b7280'};">${i.status}</span>
+      </div>
+      <p style="font-size:13px; color:#6b7280; margin:0 0 4px;">📋 ${i.listing_title || 'Listing'}</p>
+      <p style="font-size:14px; color:#374151; margin:0 0 12px;">${i.message}</p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a href="tel:${i.seeker_phone}" style="padding:8px 14px; background:#f3f4f6; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none; color:#111;">📞 ${i.seeker_phone}</a>
+        <a href="https://wa.me/${i.seeker_phone.replace(/\D/g,'')}" target="_blank" style="padding:8px 14px; background:#dcfce7; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none; color:#059669;">💬 WhatsApp</a>
+        <button onclick="markRead('${i.id}')" style="padding:8px 14px; background:#f3f4f6; border-radius:8px; font-size:13px; font-weight:600; border:none; cursor:pointer; color:#6b7280;">✓ Mark Read</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function markRead(id) {
+  const SUPABASE_URL = "https://imlbkwiopnvqflibbhss.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbGJrd2lvcG52cWZsaWJiaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjUwNTEsImV4cCI6MjA5NjYwMTA1MX0.D2e5Ybfd-SXcS4jFY9SgBaijRkYYF-hMaXfdZXnd8y0";
+  await fetch(`${SUPABASE_URL}/rest/v1/inquiries?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ status: 'read' })
+  });
+  if (currentUser) loadInbox(currentUser.phone);
+}
+document.getElementById('tabListings').addEventListener('click', () => showTab('listings'));
+document.getElementById('tabInbox').addEventListener('click', () => showTab('inbox'));
 </script>
 </body>
 </html>
