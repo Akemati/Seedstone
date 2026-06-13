@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SeedStone — Real Estate in Cameroon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest:    #1B3A2D;
+      --earth:     #C47C3E;
+      --sand:      #F5EFE4;
+      --stone:     #6B7B6E;
+      --white:     #FFFFFF;
+      --dark:      #111714;
+      --muted:     #8A9B8D;
+      --border:    #DDE5DC;
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 5%;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--forest);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 20px; height: 20px; fill: var(--earth); }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--forest); font-weight: 700; }
+    .logo-text span { color: var(--earth); }
+
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { text-decoration: none; font-size: 0.9rem; color: var(--stone); font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--forest); }
+    .nav-cta {
+      background: var(--forest); color: var(--white) !important;
+      padding: 9px 20px; border-radius: 8px; font-size: 0.85rem !important;
+    }
+    .nav-cta:hover { background: #254d3c !important; color: var(--white) !important; }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--forest); border-radius: 2px; transition: .3s; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background: var(--forest);
+      display: flex; align-items: center;
+      padding: 100px 5% 60px;
+      position: relative; overflow: hidden;
+    }
+
+    .hero-bg-pattern {
+      position: absolute; inset: 0; opacity: 0.04;
+      background-image: radial-gradient(circle, #fff 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    .hero-accent {
+      position: absolute; right: -80px; top: -80px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(196,124,62,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(196,124,62,0.15);
+      border: 1px solid rgba(196,124,62,0.3);
+      color: var(--earth); font-size: 0.78rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 100px; margin-bottom: 24px;
+    }
+    .hero-eyebrow::before { content: ''; width: 6px; height: 6px; background: var(--earth); border-radius: 50%; }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      color: var(--white); line-height: 1.15; font-weight: 700;
+      margin-bottom: 22px;
+    }
+    .hero h1 em { color: var(--earth); font-style: normal; }
+
+    .hero p {
+      color: rgba(255,255,255,0.65); font-size: 1rem;
+      max-width: 440px; margin-bottom: 36px; font-weight: 300;
+    }
+
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .btn-primary {
+      background: var(--earth); color: var(--white);
+      padding: 14px 28px; border-radius: var(--radius);
+      font-weight: 600; font-size: 0.95rem; text-decoration: none;
+      border: none; cursor: pointer; transition: background .2s, transform .15s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { background: #d4883f; transform: translateY(-1px); }
+
+    .btn-outline {
+      background: transparent; color: var(--white);
+      padding: 14px 28px; border-radius: var(--radius);
+      font-weight: 500; font-size: 0.95rem; text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.25); cursor: pointer;
+      transition: border-color .2s, background .2s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
+
+    .hero-stats {
+      display: flex; gap: 32px; margin-top: 44px;
+      padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .stat-item {}
+    .stat-number { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--white); font-weight: 700; }
+    .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: .06em; }
+
+    /* Hero card stack */
+    .hero-visual { position: relative; display: flex; justify-content: center; }
+
+    .hero-card-stack { position: relative; width: 100%; max-width: 380px; }
+
+    .hero-card-back {
+      position: absolute; top: -16px; right: -16px;
+      width: 100%; height: 100%;
+      background: rgba(196,124,62,0.2);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(196,124,62,0.25);
+    }
+
+    .hero-card {
+      position: relative; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-lg); padding: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-card-img {
+      width: 100%; height: 200px; object-fit: cover;
+      border-radius: 12px; margin-bottom: 16px;
+      background: linear-gradient(135deg, #2d5a3d 0%, #1B3A2D 100%);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-card-img-placeholder {
+      width: 100%; height: 200px;
+      border-radius: 12px; margin-bottom: 16px;
+      background: linear-gradient(135deg, #254d3c 0%, #1a3828 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+    }
+
+    .hero-card-badge {
+      display: inline-block; background: var(--earth);
+      color: var(--white); font-size: 0.72rem; font-weight: 600;
+      padding: 4px 10px; border-radius: 6px; margin-bottom: 10px;
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .hero-card-title { color: var(--white); font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
+    .hero-card-loc { color: rgba(255,255,255,0.5); font-size: 0.82rem; margin-bottom: 12px; }
+    .hero-card-price { color: var(--earth); font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; }
+
+    .hero-card-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .hero-card-meta { display: flex; gap: 14px; }
+    .hero-card-meta span { color: rgba(255,255,255,0.45); font-size: 0.78rem; }
+    .hero-card-verified {
+      display: flex; align-items: center; gap: 5px;
+      color: #5dbb7a; font-size: 0.78rem; font-weight: 500;
+    }
+
+    /* ── SEARCH BAR ── */
+    .search-section { background: var(--sand); padding: 40px 5%; }
+    .search-wrap {
+      max-width: 1000px; margin: 0 auto;
+      background: var(--white); border-radius: var(--radius-lg);
+      padding: 28px; box-shadow: 0 4px 30px rgba(27,58,45,0.08);
+    }
+    .search-wrap-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+    }
+    .search-wrap-top h2 {
+      font-family: 'Playfair Display', serif; font-size: 1.4rem;
+      color: var(--forest); font-weight: 700;
+    }
+    .search-results-count { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    .search-results-count span { color: var(--forest); font-weight: 700; }
+    .search-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 12px; align-items: end; margin-bottom: 14px;
+    }
+    .search-grid-row2 {
+      display: grid; grid-template-columns: 1fr 1fr auto;
+      gap: 12px; align-items: end;
+    }
+    .search-field { display: flex; flex-direction: column; gap: 6px; }
+    .search-field label { font-size: 0.78rem; font-weight: 600; color: var(--stone); text-transform: uppercase; letter-spacing: .05em; }
+    .search-field input, .search-field select {
+      padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: var(--radius); font-size: 0.9rem; color: var(--dark);
+      font-family: 'Inter', sans-serif; background: var(--white);
+      transition: border-color .2s; -webkit-appearance: none;
+    }
+    .search-field input:focus, .search-field select:focus { outline: none; border-color: var(--forest); }
+    .search-field input::placeholder { color: var(--muted); }
+    .search-clear-btn {
+      background: var(--sand); color: var(--stone);
+      padding: 12px 20px; border-radius: var(--radius);
+      font-weight: 600; font-size: 0.88rem; border: 1.5px solid var(--border);
+      cursor: pointer; transition: all .2s; white-space: nowrap; height: 46px;
+      font-family: 'Inter', sans-serif;
+    }
+    .search-clear-btn:hover { border-color: var(--forest); color: var(--forest); }
+    .search-active-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .active-filter-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--forest); color: var(--white);
+      padding: 5px 12px; border-radius: 100px; font-size: 0.78rem; font-weight: 600;
+    }
+    .active-filter-tag button {
+      background: none; border: none; color: rgba(255,255,255,0.7);
+      cursor: pointer; font-size: 0.9rem; padding: 0; line-height: 1;
+    }
+    .active-filter-tag button:hover { color: var(--white); }
+    .search-btn {
+      background: var(--forest); color: var(--white);
+      padding: 12px 24px; border-radius: var(--radius);
+      font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;
+      transition: background .2s; white-space: nowrap; height: 46px;
+    }
+    .search-btn:hover { background: #254d3c; }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 72px 5%; }
+    .section-eyebrow {
+      font-size: 0.75rem; font-weight: 600; color: var(--earth);
+      text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.5rem);
+      color: var(--forest); font-weight: 700; margin-bottom: 12px;
+    }
+    .section-sub { color: var(--stone); font-size: 0.97rem; max-width: 520px; }
+    .section-header { margin-bottom: 44px; }
+    .section-header-row { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+
+    .view-all {
+      color: var(--forest); font-weight: 600; font-size: 0.88rem;
+      text-decoration: none; display: flex; align-items: center; gap: 6px;
+      border-bottom: 1.5px solid var(--forest); padding-bottom: 1px;
+      transition: color .2s;
+    }
+    .view-all:hover { color: var(--earth); border-color: var(--earth); }
+
+    /* ── PROPERTY GRID ── */
+    .properties-section { background: var(--white); }
+    .property-tabs {
+      display: flex; gap: 6px; margin-bottom: 36px; flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 8px 18px; border-radius: 100px; font-size: 0.85rem; font-weight: 500;
+      border: 1.5px solid var(--border); background: var(--white); color: var(--stone);
+      cursor: pointer; transition: all .2s;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--forest); color: var(--white); border-color: var(--forest);
+    }
+
+    .property-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .property-card {
+      background: var(--white); border-radius: var(--radius-lg);
+      border: 1px solid var(--border); overflow: hidden;
+      transition: transform .2s, box-shadow .2s; cursor: pointer;
+    }
+    .property-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(27,58,45,0.1); }
+
+    .card-img {
+      height: 210px; position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #e8f0e9 0%, #d4e4d6 100%);
+      display: flex; align-items: center; justify-content: center; font-size: 3rem;
+    }
+    .card-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.3) 100%);
+    }
+    .card-badge {
+      position: absolute; top: 14px; left: 14px;
+      background: var(--forest); color: var(--white);
+      font-size: 0.72rem; font-weight: 600; padding: 4px 10px;
+      border-radius: 6px; text-transform: uppercase; letter-spacing: .04em;
+    }
+    .card-badge.rent { background: #2a6b4a; }
+    .card-badge.buy { background: var(--earth); }
+    .card-badge.land { background: #5a4a2a; }
+
+    .card-verified {
+      position: absolute; top: 14px; right: 14px;
+      background: rgba(255,255,255,0.92); color: #2a7a4a;
+      font-size: 0.7rem; font-weight: 600; padding: 4px 9px;
+      border-radius: 6px; display: flex; align-items: center; gap: 4px;
+    }
+
+    .card-save {
+      position: absolute; bottom: 14px; right: 14px;
+      background: rgba(255,255,255,0.9); border: none; cursor: pointer;
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .card-save:hover { background: var(--white); }
+    .card-save svg { width: 16px; height: 16px; }
+
+    .card-body { padding: 18px; }
+    .card-price {
+      font-family: 'Playfair Display', serif; font-size: 1.35rem;
+      color: var(--forest); font-weight: 700; margin-bottom: 4px;
+    }
+    .card-price span { font-family: 'Inter', sans-serif; font-size: 0.78rem; color: var(--muted); font-weight: 400; }
+    .card-title { font-weight: 600; font-size: 0.95rem; color: var(--dark); margin-bottom: 4px; }
+    .card-location {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.82rem; color: var(--muted); margin-bottom: 14px;
+    }
+    .card-location svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    .card-features {
+      display: flex; gap: 14px;
+      padding-top: 14px; border-top: 1px solid var(--border);
+    }
+    .card-feat {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.8rem; color: var(--stone); font-weight: 500;
+    }
+    .card-feat svg { width: 14px; height: 14px; color: var(--muted); }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { background: var(--sand); }
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px; margin-top: 48px;
+    }
+    .step-card {
+      background: var(--white); border-radius: var(--radius-lg);
+      padding: 28px; border: 1px solid var(--border);
+      position: relative;
+    }
+    .step-num {
+      font-family: 'Playfair Display', serif; font-size: 3rem;
+      color: var(--earth); opacity: 0.3; font-weight: 700;
+      line-height: 1; margin-bottom: 16px;
+    }
+    .step-icon {
+      width: 44px; height: 44px; background: var(--forest);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .step-icon svg { width: 22px; height: 22px; fill: var(--earth); }
+    .step-title { font-weight: 700; font-size: 1rem; color: var(--forest); margin-bottom: 8px; }
+    .step-desc { font-size: 0.87rem; color: var(--stone); line-height: 1.6; }
+
+    /* ── CTA BANNER ── */
+    .cta-section {
+      background: var(--forest); text-align: center; padding: 72px 5%;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: ''; position: absolute; inset: 0; opacity: 0.04;
+      background-image: radial-gradient(circle, #fff 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .cta-section h2 {
+      font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--white); font-weight: 700; margin-bottom: 16px; position: relative;
+    }
+    .cta-section h2 em { color: var(--earth); font-style: normal; }
+    .cta-section p { color: rgba(255,255,255,0.6); font-size: 1rem; margin-bottom: 36px; position: relative; }
+    .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark); color: rgba(255,255,255,0.5);
+      padding: 48px 5% 28px;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px; margin-bottom: 40px;
+    }
+    .footer-brand p { font-size: 0.87rem; line-height: 1.7; margin-top: 14px; max-width: 280px; }
+    .footer-col h4 { color: var(--white); font-size: 0.88rem; font-weight: 600; margin-bottom: 16px; }
+    .footer-col a {
+      display: block; color: rgba(255,255,255,0.45); font-size: 0.85rem;
+      text-decoration: none; margin-bottom: 10px; transition: color .2s;
+    }
+    .footer-col a:hover { color: var(--earth); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 24px; display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: gap; font-size: 0.82rem;
+    }
+    .whatsapp-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #25D366; color: var(--white);
+      padding: 10px 20px; border-radius: var(--radius);
+      font-size: 0.85rem; font-weight: 600; text-decoration: none;
+      transition: background .2s;
+    }
+    .whatsapp-btn:hover { background: #1da851; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-visual { display: none; }
+      .search-grid { grid-template-columns: 1fr 1fr; }
+      .search-grid-row2 { grid-template-columns: 1fr 1fr; }
+      .search-grid-row2 .search-clear-btn { grid-column: span 2; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero { padding: 90px 5% 50px; }
+      .hero-stats { gap: 20px; }
+      .search-grid { grid-template-columns: 1fr; }
+      .search-grid-row2 { grid-template-columns: 1fr; }
+      .search-grid-row2 .search-clear-btn { width: 100%; }
+      .property-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    }
+
+    /* Mobile nav open state */
+    .nav-links.open {
+      display: flex; flex-direction: column;
+      position: fixed; top: 72px; left: 0; right: 0;
+      background: var(--white); padding: 20px 5%;
+      border-bottom: 1px solid var(--border);
+      gap: 18px; z-index: 99;
+    }
+
+    /* ── IMAGE UPLOAD ── */
+    .img-upload-area {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 24px; text-align: center; cursor: pointer;
+      transition: border-color .2s, background .2s;
+      background: var(--sand); position: relative;
+    }
+    .img-upload-area:hover { border-color: var(--forest); background: #f0f7f2; }
+    .img-upload-area.dragover { border-color: var(--forest); background: #e8f5ee; }
+    .img-upload-icon { font-size: 2rem; margin-bottom: 8px; }
+    .img-upload-text { font-size: 0.88rem; color: var(--stone); }
+    .img-upload-text strong { color: var(--forest); }
+    .img-upload-input { display: none; }
+    .img-previews {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px; margin-top: 12px;
+    }
+    .img-preview-item {
+      position: relative; border-radius: 8px; overflow: hidden;
+      aspect-ratio: 1; background: var(--border);
+    }
+    .img-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .img-preview-item .img-remove {
+      position: absolute; top: 4px; right: 4px;
+      background: rgba(0,0,0,0.6); color: #fff; border: none;
+      width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+      font-size: 0.75rem; display: flex; align-items: center; justify-content: center;
+    }
+    .img-preview-item .img-uploading {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 0.75rem; font-weight: 600;
+    }
+    .img-upload-progress {
+      font-size: 0.82rem; color: var(--stone); margin-top: 8px; text-align: center;
+    }
+
+    /* ── PROPERTY DETAIL POPUP ── */
+    .popup-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .popup-overlay.open { display: flex; }
+
+    .popup-box {
+      background: var(--white); border-radius: var(--radius-lg);
+      width: 100%; max-width: 780px; max-height: 90vh;
+      overflow-y: auto; position: relative;
+      animation: popIn .25s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+
+    .popup-close {
+      position: absolute; top: 16px; right: 16px; z-index: 10;
+      background: rgba(0,0,0,0.4); color: #fff; border: none;
+      width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .popup-close:hover { background: rgba(0,0,0,0.7); }
+
+    .popup-hero {
+      height: 260px; background: linear-gradient(135deg, #254d3c, #1B3A2D);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      position: relative;
+    }
+    .popup-badge {
+      position: absolute; top: 16px; left: 16px;
+      background: var(--earth); color: #fff;
+      font-size: 0.75rem; font-weight: 600; padding: 5px 12px;
+      border-radius: 7px; text-transform: uppercase; letter-spacing: .05em;
+    }
+    .popup-verified {
+      position: absolute; top: 16px; right: 56px;
+      background: rgba(255,255,255,0.92); color: #2a7a4a;
+      font-size: 0.75rem; font-weight: 600; padding: 5px 10px;
+      border-radius: 7px; display: flex; align-items: center; gap: 5px;
+    }
+
+    .popup-body { padding: 28px; }
+    .popup-price {
+      font-family: 'Playfair Display', serif; font-size: 1.9rem;
+      color: var(--forest); font-weight: 700; margin-bottom: 4px;
+    }
+    .popup-price span { font-family: Inter,sans-serif; font-size: 0.85rem; color: var(--muted); font-weight: 400; }
+    .popup-title { font-size: 1.15rem; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .popup-location {
+      display: flex; align-items: center; gap: 6px;
+      color: var(--muted); font-size: 0.88rem; margin-bottom: 20px;
+    }
+
+    .popup-features {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px;
+    }
+    .popup-feat {
+      background: var(--sand); border-radius: 8px;
+      padding: 8px 14px; font-size: 0.83rem; font-weight: 500; color: var(--forest);
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .popup-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    .popup-section-title { font-weight: 700; font-size: 0.95rem; color: var(--dark); margin-bottom: 10px; }
+    .popup-desc { font-size: 0.9rem; color: var(--stone); line-height: 1.7; margin-bottom: 22px; }
+
+    .popup-details-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px;
+    }
+    .popup-detail-item { background: var(--sand); border-radius: 10px; padding: 12px 16px; }
+    .popup-detail-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 3px; }
+    .popup-detail-value { font-size: 0.9rem; font-weight: 600; color: var(--dark); }
+
+    .popup-landlord {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--sand); border-radius: var(--radius); padding: 16px;
+      margin-bottom: 22px;
+    }
+    .landlord-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--forest); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1.1rem; flex-shrink: 0;
+    }
+    .landlord-name { font-weight: 700; font-size: 0.95rem; color: var(--dark); }
+    .landlord-tag { font-size: 0.78rem; color: var(--muted); }
+
+    .popup-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .popup-actions .btn-primary { flex: 1; justify-content: center; min-width: 160px; }
+    .popup-actions .whatsapp-btn { flex: 1; justify-content: center; min-width: 160px; }
+
+    /* ── LIST PROPERTY PAGE ── */
+    .list-page {
+      display: none; position: fixed; inset: 0; z-index: 300;
+      background: var(--white); overflow-y: auto;
+    }
+    .list-page.open { display: block; }
+
+    .list-header {
+      background: var(--forest); padding: 20px 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .list-header-title {
+      font-family: 'Playfair Display', serif; color: #fff;
+      font-size: 1.2rem; font-weight: 700;
+    }
+    .list-close {
+      background: rgba(255,255,255,0.15); color: #fff; border: none;
+      padding: 8px 16px; border-radius: 8px; cursor: pointer;
+      font-size: 0.85rem; font-weight: 600; transition: background .2s;
+    }
+    .list-close:hover { background: rgba(255,255,255,0.25); }
+
+    .list-body { max-width: 680px; margin: 0 auto; padding: 40px 5% 60px; }
+
+    .list-intro { margin-bottom: 36px; }
+    .list-intro h2 {
+      font-family: 'Playfair Display', serif; font-size: 1.8rem;
+      color: var(--forest); font-weight: 700; margin-bottom: 8px;
+    }
+    .list-intro p { color: var(--stone); font-size: 0.95rem; }
+
+    .form-section { margin-bottom: 32px; }
+    .form-section-title {
+      font-weight: 700; font-size: 0.8rem; color: var(--earth);
+      text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 16px; padding-bottom: 8px;
+      border-bottom: 2px solid var(--sand);
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field.full { grid-column: span 2; }
+    .form-field label { font-size: 0.82rem; font-weight: 600; color: var(--dark); }
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: var(--radius); font-size: 0.9rem;
+      font-family: 'Inter', sans-serif; color: var(--dark);
+      background: var(--white); transition: border-color .2s;
+      -webkit-appearance: none;
+    }
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus { outline: none; border-color: var(--forest); }
+    .form-field textarea { resize: vertical; min-height: 100px; }
+    .form-hint { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
+
+    .form-submit {
+      width: 100%; padding: 16px; background: var(--forest); color: #fff;
+      border: none; border-radius: var(--radius); font-size: 1rem;
+      font-weight: 700; cursor: pointer; transition: background .2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .form-submit:hover { background: #254d3c; }
+
+    /* ── THANK YOU PAGE ── */
+    .thankyou-page {
+      display: none; position: fixed; inset: 0; z-index: 400;
+      background: var(--white); align-items: center; justify-content: center;
+      text-align: center; padding: 40px 5%;
+    }
+    .thankyou-page.open { display: flex; }
+    .thankyou-inner { max-width: 480px; }
+    .thankyou-icon {
+      width: 80px; height: 80px; background: #e8f5ee;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px; font-size: 2.5rem;
+    }
+    .thankyou-inner h1 {
+      font-family: 'Playfair Display', serif; font-size: 2rem;
+      color: var(--forest); font-weight: 700; margin-bottom: 14px;
+    }
+    .thankyou-inner p { color: var(--stone); font-size: 0.97rem; line-height: 1.7; margin-bottom: 32px; }
+    .thankyou-steps {
+      background: var(--sand); border-radius: var(--radius-lg);
+      padding: 24px; text-align: left; margin-bottom: 32px;
+    }
+    .thankyou-steps h3 { font-size: 0.85rem; font-weight: 700; color: var(--forest); margin-bottom: 14px; text-transform: uppercase; letter-spacing: .06em; }
+    .thankyou-step {
+      display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px;
+    }
+    .thankyou-step:last-child { margin-bottom: 0; }
+    .tstep-num {
+      width: 24px; height: 24px; background: var(--forest); color: #fff;
+      border-radius: 50%; font-size: 0.72rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .tstep-text { font-size: 0.87rem; color: var(--stone); padding-top: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </div>
+    <span class="logo-text">Seed<span>Stone</span></span>
+  </a>
+
+  <div class="nav-links" id="navLinks">
+    <a href="#listings">Listings</a>
+    <a href="#how">How it Works</a>
+    <a href="#">Buea</a>
+    <a href="#">Limbe</a>
+    <a href="dashboard.html" class="nav-cta" style="background:transparent;border:1.5px solid rgba(27,58,45,0.2);color:var(--forest);margin-right:6px">My Dashboard</a><a href="#" class="nav-cta">List Property</a>
+  </div>
+
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-accent"></div>
+
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Buea &amp; Limbe, Cameroon</div>
+      <h1>Find Your <em>Perfect</em> Home in Cameroon</h1>
+      <p>Browse verified houses, rooms, and land in Buea and Limbe. No middlemen, no scams — just real properties from real owners.</p>
+
+      <div class="hero-actions">
+        <a href="#listings" class="btn-primary">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          Browse Listings
+        </a>
+        <a href="#list" class="btn-outline">
+          + List Your Property
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number" id="listingCount">0</div>
+          <div class="stat-label">Listings</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">2</div>
+          <div class="stat-label">Cities</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Verified</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-card-stack">
+        <div class="hero-card-back"></div>
+        <div class="hero-card">
+          <div class="hero-card-img-placeholder">🏡</div>
+          <div class="hero-card-badge">For Rent</div>
+          <div class="hero-card-title">3-Bedroom Apartment</div>
+          <div class="hero-card-loc">📍 Molyko, Buea</div>
+          <div class="hero-card-price">85,000 <span style="font-size:0.8rem;font-family:Inter,sans-serif;font-weight:400;color:rgba(255,255,255,0.5)">XAF/month</span></div>
+          <div class="hero-card-footer">
+            <div class="hero-card-meta">
+              <span>🛏 3 beds</span>
+              <span>🚿 2 baths</span>
+            </div>
+            <div class="hero-card-verified">✓ Verified</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEARCH -->
+<div class="search-section" id="searchSection">
+  <div class="search-wrap">
+    <div class="search-wrap-top">
+      <h2>Search Properties</h2>
+      <div class="search-results-count" id="searchCount"></div>
+    </div>
+    <div class="search-grid">
+      <div class="search-field">
+        <label>Location</label>
+        <input type="text" id="sLocation" placeholder="e.g. Molyko, Down Beach, Buea…" oninput="applySearch()"/>
+      </div>
+      <div class="search-field">
+        <label>City</label>
+        <select id="sCity" onchange="applySearch()">
+          <option value="">All Cities</option>
+          <option>Buea</option>
+          <option>Limbe</option>
+        </select>
+      </div>
+      <div class="search-field">
+        <label>Type</label>
+        <select id="sType" onchange="applySearch()">
+          <option value="">All Types</option>
+          <option>Room</option>
+          <option>Self-Contain</option>
+          <option>Apartment</option>
+          <option>Full House</option>
+          <option>Land</option>
+          <option>Commercial Space</option>
+        </select>
+      </div>
+      <div class="search-field">
+        <label>Purpose</label>
+        <select id="sPurpose" onchange="applySearch()">
+          <option value="">Rent or Buy</option>
+          <option>For Rent</option>
+          <option>For Sale</option>
+        </select>
+      </div>
+    </div>
+    <div class="search-grid-row2">
+      <div class="search-field">
+        <label>Min Price (XAF)</label>
+        <input type="number" id="sMinPrice" placeholder="e.g. 20000" oninput="applySearch()"/>
+      </div>
+      <div class="search-field">
+        <label>Max Price (XAF)</label>
+        <input type="number" id="sMaxPrice" placeholder="e.g. 500000" oninput="applySearch()"/>
+      </div>
+      <button class="search-clear-btn" onclick="clearSearch()">✕ Clear</button>
+    </div>
+    <div class="search-active-filters" id="activeFilters"></div>
+  </div>
+</div>
+
+<!-- LISTINGS -->
+<section class="properties-section" id="listings">
+  <div class="section-header">
+    <div class="section-header-row">
+      <div>
+        <div class="section-eyebrow">Fresh Listings</div>
+        <h2 class="section-title">Properties in Buea &amp; Limbe</h2>
+        <p class="section-sub">All listings are physically verified by our team before going live.</p>
+      </div>
+      <a href="#" class="view-all">View all listings →</a>
+    </div>
+  </div>
+
+  <div class="property-tabs">
+    <button class="tab-btn active">All</button>
+    <button class="tab-btn">For Rent</button>
+    <button class="tab-btn">For Sale</button>
+    <button class="tab-btn">Land</button>
+    <button class="tab-btn">Buea</button>
+    <button class="tab-btn">Limbe</button>
+  </div>
+
+  <div class="property-grid" id="propertyGrid">
+
+    <!-- Card 1 -->
+    <div class="property-card">
+      <div class="card-img">
+        🏠
+        <div class="card-img-overlay"></div>
+        <div class="card-badge rent">For Rent</div>
+        <div class="card-verified">✓ Verified</div>
+        <button class="card-save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-price">85,000 XAF <span>/month</span></div>
+        <div class="card-title">Modern 3-Bedroom Apartment</div>
+        <div class="card-location">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Molyko, Buea
+        </div>
+        <div class="card-features">
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+            3 Beds
+          </div>
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 10H7V7c0-1.1.9-2 2-2s2 .9 2 2h2c0-2.21-1.79-4-4-4S5 4.79 5 7v3H3c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h1v2h2v-2h12v2h2v-2h1c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2z"/></svg>
+            2 Baths
+          </div>
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+            Available Now
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="property-card">
+      <div class="card-img" style="background: linear-gradient(135deg,#f0e8d8,#e8d8b8)">
+        🏘
+        <div class="card-img-overlay"></div>
+        <div class="card-badge buy">For Sale</div>
+        <div class="card-verified">✓ Verified</div>
+        <button class="card-save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-price">18,500,000 XAF</div>
+        <div class="card-title">4-Bedroom Family House</div>
+        <div class="card-location">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Bongola, Limbe
+        </div>
+        <div class="card-features">
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+            4 Beds
+          </div>
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 10H7V7c0-1.1.9-2 2-2s2 .9 2 2h2c0-2.21-1.79-4-4-4S5 4.79 5 7v3H3c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h1v2h2v-2h12v2h2v-2h1c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2z"/></svg>
+            3 Baths
+          </div>
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Title Deed
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="property-card">
+      <div class="card-img" style="background: linear-gradient(135deg,#d8e8d0,#b8d4b0)">
+        🌿
+        <div class="card-img-overlay"></div>
+        <div class="card-badge land">Land</div>
+        <div class="card-verified">✓ Verified</div>
+        <button class="card-save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-price">7,200,000 XAF</div>
+        <div class="card-title">500 sqm Residential Plot</div>
+        <div class="card-location">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Great Soppo, Buea
+        </div>
+        <div class="card-features">
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>
+            500 sqm
+          </div>
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
+            Freehold
+          </div>
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+            Ready to Build
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="property-card">
+      <div class="card-img" style="background: linear-gradient(135deg,#e8e0f0,#d0c8e8)">
+        🏢
+        <div class="card-img-overlay"></div>
+        <div class="card-badge rent">For Rent</div>
+        <button class="card-save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-price">35,000 XAF <span>/month</span></div>
+        <div class="card-title">Self-Contain Room</div>
+        <div class="card-location">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Bonduma, Buea
+        </div>
+        <div class="card-features">
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+            1 Bed
+          </div>
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 10H7V7c0-1.1.9-2 2-2s2 .9 2 2h2c0-2.21-1.79-4-4-4S5 4.79 5 7v3H3c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h1v2h2v-2h12v2h2v-2h1c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2z"/></svg>
+            Private Bath
+          </div>
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+            WiFi Ready
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="property-card">
+      <div class="card-img" style="background: linear-gradient(135deg,#f0d8c8,#e8c8a8)">
+        🏖
+        <div class="card-img-overlay"></div>
+        <div class="card-badge buy">For Sale</div>
+        <div class="card-verified">✓ Verified</div>
+        <button class="card-save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-price">25,000,000 XAF</div>
+        <div class="card-title">Beachside 3-Bedroom Villa</div>
+        <div class="card-location">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Down Beach, Limbe
+        </div>
+        <div class="card-features">
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+            3 Beds
+          </div>
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 10H7V7c0-1.1.9-2 2-2s2 .9 2 2h2c0-2.21-1.79-4-4-4S5 4.79 5 7v3H3c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h1v2h2v-2h12v2h2v-2h1c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2z"/></svg>
+            2 Baths
+          </div>
+          <div class="card-feat">🌊 Ocean View</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="property-card">
+      <div class="card-img" style="background: linear-gradient(135deg,#d8e8f0,#b8d4e8)">
+        🏫
+        <div class="card-img-overlay"></div>
+        <div class="card-badge rent">For Rent</div>
+        <button class="card-save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="card-price">50,000 XAF <span>/month</span></div>
+        <div class="card-title">2-Bedroom Apartment</div>
+        <div class="card-location">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Mile 4, Limbe
+        </div>
+        <div class="card-features">
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+            2 Beds
+          </div>
+          <div class="card-feat">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 10H7V7c0-1.1.9-2 2-2s2 .9 2 2h2c0-2.21-1.79-4-4-4S5 4.79 5 7v3H3c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h1v2h2v-2h12v2h2v-2h1c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2z"/></svg>
+            1 Bath
+          </div>
+          <div class="card-feat">🅿 Parking</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-eyebrow">Simple Process</div>
+  <h2 class="section-title">How SeedStone Works</h2>
+  <p class="section-sub">Finding or listing a property has never been easier or safer in Cameroon.</p>
+
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </div>
+      <div class="step-title">Search Listings</div>
+      <div class="step-desc">Browse hundreds of verified properties in Buea and Limbe. Filter by price, type, and location.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+      </div>
+      <div class="step-title">Visit the Property</div>
+      <div class="step-desc">Schedule a visit directly with the landlord or owner via WhatsApp — no agency fees.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      </div>
+      <div class="step-title">Move In Safely</div>
+      <div class="step-desc">Every listing is verified. Review the landlord, sign your agreement, and move in with confidence.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-icon">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      </div>
+      <div class="step-title">List Your Property</div>
+      <div class="step-desc">Are you a landlord or landowner? List your property free and reach thousands of verified seekers.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="list">
+  <h2>Own Property in <em>Buea or Limbe?</em></h2>
+  <p>List it on SeedStone for free and connect with thousands of genuine seekers today.</p>
+  <div class="cta-actions">
+    <a href="#" class="btn-primary">
+      + List Your Property Free
+    </a>
+    <a href="https://wa.me/237000000000" class="whatsapp-btn" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Chat on WhatsApp
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo" style="filter:brightness(2)">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </div>
+        <span class="logo-text" style="color:#fff">Seed<span>Stone</span></span>
+      </a>
+      <p>Cameroon's most trusted real estate platform. Starting in Buea and Limbe — growing everywhere.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="#">Houses for Rent</a>
+      <a href="#">Houses for Sale</a>
+      <a href="#">Land for Sale</a>
+      <a href="#">Commercial Space</a>
+    </div>
+    <div class="footer-col">
+      <h4>Cities</h4>
+      <a href="#">Buea</a>
+      <a href="#">Limbe</a>
+      <a href="#">Molyko</a>
+      <a href="#">Down Beach</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About SeedStone</a>
+      <a href="#">List Property</a>
+      <a href="#">Contact Us</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 SeedStone Real Estate. Buea, Cameroon.</span>
+    <span>Built with ❤️ for Cameroon</span>
+  </div>
+</footer>
+
+<!-- ── PROPERTY DETAIL POPUP ── -->
+<div class="popup-overlay" id="propertyPopup">
+  <div class="popup-box">
+    <button class="popup-close" id="popupClose">✕</button>
+    <div class="popup-hero" id="popupHero">🏠
+      <div class="popup-badge" id="popupBadge">For Rent</div>
+      <div class="popup-verified">✓ Verified</div>
+    </div>
+    <div class="popup-body">
+      <div class="popup-price" id="popupPrice">85,000 XAF <span>/month</span></div>
+      <div class="popup-title" id="popupTitle">Modern 3-Bedroom Apartment</div>
+      <div class="popup-location">📍 <span id="popupLocation">Molyko, Buea</span></div>
+
+      <div class="popup-features" id="popupFeatures">
+        <div class="popup-feat">🛏 3 Bedrooms</div>
+        <div class="popup-feat">🚿 2 Bathrooms</div>
+        <div class="popup-feat">📐 120 sqm</div>
+        <div class="popup-feat">✅ Available Now</div>
+      </div>
+
+      <hr class="popup-divider"/>
+
+      <div class="popup-section-title">About This Property</div>
+      <div class="popup-desc" id="popupDesc">
+        A well-maintained modern apartment located in the heart of Molyko, close to the University of Buea. The apartment features spacious rooms, running water, 24-hour security, and reliable electricity connection. Ideal for families or working professionals. Landlord is responsive and trustworthy.
+      </div>
+
+      <div class="popup-details-grid">
+        <div class="popup-detail-item">
+          <div class="popup-detail-label">Property Type</div>
+          <div class="popup-detail-value" id="popupType">Apartment</div>
+        </div>
+        <div class="popup-detail-item">
+          <div class="popup-detail-label">City</div>
+          <div class="popup-detail-value" id="popupCity">Buea</div>
+        </div>
+        <div class="popup-detail-item">
+          <div class="popup-detail-label">Listed</div>
+          <div class="popup-detail-value">2 days ago</div>
+        </div>
+        <div class="popup-detail-item">
+          <div class="popup-detail-label">Status</div>
+          <div class="popup-detail-value" style="color:#2a7a4a">✓ Verified</div>
+        </div>
+      </div>
+
+      <hr class="popup-divider"/>
+
+      <div class="popup-section-title">Landlord</div>
+      <div class="popup-landlord">
+        <div class="landlord-avatar">JN</div>
+        <div>
+          <div class="landlord-name">Jean Nkematu</div>
+          <div class="landlord-tag">Property Owner · Member since 2024</div>
+        </div>
+      </div>
+
+      <div class="popup-actions">
+        <a href="tel:+237000000000" class="btn-primary">
+          📞 Call Landlord
+        </a>
+        <a href="https://wa.me/237000000000?text=Hello%2C%20I%20saw%20your%20listing%20on%20SeedStone%20and%20I%20am%20interested." target="_blank" class="whatsapp-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LIST A PROPERTY PAGE ── -->
+<div class="list-page" id="listPage">
+  <div class="list-header">
+    <div class="list-header-title">📋 List Your Property</div>
+    <button class="list-close" id="listClose">✕ Close</button>
+  </div>
+  <div class="list-body">
+    <div class="list-intro">
+      <h2>List Your Property on SeedStone</h2>
+      <p>Fill in the details below. Our team will verify your listing and publish it within 24 hours. Listing is 100% free.</p>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">📍 Property Location</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>City *</label>
+          <select id="fCity">
+            <option value="">Select city</option>
+            <option>Buea</option>
+            <option>Limbe</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Neighbourhood *</label>
+          <input type="text" id="fHood" placeholder="e.g. Molyko, Down Beach, Bonduma"/>
+        </div>
+        <div class="form-field full">
+          <label>Full Address / Landmark</label>
+          <input type="text" id="fAddress" placeholder="e.g. Behind Fidelity Bank, Molyko"/>
+          <span class="form-hint">Help seekers find the property easily</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">🏠 Property Details</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Property Type *</label>
+          <select id="fType">
+            <option value="">Select type</option>
+            <option>Room</option>
+            <option>Self-Contain</option>
+            <option>Apartment</option>
+            <option>Full House</option>
+            <option>Land</option>
+            <option>Commercial Space</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Purpose *</label>
+          <select id="fPurpose">
+            <option value="">For Rent or Sale?</option>
+            <option>For Rent</option>
+            <option>For Sale</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Bedrooms</label>
+          <select id="fBedrooms">
+            <option value="">Select</option>
+            <option>Studio / 1 Room</option>
+            <option>1 Bedroom</option>
+            <option>2 Bedrooms</option>
+            <option>3 Bedrooms</option>
+            <option>4+ Bedrooms</option>
+            <option>Not Applicable (Land)</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Bathrooms</label>
+          <select id="fBathrooms">
+            <option value="">Select</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3+</option>
+            <option>Shared</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label>Description *</label>
+          <textarea id="fDesc" placeholder="Describe your property — water supply, electricity, security, nearby landmarks, special features..."></textarea>
+        </div>
+        <div class="form-field full">
+          <label>Property Photos <span style="font-weight:400;color:var(--muted)">(up to 5 photos)</span></label>
+          <div class="img-upload-area" id="uploadArea">
+            <div class="img-upload-icon">📸</div>
+            <div class="img-upload-text"><strong>Click to upload photos</strong> or drag and drop<br>JPG, PNG — max 5MB each</div>
+            <input type="file" id="fPhotos" class="img-upload-input" accept="image/*" multiple/>
+          </div>
+          <div class="img-previews" id="imgPreviews"></div>
+          <div class="img-upload-progress" id="uploadProgress"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">💰 Pricing</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Price (XAF) *</label>
+          <input type="number" id="fPrice" placeholder="e.g. 85000"/>
+        </div>
+        <div class="form-field">
+          <label>Payment Period</label>
+          <select id="fPeriod">
+            <option value="">Select</option>
+            <option>Per Month</option>
+            <option>Per Year</option>
+            <option>One-Time (Sale)</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label>Negotiable?</label>
+          <select>
+            <option>Yes, price is negotiable</option>
+            <option>No, fixed price</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">👤 Your Contact Details</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Full Name *</label>
+          <input type="text" id="fName" placeholder="Your full name"/>
+        </div>
+        <div class="form-field">
+          <label>Email Address</label>
+          <input type="email" id="fEmail" placeholder="your@email.com"/>
+          <span class="form-hint">Used to link listing to your dashboard account</span>
+        </div>
+        <div class="form-field">
+          <label>Phone Number *</label>
+          <input type="tel" id="fPhone" placeholder="e.g. 6XX XXX XXX"/>
+          <span class="form-hint">Seekers will contact you on this number</span>
+        </div>
+        <div class="form-field">
+          <label>WhatsApp Number</label>
+          <input type="tel" id="fWhatsapp" placeholder="If different from above"/>
+        </div>
+        <div class="form-field">
+          <label>Your Role</label>
+          <select>
+            <option>Property Owner</option>
+            <option>Agent / Caretaker</option>
+            <option>Family Member</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button class="form-submit" id="formSubmit">
+      Submit Listing for Verification →
+    </button>
+  </div>
+</div>
+
+<!-- ── THANK YOU PAGE ── -->
+<div class="thankyou-page" id="thankyouPage">
+  <div class="thankyou-inner">
+    <div class="thankyou-icon">🎉</div>
+    <h1>Listing Submitted!</h1>
+    <p>Thank you for listing your property on SeedStone. Our team will review and verify your listing within <strong>24 hours</strong>. We will contact you on the phone number you provided.</p>
+
+    <div class="thankyou-steps">
+      <h3>What Happens Next</h3>
+      <div class="thankyou-step">
+        <div class="tstep-num">1</div>
+        <div class="tstep-text">Our team reviews your listing details for accuracy</div>
+      </div>
+      <div class="thankyou-step">
+        <div class="tstep-num">2</div>
+        <div class="tstep-text">We call you to confirm ownership and schedule a quick verification visit</div>
+      </div>
+      <div class="thankyou-step">
+        <div class="tstep-num">3</div>
+        <div class="tstep-text">Your listing goes live and seekers start contacting you directly</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="backHome" style="width:100%;justify-content:center;font-size:1rem;padding:16px;">
+      ← Back to SeedStone
+    </button>
+  </div>
+</div>
+
+<script>
+  // ── SUPABASE CONFIG ──
+  const SUPABASE_URL = 'https://imlbkwiopnvqflibbhss.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbGJrd2lvcG52cWZsaWJiaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjUwNTEsImV4cCI6MjA5NjYwMTA1MX0.D2e5Ybfd-SXcS4jFY9SgBaijRkYYF-hMaXfdZXnd8y0';
+
+  // ── CLOUDINARY CONFIG ──
+  const CLOUDINARY_CLOUD = 'dzeyxviu4';
+  const CLOUDINARY_PRESET = 'Seedstone_uploads';
+
+  // ── REAL-TIME SEARCH ──
+  function applySearch() {
+    const location = document.getElementById('sLocation').value.trim().toLowerCase();
+    const city     = document.getElementById('sCity').value;
+    const type     = document.getElementById('sType').value;
+    const purpose  = document.getElementById('sPurpose').value;
+    const minPrice = parseInt(document.getElementById('sMinPrice').value) || 0;
+    const maxPrice = parseInt(document.getElementById('sMaxPrice').value) || Infinity;
+
+    const filtered = allListings.filter(p => {
+      const matchLoc     = !location || (p.neighbourhood || '').toLowerCase().includes(location) || (p.city || '').toLowerCase().includes(location) || (p.address || '').toLowerCase().includes(location);
+      const matchCity    = !city    || p.city === city;
+      const matchType    = !type    || p.type === type;
+      const matchPurpose = !purpose || p.purpose === purpose;
+      const matchMin     = !minPrice || p.price >= minPrice;
+      const matchMax     = maxPrice === Infinity || p.price <= maxPrice;
+      return matchLoc && matchCity && matchType && matchPurpose && matchMin && matchMax;
+    });
+
+    renderListings(filtered);
+    updateSearchCount(filtered.length);
+    updateActiveTags(location, city, type, purpose, minPrice, maxPrice);
+
+    // Scroll to listings
+    if (location || city || type || purpose || minPrice || maxPrice < Infinity) {
+      document.getElementById('listings').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function updateSearchCount(count) {
+    const el = document.getElementById('searchCount');
+    if (!el) return;
+    const total = allListings.length;
+    el.innerHTML = count === total
+      ? `Showing all <span>${total}</span> listings`
+      : `<span>${count}</span> of ${total} listings match`;
+  }
+
+  function updateActiveTags(location, city, type, purpose, minPrice, maxPrice) {
+    const wrap = document.getElementById('activeFilters');
+    if (!wrap) return;
+    const tags = [];
+    if (location) tags.push({ label: '📍 ' + location, clear: () => { document.getElementById('sLocation').value = ''; applySearch(); } });
+    if (city)     tags.push({ label: '🏙 ' + city,     clear: () => { document.getElementById('sCity').value = '';     applySearch(); } });
+    if (type)     tags.push({ label: '🏠 ' + type,     clear: () => { document.getElementById('sType').value = '';     applySearch(); } });
+    if (purpose)  tags.push({ label: '🔑 ' + purpose,  clear: () => { document.getElementById('sPurpose').value = '';  applySearch(); } });
+    if (minPrice) tags.push({ label: 'Min ' + minPrice.toLocaleString() + ' XAF', clear: () => { document.getElementById('sMinPrice').value = ''; applySearch(); } });
+    if (maxPrice < Infinity) tags.push({ label: 'Max ' + maxPrice.toLocaleString() + ' XAF', clear: () => { document.getElementById('sMaxPrice').value = ''; applySearch(); } });
+
+    wrap.innerHTML = tags.map((t, i) => `
+      <div class="active-filter-tag">
+        ${t.label}
+        <button onclick="clearTag(${i})">✕</button>
+      </div>`).join('');
+    window._searchTags = tags;
+  }
+
+  function clearTag(i) {
+    if (window._searchTags && window._searchTags[i]) {
+      window._searchTags[i].clear();
+    }
+  }
+
+  function clearSearch() {
+    document.getElementById('sLocation').value  = '';
+    document.getElementById('sCity').value      = '';
+    document.getElementById('sType').value      = '';
+    document.getElementById('sPurpose').value   = '';
+    document.getElementById('sMinPrice').value  = '';
+    document.getElementById('sMaxPrice').value  = '';
+    document.getElementById('activeFilters').innerHTML = '';
+    document.getElementById('searchCount').innerHTML   = '';
+    renderListings(allListings);
+  }
+
+  // ── TAB SWITCHING ──
+  let currentFilter = 'All';
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.textContent.trim();
+      loadListings(currentFilter);
+    });
+  });
+
+  // ── MOBILE NAV ──
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+  // ── EMOJI BY TYPE ──
+  function getEmoji(type) {
+    const map = { 'Room':'🏢', 'Self-Contain':'🏢', 'Apartment':'🏠',
+      'Full House':'🏘', 'Land':'🌿', 'Commercial Space':'🏪', 'Villa':'🏖' };
+    return map[type] || '🏠';
+  }
+  function getBg(type) {
+    const map = { 'Room':'linear-gradient(135deg,#2a1a4a,#1a1030)',
+      'Self-Contain':'linear-gradient(135deg,#2a1a4a,#1a1030)',
+      'Apartment':'linear-gradient(135deg,#254d3c,#1B3A2D)',
+      'Full House':'linear-gradient(135deg,#4a3a1a,#3a2a10)',
+      'Land':'linear-gradient(135deg,#1a3a1a,#102810)',
+      'Commercial Space':'linear-gradient(135deg,#1a2a4a,#101830)',
+      'Villa':'linear-gradient(135deg,#1a3a4a,#102030)' };
+    return map[type] || 'linear-gradient(135deg,#254d3c,#1B3A2D)';
+  }
+  function getBadgeClass(purpose) {
+    if (purpose === 'For Rent') return 'rent';
+    if (purpose === 'For Sale') return 'buy';
+    return 'land';
+  }
+
+  // ── RENDER LISTINGS ──
+  let allListings = [];
+
+  function renderListings(listings) {
+    const grid = document.getElementById('propertyGrid');
+    if (!listings.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);">
+        <div style="font-size:3rem;margin-bottom:16px">🏠</div>
+        <div style="font-size:1.1rem;font-weight:600;color:var(--stone)">No listings yet in this category</div>
+        <div style="font-size:0.9rem;margin-top:8px">Be the first to list a property!</div>
+      </div>`;
+      return;
+    }
+    grid.innerHTML = listings.map((p, i) => `
+      <div class="property-card" data-index="${i}">
+        <div class="card-img" style="background:${getBg(p.type)}">
+          ${p.image_urls ? `<img src="${JSON.parse(p.image_urls)[0]}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="this.style.display='none'"/>` : ''}
+          <span style="font-size:3rem;position:relative">${getEmoji(p.type)}</span>
+          <div class="card-img-overlay"></div>
+          <div class="card-badge ${getBadgeClass(p.purpose)}">${p.purpose || 'For Rent'}</div>
+          ${p.verified ? '<div class="card-verified">✓ Verified</div>' : ''}
+          <button class="card-save" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="card-price">${Number(p.price).toLocaleString()} XAF
+            ${p.period ? `<span>${p.period === 'Per Month' ? '/month' : p.period === 'Per Year' ? '/year' : ''}</span>` : ''}
+          </div>
+          <div class="card-title">${p.title}</div>
+          <div class="card-location">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+            ${p.neighbourhood ? p.neighbourhood + ', ' : ''}${p.city}
+          </div>
+          <div class="card-features">
+            ${p.bedrooms && p.bedrooms !== 'Not Applicable (Land)' ? `<div class="card-feat">🛏 ${p.bedrooms}</div>` : ''}
+            ${p.bathrooms ? `<div class="card-feat">🚿 ${p.bathrooms} Bath</div>` : ''}
+            <div class="card-feat">📍 ${p.type || 'Property'}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // Attach click handlers for popup
+    grid.querySelectorAll('.property-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.card-save')) return;
+        const idx = parseInt(card.dataset.index);
+        openPopup(listings[idx]);
+      });
+    });
+
+    // Heart toggle
+    grid.querySelectorAll('.card-save').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const svg = btn.querySelector('svg');
+        const saved = svg.getAttribute('fill') === 'red';
+        svg.setAttribute('fill', saved ? 'none' : 'red');
+        svg.setAttribute('stroke', saved ? '#666' : 'red');
+      });
+    });
+  }
+
+  // ── LOAD LISTINGS FROM SUPABASE ──
+  async function loadListings(filter) {
+    const grid = document.getElementById('propertyGrid');
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)">
+      <div style="font-size:2rem;margin-bottom:12px">⏳</div>Loading listings...</div>`;
+
+    try {
+      let url = `${SUPABASE_URL}/rest/v1/listings?select=*&verified=eq.true&order=created_at.desc`;
+      if (filter === 'For Rent') url += '&purpose=eq.For Rent';
+      else if (filter === 'For Sale') url += '&purpose=eq.For Sale';
+      else if (filter === 'Land') url += '&type=eq.Land';
+      else if (filter === 'Buea') url += '&city=eq.Buea';
+      else if (filter === 'Limbe') url += '&city=eq.Limbe';
+
+      const res = await fetch(url, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY
+        }
+      });
+      const data = await res.json();
+      const listings = Array.isArray(data) ? data : [];
+      allListings = listings;
+      renderListings(listings);
+      document.getElementById('listingCount').textContent = (listings.length || 0) + '+';
+    } catch (err) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)">
+        Could not load listings. Please check your connection.</div>`;
+    }
+  }
+
+  // ── OPEN POPUP ──
+  function openPopup(p) {
+    const hero = document.getElementById('popupHero');
+    hero.style.background = getBg(p.type);
+    // Show real photo if available
+    const existingImg = hero.querySelector('.hero-real-img');
+    if (existingImg) existingImg.remove();
+    if (p.image_urls) {
+      const imgs = JSON.parse(p.image_urls);
+      if (imgs.length > 0) {
+        const img = document.createElement('img');
+        img.src = imgs[0];
+        img.className = 'hero-real-img';
+        img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;';
+        hero.insertBefore(img, hero.firstChild);
+      }
+    }
+    if (hero.querySelector('span')) {
+      hero.querySelector('span').textContent = getEmoji(p.type);
+    } else {
+      hero.insertAdjacentHTML('afterbegin', `<span style="font-size:4rem;position:relative">${getEmoji(p.type)}</span>`);
+    }
+    document.getElementById('popupBadge').textContent = p.purpose || 'For Rent';
+    document.getElementById('popupPrice').innerHTML =
+      Number(p.price).toLocaleString() + ' XAF' +
+      (p.period === 'Per Month' ? ' <span>/month</span>' : p.period === 'Per Year' ? ' <span>/year</span>' : '');
+    document.getElementById('popupTitle').textContent = p.title;
+    document.getElementById('popupLocation').textContent =
+      (p.neighbourhood ? p.neighbourhood + ', ' : '') + p.city;
+    document.getElementById('popupType').textContent = p.type || '—';
+    document.getElementById('popupCity').textContent = p.city || '—';
+    document.getElementById('popupDesc').textContent = p.description || 'No description provided.';
+    const feats = document.getElementById('popupFeatures');
+    feats.innerHTML = [
+      p.bedrooms && p.bedrooms !== 'Not Applicable (Land)' ? `<div class="popup-feat">🛏 ${p.bedrooms}</div>` : '',
+      p.bathrooms ? `<div class="popup-feat">🚿 ${p.bathrooms} Bathroom(s)</div>` : '',
+      p.type ? `<div class="popup-feat">🏠 ${p.type}</div>` : '',
+      p.verified ? `<div class="popup-feat" style="color:#2a7a4a">✅ Verified</div>` : '',
+    ].join('');
+
+    // Update landlord info
+    const initials = p.landlord_name ? p.landlord_name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'SS';
+    document.querySelector('.landlord-avatar').textContent = initials;
+    document.querySelector('.landlord-name').textContent = p.landlord_name || 'SeedStone Verified Owner';
+
+    // Update contact buttons
+    const phone = p.landlord_whatsapp || p.landlord_phone || '237000000000';
+    document.querySelector('.popup-actions .btn-primary').href = `tel:+${phone}`;
+    document.querySelector('.popup-actions .whatsapp-btn').href =
+      `https://wa.me/${phone.replace(/^0/, '237')}?text=Hello%2C%20I%20saw%20your%20listing%20on%20SeedStone%3A%20${encodeURIComponent(p.title)}`;
+
+    document.getElementById('propertyPopup').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // ── CLOSE POPUP ──
+  document.getElementById('popupClose').addEventListener('click', closePopup);
+  document.getElementById('propertyPopup').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('propertyPopup')) closePopup();
+  });
+  function closePopup() {
+    document.getElementById('propertyPopup').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ── OPEN LIST PROPERTY PAGE ──
+  document.querySelectorAll('a[href="#list"], .nav-cta').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('listPage').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  // ── CLOSE LIST PROPERTY PAGE ──
+  document.getElementById('listClose').addEventListener('click', () => {
+    document.getElementById('listPage').classList.remove('open');
+    document.body.style.overflow = '';
+  });
+
+  // ── IMAGE UPLOAD ──
+  let uploadedImageUrls = [];
+
+  const uploadArea = document.getElementById('uploadArea');
+  const photosInput = document.getElementById('fPhotos');
+
+  uploadArea.addEventListener('click', () => photosInput.click());
+
+  uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+  });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  photosInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+  async function handleFiles(files) {
+    const maxFiles = 5;
+    const remaining = maxFiles - uploadedImageUrls.length;
+    if (remaining <= 0) {
+      alert('Maximum 5 photos allowed.');
+      return;
+    }
+    const toUpload = Array.from(files).slice(0, remaining);
+    document.getElementById('uploadProgress').textContent = `Uploading ${toUpload.length} photo(s)...`;
+
+    for (let i = 0; i < toUpload.length; i++) {
+      const file = toUpload[i];
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`${file.name} is too large. Max 5MB.`);
+        continue;
+      }
+      const previewId = 'prev_' + Date.now() + i;
+      addPreview(previewId, URL.createObjectURL(file), true);
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_PRESET);
+        formData.append('folder', 'seedstone');
+
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+          method: 'POST', body: formData
+        });
+        const data = await res.json();
+        if (data.secure_url) {
+          uploadedImageUrls.push(data.secure_url);
+          updatePreview(previewId, data.secure_url);
+        }
+      } catch (e) {
+        removePreview(previewId);
+        alert('Upload failed for ' + file.name);
+      }
+    }
+    document.getElementById('uploadProgress').textContent =
+      uploadedImageUrls.length > 0 ? `✅ ${uploadedImageUrls.length} photo(s) uploaded` : '';
+  }
+
+  function addPreview(id, src, loading) {
+    const wrap = document.createElement('div');
+    wrap.className = 'img-preview-item';
+    wrap.id = id;
+    wrap.innerHTML = `<img src="${src}"/>
+      ${loading ? '<div class="img-uploading">Uploading...</div>' : ''}
+      <button class="img-remove" onclick="removeImage('${id}')">✕</button>`;
+    document.getElementById('imgPreviews').appendChild(wrap);
+  }
+
+  function updatePreview(id, src) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.querySelector('img').src = src;
+      const uploading = el.querySelector('.img-uploading');
+      if (uploading) uploading.remove();
+    }
+  }
+
+  function removePreview(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  function removeImage(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      const src = el.querySelector('img').src;
+      uploadedImageUrls = uploadedImageUrls.filter(u => u !== src);
+      el.remove();
+      document.getElementById('uploadProgress').textContent =
+        uploadedImageUrls.length > 0 ? `✅ ${uploadedImageUrls.length} photo(s) uploaded` : '';
+    }
+  }
+
+  // ── SUBMIT FORM TO SUPABASE ──
+  document.getElementById('formSubmit').addEventListener('click', async () => {
+    const btn = document.getElementById('formSubmit');
+
+    // Collect form values using IDs
+    const city      = document.getElementById('fCity').value;
+    const hood      = document.getElementById('fHood').value;
+    const address   = document.getElementById('fAddress').value;
+    const type      = document.getElementById('fType').value;
+    const purpose   = document.getElementById('fPurpose').value;
+    const bedrooms  = document.getElementById('fBedrooms').value;
+    const bathrooms = document.getElementById('fBathrooms').value;
+    const desc      = document.getElementById('fDesc').value;
+    const price     = document.getElementById('fPrice').value;
+    const period    = document.getElementById('fPeriod').value;
+    const name      = document.getElementById('fName').value;
+    const phone     = document.getElementById('fPhone').value;
+    const whatsapp  = document.getElementById('fWhatsapp').value;
+
+    // Basic validation
+    if (!city || !type || !purpose || !price || !name || !phone) {
+      alert('Please fill in all required fields marked with *');
+      return;
+    }
+
+    // Generate title automatically
+    const title = `${bedrooms && bedrooms !== 'Not Applicable (Land)' ? bedrooms + ' ' : ''}${type} ${purpose === 'For Rent' ? 'for Rent' : 'for Sale'}`;
+
+    btn.textContent = 'Submitting...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/listings`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          title, type, purpose, price: parseInt(price), period,
+          city, neighbourhood: hood, address, bedrooms, bathrooms,
+          description: desc, landlord_name: name,
+          landlord_phone: phone, landlord_whatsapp: whatsapp || phone,
+          landlord_email: document.getElementById('fEmail') ? document.getElementById('fEmail').value : null,
+          image_urls: uploadedImageUrls.length > 0 ? JSON.stringify(uploadedImageUrls) : null,
+          views: 0,
+          verified: false
+        })
+      });
+
+      if (res.ok) {
+        uploadedImageUrls = [];
+        document.getElementById('imgPreviews').innerHTML = '';
+        document.getElementById('uploadProgress').textContent = '';
+        document.getElementById('listPage').classList.remove('open');
+        document.getElementById('thankyouPage').classList.add('open');
+        loadListings('All'); // Refresh listings
+      } else {
+        const err = await res.json();
+        alert('Submission failed. Please try again.');
+        console.error(err);
+      }
+    } catch (e) {
+      alert('Network error. Please check your connection.');
+    }
+
+    btn.textContent = 'Submit Listing for Verification →';
+    btn.disabled = false;
+  });
+
+  // ── BACK TO HOME FROM THANK YOU ──
+  document.getElementById('backHome').addEventListener('click', () => {
+    document.getElementById('thankyouPage').classList.remove('open');
+    document.body.style.overflow = '';
+  });
+
+  // ── LOAD ON PAGE START ──
+  loadListings('All');
+</script>
+</body>
+</html>
+
