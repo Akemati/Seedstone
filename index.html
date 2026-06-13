@@ -1216,7 +1216,7 @@
         </div>
         <div class="popup-detail-item">
           <div class="popup-detail-label">Listed</div>
-          <div class="popup-detail-value">2 days ago</div>
+          <div class="popup-detail-value" id="popupListed">2 days ago</div>
         </div>
         <div class="popup-detail-item">
           <div class="popup-detail-label">Status</div>
@@ -1715,6 +1715,7 @@
       document.getElementById('popupInquiryBtn').onclick = () =>
         openInquiryModal(p.id, p.title, p.landlord_phone || p.landlord_whatsapp, 'property');
     document.getElementById('propertyPopup').classList.add('open');
+    document.getElementById('popupListed').textContent = timeAgo(p.created_at);
     document.body.style.overflow = 'hidden';
   }
 
@@ -2033,6 +2034,22 @@
       btn.disabled = false;
     }
   }
+  function timeAgo(dateStr) {
+  if (!dateStr) return 'Recently';
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffMins < 1)   return 'Just now';
+  if (diffMins < 60)  return `${diffMins} minutes ago`;
+  if (diffHours < 24) return `${diffHours} hours ago`;
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 30)  return `${diffDays} days ago`;
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+  return `${Math.floor(diffDays / 365)} years ago`;
+}
 </script>
 <script src="inquiry.js"></script>
 </body>
