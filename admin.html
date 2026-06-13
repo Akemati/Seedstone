@@ -436,6 +436,7 @@
   if (sessionStorage.getItem('ss_admin') === 'true') {
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('adminPage').style.display = 'block';
+    document.getElementById('contactHeader').textContent = section === 'cars' ? 'Seller' : 'Landlord';
     loadListings();
   }
 
@@ -457,6 +458,7 @@
     document.getElementById('secCars').style.background = section === 'cars' ? '#1a3a5c' : 'var(--white)';
     document.getElementById('secCars').style.color = section === 'cars' ? '#fff' : 'var(--stone)';
     document.getElementById('secCars').style.borderColor = section === 'cars' ? '#1a3a5c' : 'var(--border)';
+    document.getElementById('contactHeader').textContent = section === 'cars' ? 'Seller' : 'Landlord';
     loadListings();
   }
 
