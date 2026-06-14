@@ -318,8 +318,9 @@
       </div>
     </div>
 
-    <div style="display:flex; gap:8px; margin-bottom:20px;">
+    <div style="display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;">
   <button id="tabListings" style="padding:10px 20px; background:#059669; color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">🏠 My Listings</button>
+  <button id="tabCars" style="padding:10px 20px; background:#f3f4f6; color:#374151; border:none; border-radius:10px; font-weight:700; cursor:pointer;">🚗 My Cars</button>
   <button id="tabInbox" style="padding:10px 20px; background:#f3f4f6; color:#374151; border:none; border-radius:10px; font-weight:700; cursor:pointer;">📥 Inbox <span id="inboxBadge" style="display:none; background:#dc2626; color:white; border-radius:999px; padding:1px 7px; font-size:12px; margin-left:4px;"></span></button>
 </div>
 <div id="tabListingsContent">
@@ -329,6 +330,17 @@
     </div>
   </div>
   </div>
+
+<!-- MY CARS TAB -->
+<div id="tabCarsContent" style="display:none;">
+  <div class="section-title">🚗 My Car Listings</div>
+  <div style="margin-bottom:16px;">
+    <a href="cars.html#sell" style="display:inline-block;padding:10px 20px;background:#1a3a5c;color:#fff;border-radius:10px;font-weight:700;font-size:0.88rem;text-decoration:none;">+ Add New Car</a>
+  </div>
+  <div id="myCarsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div style="grid-column:1/-1;text-align:center;padding:40px;color:#9ca3af;">⏳ Loading...</div>
+  </div>
+</div>
 <!-- INBOX TAB -->
 <div id="tabInboxContent" style="display:none;">
   <div class="section-title">📥 Inquiry Inbox</div>
@@ -649,12 +661,16 @@
   // — INBOX TABS —
 function showTab(tab) {
   document.getElementById('tabListingsContent').style.display = tab === 'listings' ? 'block' : 'none';
-  document.getElementById('tabInboxContent').style.display = tab === 'inbox' ? 'block' : 'none';
+  document.getElementById('tabCarsContent').style.display    = tab === 'cars'     ? 'block' : 'none';
+  document.getElementById('tabInboxContent').style.display   = tab === 'inbox'    ? 'block' : 'none';
   document.getElementById('tabListings').style.background = tab === 'listings' ? '#059669' : '#f3f4f6';
-  document.getElementById('tabListings').style.color = tab === 'listings' ? 'white' : '#374151';
-  document.getElementById('tabInbox').style.background = tab === 'inbox' ? '#059669' : '#f3f4f6';
-  document.getElementById('tabInbox').style.color = tab === 'inbox' ? 'white' : '#374151';
+  document.getElementById('tabListings').style.color      = tab === 'listings' ? 'white'   : '#374151';
+  document.getElementById('tabCars').style.background     = tab === 'cars'     ? '#1a3a5c' : '#f3f4f6';
+  document.getElementById('tabCars').style.color          = tab === 'cars'     ? 'white'   : '#374151';
+  document.getElementById('tabInbox').style.background    = tab === 'inbox'    ? '#059669' : '#f3f4f6';
+  document.getElementById('tabInbox').style.color         = tab === 'inbox'    ? 'white'   : '#374151';
   if (tab === 'inbox' && currentUser) loadInbox(currentUser.phone);
+  if (tab === 'cars'  && currentUser) loadMyCars(currentUser.phone);
 }
 
 async function loadInbox(phone) {
@@ -715,7 +731,64 @@ async function markRead(id) {
   if (currentUser) loadInbox(currentUser.phone);
 }
 document.getElementById('tabListings').addEventListener('click', () => showTab('listings'));
+document.getElementById('tabCars').addEventListener('click', () => showTab('cars'));
 document.getElementById('tabInbox').addEventListener('click', () => showTab('inbox'));
+
+async function loadMyCars(phone) {
+  const grid = document.getElementById('myCarsGrid');
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#9ca3af;">⏳ Loading...</div>';
+  const SUPABASE_URL = "https://imlbkwiopnvqflibbhss.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbGJrd2lvcG52cWZsaWJiaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjUwNTEsImV4cCI6MjA5NjYwMTA1MX0.D2e5Ybfd-SXcS4jFY9SgBaijRkYYF-hMaXfdZXnd8y0";
+
+  const phoneLocal = phone.replace(/^237/, '');
+  const phoneIntl  = '237' + phoneLocal;
+
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/cars?or=(seller_phone.eq.${encodeURIComponent(phoneLocal)},seller_phone.eq.${encodeURIComponent(phoneIntl)})&order=created_at.desc`,
+    { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }}
+  );
+  const data = await res.json();
+  const cars = Array.isArray(data) ? data : [];
+
+  if (!cars.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#9ca3af;">
+      🚗 No cars listed yet.<br/><br/>
+      <a href="cars.html" style="padding:10px 20px;background:#1a3a5c;color:#fff;border-radius:8px;font-weight:700;text-decoration:none;">+ List a Car</a>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = cars.map(c => {
+    const imgs = c.image_urls ? JSON.parse(c.image_urls) : [];
+    const status = c.verified ? 'Live' : 'Pending';
+    const statusColor = c.verified ? '#059669' : '#d97706';
+    return `
+    <div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fff;">
+      <div style="height:160px;background:#1a3a5c;position:relative;display:flex;align-items:center;justify-content:center;font-size:2.5rem;">
+        ${imgs.length ? `<img src="${imgs[0]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>` : '🚗'}
+        <div style="position:absolute;top:10px;left:10px;background:${statusColor};color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;">${status}</div>
+      </div>
+      <div style="padding:14px;">
+        <div style="font-weight:700;font-size:0.95rem;margin-bottom:4px;">${c.year || ''} ${c.make || ''} ${c.model || ''}</div>
+        <div style="font-size:0.85rem;color:#6b7280;margin-bottom:10px;">📍 ${c.city || '—'} · ${Number(c.price).toLocaleString()} XAF</div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="deleteCarListing('${c.id}')" style="flex:1;padding:8px;background:#fee2e2;color:#dc2626;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.82rem;">🗑 Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function deleteCarListing(id) {
+  if (!confirm('Delete this car listing?')) return;
+  const SUPABASE_URL = "https://imlbkwiopnvqflibbhss.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbGJrd2lvcG52cWZsaWJiaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjUwNTEsImV4cCI6MjA5NjYwMTA1MX0.D2e5Ybfd-SXcS4jFY9SgBaijRkYYF-hMaXfdZXnd8y0";
+  await fetch(`${SUPABASE_URL}/rest/v1/cars?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+  });
+  if (currentUser) loadMyCars(currentUser.phone);
+}
 async function loadInboxBadge(phone) {
   const SUPABASE_URL = "https://imlbkwiopnvqflibbhss.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbGJrd2lvcG52cWZsaWJiaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjUwNTEsImV4cCI6MjA5NjYwMTA1MX0.D2e5Ybfd-SXcS4jFY9SgBaijRkYYF-hMaXfdZXnd8y0";
