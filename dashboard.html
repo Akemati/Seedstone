@@ -558,8 +558,7 @@
       const imgs   = l.image_urls ? JSON.parse(l.image_urls) : [];
       return `<div class="my-listing-card">
         <div class="mlc-img">
-          ${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'"/>` : ''}
-          <span style="position:relative">${getEmoji(l.type)}</span>
+          ${imgs.length ? `<img src="${imgs[0]}" onerror="this.style.display='none'"/>` : `<span style="position:relative;font-size:2.5rem">${getEmoji(l.type)}</span>`}
           <div class="mlc-status ${status}">${label}</div>
           <div class="mlc-views">👁 ${l.views || 0}</div>
         </div>
