@@ -273,6 +273,19 @@
       border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
     .popup-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .carousel-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+    .carousel-img.active { display: block; }
+    .carousel-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(0,0,0,0.45); color: #fff; border: none;
+      width: 34px; height: 34px; border-radius: 50%; font-size: 1rem;
+      cursor: pointer; z-index: 5; display: flex; align-items: center; justify-content: center;
+    }
+    .carousel-prev { left: 10px; }
+    .carousel-next { right: 10px; }
+    .carousel-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 5; }
+    .carousel-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: background .2s; }
+    .carousel-dot.active { background: #fff; }
     .popup-badge {
       position: absolute; top: 14px; left: 14px;
       background: var(--car-accent); color: #fff;
@@ -741,15 +754,41 @@
   function openPopup(c) {
     const imgs = c.image_urls ? JSON.parse(c.image_urls) : [];
     const hero = document.getElementById('popupHero');
-    const existImg = hero.querySelector('.real-img');
-    if (existImg) existImg.remove();
+
+    // Clear previous carousel
+    hero.querySelectorAll('.carousel-img,.carousel-btn,.carousel-dots,.real-img').forEach(el => el.remove());
     const emojiSpan = document.getElementById('popupEmoji');
+
     if (imgs.length) {
-      const img = document.createElement('img');
-      img.src = imgs[0]; img.className = 'real-img';
-      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
-      hero.insertBefore(img, hero.firstChild);
+      hero.style.background = '#111';
       if (emojiSpan) emojiSpan.style.display = 'none';
+
+      imgs.forEach((src, i) => {
+        const img = document.createElement('img');
+        img.src = src; img.className = 'carousel-img' + (i === 0 ? ' active' : '');
+        img.onerror = () => img.style.display = 'none';
+        hero.appendChild(img);
+      });
+
+      if (imgs.length > 1) {
+        const prev = document.createElement('button');
+        prev.className = 'carousel-btn carousel-prev'; prev.innerHTML = '&#8249;';
+        prev.onclick = (e) => { e.stopPropagation(); carCarouselMove(hero, -1); };
+        hero.appendChild(prev);
+        const next = document.createElement('button');
+        next.className = 'carousel-btn carousel-next'; next.innerHTML = '&#8250;';
+        next.onclick = (e) => { e.stopPropagation(); carCarouselMove(hero, 1); };
+        hero.appendChild(next);
+        const dots = document.createElement('div');
+        dots.className = 'carousel-dots';
+        imgs.forEach((_, i) => {
+          const dot = document.createElement('div');
+          dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+          dot.onclick = (e) => { e.stopPropagation(); carCarouselGoTo(hero, i); };
+          dots.appendChild(dot);
+        });
+        hero.appendChild(dots);
+      }
     } else {
       if (emojiSpan) emojiSpan.style.display = '';
     }
@@ -830,6 +869,23 @@
       alert('Network error. Please try again.');
     }
   });
+
+  function carCarouselMove(hero, dir) {
+    const imgs = hero.querySelectorAll('.carousel-img');
+    const dots = hero.querySelectorAll('.carousel-dot');
+    let cur = [...imgs].findIndex(i => i.classList.contains('active'));
+    imgs[cur].classList.remove('active');
+    if (dots[cur]) dots[cur].classList.remove('active');
+    cur = (cur + dir + imgs.length) % imgs.length;
+    imgs[cur].classList.add('active');
+    if (dots[cur]) dots[cur].classList.add('active');
+  }
+  function carCarouselGoTo(hero, idx) {
+    const imgs = hero.querySelectorAll('.carousel-img');
+    const dots = hero.querySelectorAll('.carousel-dot');
+    imgs.forEach((img, i) => img.classList.toggle('active', i === idx));
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
+  }
 
   document.getElementById('popupClose').addEventListener('click', closePopup);
   document.getElementById('carPopup').addEventListener('click', e => {
