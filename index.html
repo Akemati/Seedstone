@@ -219,6 +219,11 @@
     }
     .search-results-count { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
     .search-results-count span { color: var(--forest); font-weight: 700; }
+    .filter-toggle-btn {
+      display: none; padding: 9px 16px; background: var(--forest); color: #fff;
+      border: none; border-radius: var(--radius); font-weight: 600;
+      font-size: 0.82rem; cursor: pointer;
+    }
     .search-grid {
       display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
       gap: 12px; align-items: end; margin-bottom: 14px;
@@ -263,6 +268,25 @@
       transition: background .2s; white-space: nowrap; height: 46px;
     }
     .search-btn:hover { background: #254d3c; }
+    /* Mobile search collapsible */
+    .search-filters-panel { transition: all .2s; }
+    @media (max-width: 768px) {
+      .search-wrap { padding: 18px; }
+      .search-grid { grid-template-columns: 1fr 1fr; }
+      .search-grid-row2 { grid-template-columns: 1fr 1fr; }
+      .search-grid-row2 .search-clear-btn { grid-column: span 2; width: 100%; }
+      .filter-toggle-btn { display: block; }
+      .search-filters-panel { display: none; }
+      .search-filters-panel.open { display: block; }
+      .search-wrap-top h2 { font-size: 1.1rem; }
+    }
+    @media (max-width: 480px) {
+      .search-section { padding: 20px 4%; }
+      .search-grid { grid-template-columns: 1fr; }
+      .search-grid-row2 { grid-template-columns: 1fr; }
+      .search-grid-row2 .search-clear-btn { width: 100%; }
+      .property-grid { grid-template-columns: 1fr; }
+    }
 
     /* ── SECTION SHARED ── */
     section { padding: 72px 5%; }
@@ -794,13 +818,17 @@
   <div class="search-wrap">
     <div class="search-wrap-top">
       <h2>Search Properties</h2>
-      <div class="search-results-count" id="searchCount"></div>
-    </div>
-    <div class="search-grid">
-      <div class="search-field">
-        <label>Location</label>
-        <input type="text" id="sLocation" placeholder="e.g. Molyko, Down Beach, Buea…" oninput="applySearch()"/>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div class="search-results-count" id="searchCount"></div>
+        <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleFilters()">⚙ Filters</button>
       </div>
+    </div>
+    <!-- Quick location search always visible on mobile -->
+    <div class="search-field" style="margin-bottom:12px;">
+      <input type="text" id="sLocation" placeholder="🔍 Search by location, neighbourhood…" oninput="applySearch()" style="font-size:1rem;padding:13px 16px;"/>
+    </div>
+    <div class="search-filters-panel open" id="searchFiltersPanel">
+    <div class="search-grid">
       <div class="search-field">
         <label>City</label>
         <select id="sCity" onchange="applySearch()">
@@ -840,6 +868,7 @@
         <input type="number" id="sMaxPrice" placeholder="e.g. 500000" oninput="applySearch()"/>
       </div>
       <button class="search-clear-btn" onclick="clearSearch()">✕ Clear</button>
+    </div>
     </div>
     <div class="search-active-filters" id="activeFilters"></div>
   </div>
@@ -1480,6 +1509,13 @@
     if (weeks < 4)    return weeks + ' week' + (weeks>1?'s':'') + ' ago';
     const months = Math.floor(days/30);
     return months + ' month' + (months>1?'s':'') + ' ago';
+  }
+
+  function toggleFilters() {
+    const panel = document.getElementById('searchFiltersPanel');
+    const btn = document.getElementById('filterToggleBtn');
+    panel.classList.toggle('open');
+    btn.textContent = panel.classList.contains('open') ? '✕ Close' : '⚙ Filters';
   }
 
   // ── REAL-TIME SEARCH ──
