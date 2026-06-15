@@ -149,6 +149,21 @@
 
     /* ── CARS GRID ── */
     .cars-section { padding: 56px 5%; }
+    /* ── AD ZONES (hidden until activated) ── */
+    .ad-zone { display: none; }
+    .ad-banner {
+      width: 100%; background: linear-gradient(135deg, #f0f4f8, #e4ecf5);
+      border: 1.5px dashed #93b4d4; border-radius: 12px;
+      padding: 18px 24px; display: flex; align-items: center;
+      justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    }
+    .ad-banner-label { font-size:0.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.1em;border:1px solid #d1d5db;padding:2px 7px;border-radius:4px;white-space:nowrap; }
+    .ad-banner-content { flex:1;font-size:0.95rem;font-weight:600;color:var(--car-blue); }
+    .ad-banner-cta { padding:8px 18px;background:var(--car-accent);color:#fff;border-radius:8px;font-size:0.82rem;font-weight:700;text-decoration:none;white-space:nowrap; }
+    .ad-sponsored-card { border:2px solid var(--car-accent);border-radius:var(--radius-lg);overflow:hidden;position:relative;background:#f8fafc; }
+    .ad-sponsored-badge { position:absolute;top:10px;left:10px;z-index:2;background:var(--car-accent);color:#fff;font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:5px;text-transform:uppercase; }
+    .ad-above-footer { background:linear-gradient(135deg,#1a3a5c,#0f2340);padding:28px 5%;text-align:center; }
+    .ad-above-footer-inner { max-width:800px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap; }
     .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 36px; flex-wrap: wrap; gap: 16px; }
     .section-eyebrow { font-size: 0.72rem; font-weight: 600; color: var(--car-accent); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px; }
     .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--car-blue); font-weight: 700; }
@@ -512,6 +527,21 @@
     <button class="tab-btn" data-filter="Douala">Douala</button>
   </div>
 
+  <!-- AD ZONE 1: Sponsored car slot (hidden until activated) -->
+  <div class="ad-zone" id="adCarSponsored" style="margin-bottom:20px;">
+    <div class="ad-sponsored-card">
+      <div class="ad-sponsored-badge">Sponsored</div>
+      <div style="padding:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div style="width:80px;height:80px;background:#f3f4f6;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2rem;">🚗</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:1rem;color:var(--car-blue);" id="adCarTitle">Your Auto Business Here</div>
+          <div style="font-size:0.85rem;color:var(--stone);margin-top:4px;" id="adCarDesc">Reach car buyers and sellers across Cameroon.</div>
+        </div>
+        <a href="mailto:akemwoody@gmail.com" class="ad-banner-cta" id="adCarCta">Learn More</a>
+      </div>
+    </div>
+  </div>
+
   <div class="cars-grid" id="carsGrid">
     <div class="empty-state">
       <div class="empty-icon">⏳</div>
@@ -691,6 +721,20 @@
   </div>
 </div>
 
+<!-- AD ZONE 2: Above footer banner (hidden until activated) -->
+<div class="ad-zone" id="adCarAboveFooter">
+  <div class="ad-above-footer">
+    <div class="ad-above-footer-inner">
+      <div>
+        <div style="color:rgba(255,255,255,0.5);font-size:0.72rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Advertisement</div>
+        <div style="color:#fff;font-size:1.1rem;font-weight:700;">Advertise Your Auto Business Here</div>
+        <div style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin-top:4px;">Reach car buyers and sellers across Cameroon daily.</div>
+      </div>
+      <a href="mailto:akemwoody@gmail.com" class="ad-banner-cta">Contact Us</a>
+    </div>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
@@ -787,6 +831,23 @@
         </div>
       </div>`;
     }).join('');
+
+    // AD ZONE 3: Mid-grid ad after every 4 cars (hidden until activated)
+    const adMidEnabled = false; // Change to true to activate
+    if (adMidEnabled && cars.length > 4) {
+      const carCards = grid.querySelectorAll('.car-card');
+      if (carCards[3]) {
+        const adEl = document.createElement('div');
+        adEl.style.cssText = 'grid-column:1/-1;';
+        adEl.innerHTML = `
+          <div class="ad-banner">
+            <span class="ad-banner-label">Ad</span>
+            <div class="ad-banner-content">🚗 Promote your auto business to car buyers across Cameroon</div>
+            <a href="mailto:akemwoody@gmail.com" class="ad-banner-cta">Advertise Here</a>
+          </div>`;
+        carCards[3].after(adEl);
+      }
+    }
 
     grid.querySelectorAll('.car-card').forEach(card => {
       card.addEventListener('click', e => {
