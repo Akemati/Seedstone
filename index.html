@@ -1408,6 +1408,27 @@
       </div>
     </div>
 
+    <!-- PHOTO UPLOAD -->
+    <div class="form-section">
+      <div class="form-section-title">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Property Photos
+      </div>
+      <div class="form-grid">
+        <div class="form-field" style="grid-column:1/-1;">
+          <label>Upload Photos <span style="color:#9ca3af;font-weight:400;">(up to 5 photos)</span></label>
+          <div id="uploadArea" style="border:2px dashed #d1d5db;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s;background:#fafafa;" onclick="document.getElementById('photoInput').click()" ondragover="event.preventDefault();this.style.borderColor='#1B3A2D'" ondragleave="this.style.borderColor='#d1d5db'" ondrop="handleDrop(event)">
+            <div style="font-size:2rem;margin-bottom:8px;">📷</div>
+            <div style="font-weight:600;color:#374151;margin-bottom:4px;">Click to upload or drag & drop</div>
+            <div style="font-size:0.82rem;color:#9ca3af;">JPG, PNG, WEBP — max 5MB each</div>
+          </div>
+          <input type="file" id="photoInput" accept="image/*" multiple style="display:none;" onchange="handlePhotoSelect(event)"/>
+          <div id="photoPreview" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;"></div>
+          <div id="uploadStatus" style="font-size:0.82rem;color:#6b7280;margin-top:6px;"></div>
+        </div>
+      </div>
+    </div>
+
     <button class="form-submit" id="formSubmit">
       Submit Listing for Verification →
     </button>
@@ -1838,6 +1859,60 @@
   });
 
   // ── SUBMIT FORM TO SUPABASE ──
+  // ── PHOTO UPLOAD ──
+  const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dzeyxviu4/image/upload';
+  const CLOUDINARY_PRESET = 'Seedstone_uploads';
+  let uploadedPhotoUrls = [];
+
+  function handlePhotoSelect(e) { processFiles([...e.target.files]); }
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadArea').style.borderColor = '#d1d5db';
+    processFiles([...e.dataTransfer.files]);
+  }
+
+  async function processFiles(files) {
+    const allowed = files.filter(f => f.type.startsWith('image/') && f.size <= 5*1024*1024);
+    if (allowed.length < files.length) alert('Some files were skipped (not images or over 5MB).');
+    const remaining = 5 - uploadedPhotoUrls.length;
+    const toUpload = allowed.slice(0, remaining);
+    if (!toUpload.length) return;
+
+    document.getElementById('uploadStatus').textContent = `Uploading ${toUpload.length} photo(s)...`;
+
+    for (const file of toUpload) {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', CLOUDINARY_PRESET);
+      try {
+        const res = await fetch(CLOUDINARY_URL, { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.secure_url) {
+          uploadedPhotoUrls.push(data.secure_url);
+          addPhotoPreview(data.secure_url);
+        }
+      } catch(e) { console.error('Upload failed', e); }
+    }
+    document.getElementById('uploadStatus').textContent = `${uploadedPhotoUrls.length} photo(s) ready.`;
+  }
+
+  function addPhotoPreview(url) {
+    const preview = document.getElementById('photoPreview');
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:relative;width:80px;height:80px;border-radius:8px;overflow:hidden;';
+    const img = document.createElement('img');
+    img.src = url; img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+    const rm = document.createElement('button');
+    rm.innerHTML = '✕'; rm.style.cssText = 'position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:11px;';
+    rm.onclick = () => {
+      uploadedPhotoUrls = uploadedPhotoUrls.filter(u => u !== url);
+      wrap.remove();
+      document.getElementById('uploadStatus').textContent = `${uploadedPhotoUrls.length} photo(s) ready.`;
+    };
+    wrap.appendChild(img); wrap.appendChild(rm);
+    preview.appendChild(wrap);
+  }
+
   document.getElementById('formSubmit').addEventListener('click', async () => {
     const btn = document.getElementById('formSubmit');
 
@@ -1882,6 +1957,7 @@
           city, neighbourhood: hood, address, bedrooms, bathrooms,
           description: desc, landlord_name: name,
           landlord_phone: phone, landlord_whatsapp: whatsapp || phone,
+          image_urls: uploadedPhotoUrls.length ? JSON.stringify(uploadedPhotoUrls) : null,
           verified: false
         })
       });
@@ -1889,7 +1965,10 @@
       if (res.ok) {
         document.getElementById('listPage').classList.remove('open');
         document.getElementById('thankyouPage').classList.add('open');
-        loadListings('All'); // Refresh listings
+        uploadedPhotoUrls = [];
+        document.getElementById('photoPreview').innerHTML = '';
+        document.getElementById('uploadStatus').textContent = '';
+        loadListings('All');
       } else {
         const err = await res.json();
         alert('Submission failed. Please try again.');
