@@ -285,8 +285,9 @@
     </a>
     <div class="dash-nav-right">
       <span class="dash-user" id="dashUserPhone"></span>
-      <a href="index.html" class="dash-nav-btn">← Back to Site</a>
-      <button class="dash-nav-btn" id="signOutBtn">Sign Out</button>
+      <a href="index.html" class="dash-nav-btn" data-en="← Back to Site" data-fr="← Retour au site">← Back to Site</a>
+      <button id="langToggle" onclick="toggleLang()" style="background:transparent;border:1.5px solid rgba(255,255,255,0.4);color:rgba(255,255,255,0.85);padding:5px 12px;border-radius:7px;font-size:0.8rem;font-weight:700;cursor:pointer;margin-right:4px;">FR</button>
+      <button class="dash-nav-btn" id="signOutBtn" data-en="Sign Out" data-fr="Se déconnecter">Sign Out</button>
     </div>
   </nav>
 
@@ -294,37 +295,37 @@
     <div class="dash-welcome">
       <div>
         <h1 id="dashWelcomeName">Welcome back! 👋</h1>
-        <p>Manage your SeedStone property listings below.</p>
+        <p data-en="Manage your SeedStone property listings below." data-fr="Gérez vos annonces immobilières SeedStone ci-dessous.">Manage your SeedStone property listings below.</p>
       </div>
-      <a href="index.html#list" class="new-listing-btn">+ Add New Listing</a>
+      <a href="index.html#list" class="new-listing-btn" data-en="+ Add New Listing" data-fr="+ Ajouter une annonce">+ Add New Listing</a>
     </div>
 
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-num" id="statTotal">0</div>
-        <div class="stat-label">Total Listings</div>
+        <div class="stat-label" data-en="Total Listings" data-fr="Total annonces">Total Listings</div>
       </div>
       <div class="stat-card">
         <div class="stat-num" id="statLive" style="color:var(--green)">0</div>
-        <div class="stat-label">Live & Approved</div>
+        <div class="stat-label" data-en="Live &amp; Approved" data-fr="En ligne &amp; Approuvées">Live &amp; Approved</div>
       </div>
       <div class="stat-card">
         <div class="stat-num" id="statPending" style="color:#d97706">0</div>
-        <div class="stat-label">Pending Review</div>
+        <div class="stat-label" data-en="Pending Review" data-fr="En attente">Pending Review</div>
       </div>
       <div class="stat-card">
         <div class="stat-num" id="statViews" style="color:var(--earth)">0</div>
-        <div class="stat-label">Total Views</div>
+        <div class="stat-label" data-en="Total Views" data-fr="Vues totales">Total Views</div>
       </div>
     </div>
 
     <div style="display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;">
-  <button id="tabListings" style="padding:10px 20px; background:#059669; color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">🏠 My Listings</button>
-  <button id="tabCars" style="padding:10px 20px; background:#f3f4f6; color:#374151; border:none; border-radius:10px; font-weight:700; cursor:pointer;">🚗 My Cars</button>
-  <button id="tabInbox" style="padding:10px 20px; background:#f3f4f6; color:#374151; border:none; border-radius:10px; font-weight:700; cursor:pointer;">📥 Inbox <span id="inboxBadge" style="display:none; background:#dc2626; color:white; border-radius:999px; padding:1px 7px; font-size:12px; margin-left:4px;"></span></button>
+  <button id="tabListings" style="padding:10px 20px; background:#059669; color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;" data-en="🏠 My Listings" data-fr="🏠 Mes annonces">🏠 My Listings</button>
+  <button id="tabCars" style="padding:10px 20px; background:#f3f4f6; color:#374151; border:none; border-radius:10px; font-weight:700; cursor:pointer;" data-en="🚗 My Cars" data-fr="🚗 Mes voitures">🚗 My Cars</button>
+  <button id="tabInbox" style="padding:10px 20px; background:#f3f4f6; color:#374151; border:none; border-radius:10px; font-weight:700; cursor:pointer;" data-en="📥 Inbox" data-fr="📥 Messages">📥 Inbox <span id="inboxBadge" style="display:none; background:#dc2626; color:white; border-radius:999px; padding:1px 7px; font-size:12px; margin-left:4px;"></span></button>
 </div>
 <div id="tabListingsContent">
-<div class="section-title">My Listings</div>
+<div class="section-title" data-en="My Listings" data-fr="Mes annonces">My Listings</div>
     <div class="listings-grid" id="myListingsGrid">
       <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">⏳ Loading...</div>
     </div>
@@ -333,9 +334,9 @@
 
 <!-- MY CARS TAB -->
 <div id="tabCarsContent" style="display:none;">
-  <div class="section-title">🚗 My Car Listings</div>
+  <div class="section-title" data-en="🚗 My Car Listings" data-fr="🚗 Mes voitures">🚗 My Car Listings</div>
   <div style="margin-bottom:16px;">
-    <a href="cars.html#sell" style="display:inline-block;padding:10px 20px;background:#1a3a5c;color:#fff;border-radius:10px;font-weight:700;font-size:0.88rem;text-decoration:none;">+ Add New Car</a>
+    <a href="cars.html#sell" style="display:inline-block;padding:10px 20px;background:#1a3a5c;color:#fff;border-radius:10px;font-weight:700;font-size:0.88rem;text-decoration:none;" data-en="+ Add New Car" data-fr="+ Ajouter une voiture">+ Add New Car</a>
   </div>
   <div id="myCarsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
     <div style="grid-column:1/-1;text-align:center;padding:40px;color:#9ca3af;">⏳ Loading...</div>
@@ -343,7 +344,7 @@
 </div>
 <!-- INBOX TAB -->
 <div id="tabInboxContent" style="display:none;">
-  <div class="section-title">📥 Inquiry Inbox</div>
+  <div class="section-title" data-en="📥 Inquiry Inbox" data-fr="📥 Messages reçus">📥 Inquiry Inbox</div>
   <div id="inboxList" style="display:flex; flex-direction:column; gap:12px;">
     <div style="text-align:center; padding:40px; color:#9ca3af;">Loading messages…</div>
   </div>
@@ -354,11 +355,11 @@
 <div class="modal-overlay" id="editModal">
   <div class="modal-box">
     <button class="modal-close" id="editModalClose">✕</button>
-    <div class="modal-title">Edit Listing</div>
+    <div class="modal-title" data-en="Edit Listing" data-fr="Modifier l'annonce">Edit Listing</div>
     <input type="hidden" id="editId"/>
     <div class="edit-grid">
       <div class="edit-field"><label>Title</label><input type="text" id="editTitle"/></div>
-      <div class="edit-field"><label>Price (XAF)</label><input type="number" id="editPrice"/></div>
+      <div class="edit-field"><label data-en="Price (XAF)" data-fr="Prix (XAF)">Price (XAF)</label><input type="number" id="editPrice"/></div>
       <div class="edit-field">
         <label>City</label>
         <select id="editCity">
@@ -379,9 +380,9 @@
         <select id="editPurpose"><option>For Rent</option><option>For Sale</option></select>
       </div>
     </div>
-    <div class="edit-field"><label>Description</label><textarea id="editDesc"></textarea></div>
+    <div class="edit-field"><label data-en="Description" data-fr="Description">Description</label><textarea id="editDesc"></textarea></div>
     <div class="edit-field"><label>Phone Number</label><input type="tel" id="editPhone"/></div>
-    <button class="edit-save-btn" id="editSaveBtn">Save Changes</button>
+    <button class="edit-save-btn" id="editSaveBtn" data-en="Save Changes" data-fr="Enregistrer">Save Changes</button>
   </div>
 </div>
 
@@ -810,6 +811,36 @@ async function loadInboxBadge(phone) {
     badge.style.display = 'none';
   }
 }
+</script>
+
+<script>
+// ── BILINGUAL EN/FR TOGGLE ──
+function applyLang(lang) {
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = lang === 'fr'
+      ? (el.getAttribute('data-fr') || el.getAttribute('data-en'))
+      : el.getAttribute('data-en');
+  });
+  document.querySelectorAll('[data-ph-en]').forEach(el => {
+    el.placeholder = lang === 'fr'
+      ? (el.getAttribute('data-ph-fr') || el.getAttribute('data-ph-en'))
+      : el.getAttribute('data-ph-en');
+  });
+  const btn = document.getElementById('langToggle');
+  if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
+  localStorage.setItem('ss_lang', lang);
+  document.documentElement.lang = lang;
+}
+function toggleLang() {
+  const current = localStorage.getItem('ss_lang') || 'en';
+  applyLang(current === 'en' ? 'fr' : 'en');
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const lang = localStorage.getItem('ss_lang') || 'en';
+  if (lang === 'fr') applyLang('fr');
+  const btn = document.getElementById('langToggle');
+  if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
+});
 </script>
 </body>
 </html>
