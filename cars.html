@@ -44,28 +44,40 @@
 
     /* ── HERO ── */
     .hero {
-      min-height: 70vh; background: var(--car-blue);
+      min-height: 70vh;
+      background-color: var(--car-blue);
+      background-image:
+        linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.1) 35%, rgba(0,0,0,0.0) 55%, rgba(0,0,0,0.55) 100%),
+        url('https://images.unsplash.com/photo-1659947234294-b217aaeb25f8?w=1920&q=85&fit=crop&auto=format');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
       display: flex; align-items: center; padding: 100px 5% 60px;
       position: relative; overflow: hidden;
     }
-    .hero-bg { position: absolute; inset: 0; opacity: 0.04; background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 28px 28px; pointer-events: none; }
-    .hero-accent { position: absolute; right: -60px; top: -60px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(232,160,32,0.2) 0%, transparent 70%); pointer-events: none; }
-    .hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; }
+    .hero-bg { position: absolute; inset: 0; opacity: 0.02; background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 28px 28px; pointer-events: none; }
+    .hero-accent { position: absolute; right: -60px; top: -60px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(232,160,32,0.1) 0%, transparent 70%); pointer-events: none; }
+    .hero-inner { max-width: 860px; margin: 0 auto; width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; }
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(232,160,32,0.15); border: 1px solid rgba(232,160,32,0.3);
-      color: var(--car-accent); font-size: 0.75rem; font-weight: 600;
+      background: rgba(0,0,0,0.35); border: 1px solid rgba(232,160,32,0.55);
+      color: var(--car-accent); font-size: 0.75rem; font-weight: 700;
       letter-spacing: .08em; text-transform: uppercase;
       padding: 5px 14px; border-radius: 100px; margin-bottom: 20px;
+      backdrop-filter: blur(8px);
     }
     .hero h1 {
       font-family: 'Playfair Display', serif;
       font-size: clamp(2.2rem, 5vw, 3.4rem);
       color: var(--white); line-height: 1.15; font-weight: 700; margin-bottom: 18px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 4px 20px rgba(0,0,0,0.7), 0 8px 40px rgba(0,0,0,0.5);
     }
     .hero h1 em { color: var(--car-accent); font-style: normal; }
-    .hero p { color: rgba(255,255,255,0.6); font-size: 0.97rem; max-width: 500px; margin-bottom: 32px; }
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero p {
+      color: rgba(255,255,255,1); font-size: 0.97rem; max-width: 500px; margin-bottom: 32px; font-weight: 500;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 2px 12px rgba(0,0,0,0.8);
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
     .btn-primary {
       background: var(--car-accent); color: var(--white);
       padding: 13px 26px; border-radius: var(--radius);
@@ -78,13 +90,19 @@
       background: transparent; color: var(--white);
       padding: 13px 26px; border-radius: var(--radius);
       font-weight: 500; font-size: 0.92rem; text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.25); cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.35); cursor: pointer;
       transition: all .2s; display: inline-flex; align-items: center; gap: 8px;
     }
-    .btn-outline:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
-    .hero-stats { display: flex; gap: 28px; margin-top: 40px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
-    .stat-num { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--white); font-weight: 700; }
-    .stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: .06em; }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.08); }
+    .hero-stats {
+      display: flex; gap: 0; margin-top: 40px; flex-wrap: wrap;
+      background: rgba(0,0,0,0.38); border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 14px; overflow: hidden; backdrop-filter: blur(16px);
+    }
+    .stat-item-car { flex: 1; padding: 16px 28px; text-align: center; border-right: 1px solid rgba(255,255,255,0.12); min-width: 100px; }
+    .stat-item-car:last-child { border-right: none; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--white); font-weight: 700; line-height: 1; margin-bottom: 4px; }
+    .stat-label { font-size: 0.72rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: .06em; }
 
     /* ── SEARCH ── */
     .search-section { background: var(--sand); padding: 36px 5%; }
@@ -454,9 +472,9 @@
       <a href="#" class="btn-outline" id="sellCarBtn2">+ Sell Your Car</a>
     </div>
     <div class="hero-stats">
-      <div><div class="stat-num" id="carCount">0+</div><div class="stat-label">Cars Listed</div></div>
-      <div><div class="stat-num">100%</div><div class="stat-label">Verified</div></div>
-      <div><div class="stat-num">Free</div><div class="stat-label">To List</div></div>
+      <div class="stat-item-car"><div class="stat-num" id="carCount">0+</div><div class="stat-label">Cars Listed</div></div>
+      <div class="stat-item-car"><div class="stat-num">100%</div><div class="stat-label">Verified</div></div>
+      <div class="stat-item-car"><div class="stat-num">Free</div><div class="stat-label">To List</div></div>
     </div>
   </div>
 </section>
