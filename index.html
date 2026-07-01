@@ -71,7 +71,7 @@
       min-height: 100vh;
       background-color: var(--forest);
       background-image:
-        linear-gradient(rgba(15, 35, 22, 0.78), rgba(15, 35, 22, 0.86)),
+        linear-gradient(rgba(15, 35, 22, 0.52), rgba(15, 35, 22, 0.68)),
         url('https://images.unsplash.com/photo-1615463669098-521a22047a1e?w=1920&q=80&fit=crop&auto=format');
       background-size: cover;
       background-position: center;
@@ -95,8 +95,8 @@
     }
 
     .hero-inner {
-      max-width: 1100px; margin: 0 auto; width: 100%;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+      max-width: 800px; margin: 0 auto; width: 100%;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
     }
 
     .hero-eyebrow {
@@ -118,11 +118,11 @@
     .hero h1 em { color: var(--earth); font-style: normal; }
 
     .hero p {
-      color: rgba(255,255,255,0.65); font-size: 1rem;
-      max-width: 440px; margin-bottom: 36px; font-weight: 300;
+      color: rgba(255,255,255,0.72); font-size: 1rem;
+      max-width: 520px; margin-bottom: 36px; font-weight: 300;
     }
 
-    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
 
     .btn-primary {
       background: var(--earth); color: var(--white);
@@ -145,7 +145,8 @@
 
     .hero-stats {
       display: flex; gap: 32px; margin-top: 44px;
-      padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.15);
+      justify-content: center;
     }
     .stat-item {}
     .stat-number { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--white); font-weight: 700; }
@@ -851,25 +852,6 @@
       </div>
     </div>
 
-    <div class="hero-visual">
-      <div class="hero-card-stack">
-        <div class="hero-card-back"></div>
-        <div class="hero-card">
-          <div class="hero-card-img-placeholder">🏡</div>
-          <div class="hero-card-badge">For Rent</div>
-          <div class="hero-card-title">3-Bedroom Apartment</div>
-          <div class="hero-card-loc">📍 Molyko, Buea</div>
-          <div class="hero-card-price">85,000 <span style="font-size:0.8rem;font-family:Inter,sans-serif;font-weight:400;color:rgba(255,255,255,0.5)">XAF/month</span></div>
-          <div class="hero-card-footer">
-            <div class="hero-card-meta">
-              <span>🛏 3 beds</span>
-              <span>🚿 2 baths</span>
-            </div>
-            <div class="hero-card-verified">✓ Verified</div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
