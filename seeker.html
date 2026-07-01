@@ -136,16 +136,17 @@
 
 <!-- AUTH PAGE -->
 <div class="auth-page" id="authPage">
-  <div class="auth-box">
+  <div class="auth-box" style="position:relative;">
     <a href="index.html" class="auth-logo">
       <div class="auth-logo-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
       <span class="auth-logo-text">Seed<span>Stone</span></span>
     </a>
-    <p class="auth-subtitle">Seeker Portal — save listings & get alerts</p>
+    <button id="langToggleAuth" onclick="toggleLang()" style="position:absolute;top:16px;right:16px;background:transparent;border:1.5px solid #1B3A2D;color:#1B3A2D;padding:5px 12px;border-radius:7px;font-size:0.8rem;font-weight:700;cursor:pointer;">FR</button>
+    <p class="auth-subtitle" data-en="Seeker Portal — save listings &amp; get alerts" data-fr="Portail chercheur — sauvegardez des annonces &amp; recevez des alertes">Seeker Portal — save listings & get alerts</p>
 
     <div class="auth-tabs">
-      <button class="auth-tab active" id="loginTab" onclick="switchTab('login')">Sign In</button>
-      <button class="auth-tab" id="signupTab" onclick="switchTab('signup')">Join Free</button>
+      <button class="auth-tab active" id="loginTab" onclick="switchTab('login')" data-en="Sign In" data-fr="Se connecter">Sign In</button>
+      <button class="auth-tab" id="signupTab" onclick="switchTab('signup')" data-en="Join Free" data-fr="S'inscrire">Join Free</button>
     </div>
 
     <div id="authError" class="auth-error"></div>
@@ -154,34 +155,34 @@
     <!-- LOGIN -->
     <div id="loginForm">
       <div class="auth-field">
-        <label>Phone Number</label>
-        <input type="tel" id="loginPhone" placeholder="e.g. 673000000"/>
+        <label data-en="Phone Number" data-fr="Numéro de téléphone">Phone Number</label>
+        <input type="tel" id="loginPhone" placeholder="e.g. 673000000" data-ph-en="e.g. 673000000" data-ph-fr="ex. 673000000"/>
       </div>
       <div class="auth-field">
-        <label>Password</label>
-        <input type="password" id="loginPass" placeholder="Your password"/>
+        <label data-en="Password" data-fr="Mot de passe">Password</label>
+        <input type="password" id="loginPass" placeholder="Your password" data-ph-en="Your password" data-ph-fr="Votre mot de passe"/>
       </div>
-      <button class="auth-btn" id="loginBtn">Sign In</button>
-      <div class="auth-footer">No account? <a href="#" onclick="switchTab('signup')">Join free</a></div>
+      <button class="auth-btn" id="loginBtn" data-en="Sign In" data-fr="Se connecter">Sign In</button>
+      <div class="auth-footer" data-en="No account? <a href='#' onclick='switchTab(&quot;signup&quot;)'>Join free</a>" data-fr="Pas de compte ? <a href='#' onclick='switchTab(&quot;signup&quot;)'>S'inscrire</a>">No account? <a href="#" onclick="switchTab('signup')">Join free</a></div>
     </div>
 
     <!-- SIGNUP -->
     <div id="signupForm" style="display:none">
       <div class="auth-field">
-        <label>Full Name *</label>
+        <label data-en="Full Name *" data-fr="Nom complet *">Full Name *</label>
         <input type="text" id="signupName" placeholder="Your full name"/>
       </div>
       <div class="auth-field">
-        <label>Phone Number *</label>
+        <label data-en="Phone Number *" data-fr="Numéro de téléphone *">Phone Number *</label>
         <input type="tel" id="signupPhone" placeholder="e.g. 673000000"/>
-        <span class="auth-hint">Used for WhatsApp alerts on new listings</span>
+        <span class="auth-hint" data-en="Used for WhatsApp alerts on new listings" data-fr="Utilisé pour les alertes WhatsApp sur les nouvelles annonces">Used for WhatsApp alerts on new listings</span>
       </div>
       <div class="auth-field">
-        <label>Password *</label>
+        <label data-en="Password *" data-fr="Mot de passe *">Password *</label>
         <input type="password" id="signupPass" placeholder="Min 6 characters"/>
       </div>
-      <button class="auth-btn" id="signupBtn">Create Free Account</button>
-      <div class="auth-footer">Already registered? <a href="#" onclick="switchTab('login')">Sign in</a></div>
+      <button class="auth-btn" id="signupBtn" data-en="Create Free Account" data-fr="Créer un compte gratuit">Create Free Account</button>
+      <div class="auth-footer" data-en="Already registered? <a href='#' onclick='switchTab(&quot;login&quot;)'>Sign in</a>" data-fr="Déjà inscrit ? <a href='#' onclick='switchTab(&quot;login&quot;)'>Se connecter</a>">Already registered? <a href="#" onclick="switchTab('login')">Sign in</a></div>
     </div>
   </div>
 </div>
@@ -195,9 +196,10 @@
     </a>
     <div class="dash-nav-right">
       <span class="dash-user" id="seekerUserDisplay"></span>
-      <a href="index.html" class="dash-nav-btn">🏠 Properties</a>
-      <a href="cars.html" class="dash-nav-btn">🚗 Cars</a>
-      <button class="dash-nav-btn" id="signOutBtn">Sign Out</button>
+      <a href="index.html" class="dash-nav-btn" data-en="🏠 Properties" data-fr="🏠 Propriétés">🏠 Properties</a>
+      <a href="cars.html" class="dash-nav-btn" data-en="🚗 Cars" data-fr="🚗 Voitures">🚗 Cars</a>
+      <button id="langToggle" onclick="toggleLang()" style="background:transparent;border:1.5px solid rgba(255,255,255,0.4);color:rgba(255,255,255,0.8);padding:5px 12px;border-radius:7px;font-size:0.8rem;font-weight:700;cursor:pointer;margin-right:4px;">FR</button>
+      <button class="dash-nav-btn" id="signOutBtn" data-en="Sign Out" data-fr="Se déconnecter">Sign Out</button>
     </div>
   </nav>
 
@@ -205,50 +207,50 @@
     <div class="welcome-banner">
       <div>
         <h1 id="seekerWelcome">Welcome! 👋</h1>
-        <p>Save listings you love and set alerts to be notified on WhatsApp when new ones match.</p>
+        <p data-en="Save listings you love and set alerts to be notified on WhatsApp when new ones match." data-fr="Sauvegardez vos annonces favorites et créez des alertes pour être notifié sur WhatsApp.">Save listings you love and set alerts to be notified on WhatsApp when new ones match.</p>
       </div>
-      <a href="index.html" class="browse-btn">Browse Properties →</a>
+      <a href="index.html" class="browse-btn" data-en="Browse Properties →" data-fr="Voir les propriétés →">Browse Properties →</a>
     </div>
 
     <!-- WHATSAPP ALERTS -->
     <div class="alert-card">
-      <div class="alert-card-title">🔔 WhatsApp Listing Alerts</div>
-      <div class="alert-card-sub">Set your preferences and get notified on WhatsApp when new matching listings are approved.</div>
+      <div class="alert-card-title" data-en="🔔 WhatsApp Listing Alerts" data-fr="🔔 Alertes WhatsApp">🔔 WhatsApp Listing Alerts</div>
+      <div class="alert-card-sub" data-en="Set your preferences and get notified on WhatsApp when new matching listings are approved." data-fr="Définissez vos préférences et recevez des notifications WhatsApp pour les nouvelles annonces correspondantes.">Set your preferences and get notified on WhatsApp when new matching listings are approved.</div>
       <div class="alert-grid">
         <div class="af">
-          <label>City</label>
+          <label data-en="City" data-fr="Ville">City</label>
           <select id="alertCity">
-            <option value="">Any City</option>
+            <option value="" data-en="Any City" data-fr="Toute ville">Any City</option>
             <option>Buea</option><option>Limbe</option><option>Douala</option>
             <option>Yaoundé</option><option>Bamenda</option>
           </select>
         </div>
         <div class="af">
-          <label>Type</label>
+          <label data-en="Type" data-fr="Type">Type</label>
           <select id="alertType">
-            <option value="">Any Type</option>
+            <option value="" data-en="Any Type" data-fr="Tout type">Any Type</option>
             <option>Room</option><option>Self-Contain</option><option>Apartment</option>
             <option>Full House</option><option>Land</option><option>Car</option>
           </select>
         </div>
         <div class="af">
-          <label>Max Price (XAF)</label>
+          <label data-en="Max Price (XAF)" data-fr="Prix max (XAF)">Max Price (XAF)</label>
           <input type="number" id="alertPrice" placeholder="e.g. 100000"/>
         </div>
-        <button class="save-alert-btn" onclick="saveAlert()">+ Add Alert</button>
+        <button class="save-alert-btn" onclick="saveAlert()" data-en="+ Add Alert" data-fr="+ Ajouter une alerte">+ Add Alert</button>
       </div>
       <div class="alerts-list" id="alertsList"></div>
       <div class="whatsapp-note">
-        📱 Alerts will be sent to your registered phone number via WhatsApp when SeedStone approves new matching listings.
+        <span data-en="📱 Alerts will be sent to your registered phone number via WhatsApp when SeedStone approves new matching listings." data-fr="📱 Les alertes seront envoyées sur votre numéro WhatsApp lorsque SeedStone approuve de nouvelles annonces correspondantes.">📱 Alerts will be sent to your registered phone number via WhatsApp when SeedStone approves new matching listings.</span>
       </div>
     </div>
 
     <!-- SAVED LISTINGS -->
-    <div class="section-title">❤️ Saved Listings</div>
+    <div class="section-title" data-en="❤️ Saved Listings" data-fr="❤️ Annonces sauvegardées">❤️ Saved Listings</div>
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchSavedTab('all', this)">All</button>
-      <button class="tab-btn" onclick="switchSavedTab('properties', this)">🏠 Properties</button>
-      <button class="tab-btn" onclick="switchSavedTab('cars', this)">🚗 Cars</button>
+      <button class="tab-btn active" onclick="switchSavedTab('all', this)" data-en="All" data-fr="Tout">All</button>
+      <button class="tab-btn" onclick="switchSavedTab('properties', this)" data-en="🏠 Properties" data-fr="🏠 Propriétés">🏠 Properties</button>
+      <button class="tab-btn" onclick="switchSavedTab('cars', this)" data-en="🚗 Cars" data-fr="🚗 Voitures">🚗 Cars</button>
     </div>
     <div class="saved-grid" id="savedGrid">
       <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">⏳ Loading...</div>
@@ -536,6 +538,40 @@
     container.querySelectorAll('.sc-carousel-img').forEach((img, i) => img.classList.toggle('active', i === idx));
     container.querySelectorAll('.sc-carousel-dot').forEach((dot, i) => dot.classList.toggle('active', i === idx));
   }
+</script>
+
+<script>
+// ── BILINGUAL EN/FR TOGGLE ──
+function applyLang(lang) {
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = lang === 'fr'
+      ? (el.getAttribute('data-fr') || el.getAttribute('data-en'))
+      : el.getAttribute('data-en');
+  });
+  document.querySelectorAll('[data-ph-en]').forEach(el => {
+    el.placeholder = lang === 'fr'
+      ? (el.getAttribute('data-ph-fr') || el.getAttribute('data-ph-en'))
+      : el.getAttribute('data-ph-en');
+  });
+  ['langToggle','langToggleAuth'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
+  });
+  localStorage.setItem('ss_lang', lang);
+  document.documentElement.lang = lang;
+}
+function toggleLang() {
+  const current = localStorage.getItem('ss_lang') || 'en';
+  applyLang(current === 'en' ? 'fr' : 'en');
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const lang = localStorage.getItem('ss_lang') || 'en';
+  if (lang === 'fr') applyLang('fr');
+  ['langToggle','langToggleAuth'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
+  });
+});
 </script>
 </body>
 </html>

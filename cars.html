@@ -451,11 +451,12 @@
     <span class="logo-text">Seed<span>Stone</span></span>
   </a>
   <div class="nav-links" id="navLinks">
-    <a href="index.html">Properties</a>
-    <a href="cars.html" class="active">🚗 Cars</a>
-    <a href="dashboard.html">My Dashboard</a>
-    <a href="#" class="nav-cta" id="sellCarBtn">Sell Your Car</a>
+    <a href="index.html" data-en="Properties" data-fr="Propriétés">Properties</a>
+    <a href="cars.html" class="active" data-en="🚗 Cars" data-fr="🚗 Voitures">🚗 Cars</a>
+    <a href="dashboard.html" data-en="My Dashboard" data-fr="Mon tableau de bord">My Dashboard</a>
+    <a href="#" class="nav-cta" id="sellCarBtn" data-en="Sell Your Car" data-fr="Vendre ma voiture">Sell Your Car</a>
   </div>
+  <button id="langToggle" onclick="toggleLang()" style="background:transparent;border:1.5px solid #1B3A2D;color:#1B3A2D;padding:6px 14px;border-radius:7px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-right:8px;">FR</button>
   <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
 </nav>
 
@@ -464,17 +465,17 @@
   <div class="hero-bg"></div>
   <div class="hero-accent"></div>
   <div class="hero-inner">
-    <div class="hero-eyebrow">🚗 Cameroon Car Marketplace</div>
-    <h1>Buy & Sell Cars<br/><em>Across Cameroon</em></h1>
-    <p>Browse verified new and used cars from trusted sellers. Direct contact, no middlemen, no scams.</p>
+    <div class="hero-eyebrow" data-en="🚗 Cameroon Car Marketplace" data-fr="🚗 Marché Automobile du Cameroun">🚗 Cameroon Car Marketplace</div>
+    <h1 data-en="Buy &amp; Sell Cars<br/><em>Across Cameroon</em>" data-fr="Achetez &amp; Vendez des Voitures<br/><em>Partout au Cameroun</em>">Buy & Sell Cars<br/><em>Across Cameroon</em></h1>
+    <p data-en="Browse verified new and used cars from trusted sellers. Direct contact, no middlemen, no scams." data-fr="Parcourez des voitures neuves et d'occasion vérifiées. Contact direct, sans intermédiaires, sans arnaques.">Browse verified new and used cars from trusted sellers. Direct contact, no middlemen, no scams.</p>
     <div class="hero-actions">
-      <a href="#cars" class="btn-primary">Browse Cars</a>
-      <a href="#" class="btn-outline" id="sellCarBtn2">+ Sell Your Car</a>
+      <a href="#cars" class="btn-primary" data-en="Browse Cars" data-fr="Voir les voitures">Browse Cars</a>
+      <a href="#" class="btn-outline" id="sellCarBtn2" data-en="+ Sell Your Car" data-fr="+ Vendre ma voiture">+ Sell Your Car</a>
     </div>
     <div class="hero-stats">
-      <div class="stat-item-car"><div class="stat-num" id="carCount">0+</div><div class="stat-label">Cars Listed</div></div>
-      <div class="stat-item-car"><div class="stat-num">100%</div><div class="stat-label">Verified</div></div>
-      <div class="stat-item-car"><div class="stat-num">Free</div><div class="stat-label">To List</div></div>
+      <div class="stat-item-car"><div class="stat-num" id="carCount">0+</div><div class="stat-label" data-en="Cars Listed" data-fr="Voitures publiées">Cars Listed</div></div>
+      <div class="stat-item-car"><div class="stat-num">100%</div><div class="stat-label" data-en="Verified" data-fr="Vérifiées">Verified</div></div>
+      <div class="stat-item-car"><div class="stat-num">Free</div><div class="stat-label" data-en="To List" data-fr="Pour publier">To List</div></div>
     </div>
   </div>
 </section>
@@ -483,28 +484,28 @@
 <div class="search-section">
   <div class="search-wrap">
     <div class="search-top">
-      <h2>Search Cars</h2>
+      <h2 data-en="Search Cars" data-fr="Rechercher des voitures">Search Cars</h2>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <div class="search-count" id="searchCount"></div>
-        <button class="car-filter-toggle" id="carFilterToggle" onclick="toggleCarFilters()">⚙ Filters</button>
+        <button class="car-filter-toggle" id="carFilterToggle" onclick="toggleCarFilters()" data-en="⚙ Filters" data-fr="⚙ Filtres">⚙ Filters</button>
       </div>
     </div>
     <!-- Always visible quick search -->
     <div class="sf" style="margin-bottom:12px;">
-      <input type="text" id="sSearch" placeholder="🔍 Search by make, model…" oninput="applySearch()" style="font-size:1rem;padding:13px 16px;"/>
+      <input type="text" id="sSearch" placeholder="🔍 Search by make, model…" data-ph-en="🔍 Search by make, model…" data-ph-fr="🔍 Rechercher par marque, modèle…" oninput="applySearch()" style="font-size:1rem;padding:13px 16px;"/>
     </div>
     <div class="car-filters-panel open" id="carFiltersPanel">
     <div class="search-grid">
-      <div class="sf"><label>City</label>
+      <div class="sf"><label data-en="City" data-fr="Ville">City</label>
         <select id="sCity" onchange="applySearch()">
-          <option value="">All Cities</option>
+          <option value="" data-en="All Cities" data-fr="Toutes les villes">All Cities</option>
           <option>Buea</option><option>Limbe</option><option>Douala</option>
           <option>Yaoundé</option><option>Bamenda</option>
         </select>
       </div>
-      <div class="sf"><label>Condition</label>
+      <div class="sf"><label data-en="Condition" data-fr="État">Condition</label>
         <select id="sCondition" onchange="applySearch()">
-          <option value="">Any Condition</option>
+          <option value="" data-en="Any Condition" data-fr="Tout état">Any Condition</option>
           <option>New</option><option>Used</option>
         </select>
       </div>
@@ -529,9 +530,9 @@
 <section class="cars-section" id="cars">
   <div class="section-header">
     <div>
-      <div class="section-eyebrow">Available Now</div>
-      <div class="section-title">Cars in Cameroon</div>
-      <div class="section-sub">All listings verified before going live.</div>
+      <div class="section-eyebrow" data-en="Available Now" data-fr="Disponible maintenant">Available Now</div>
+      <div class="section-title" data-en="Cars in Cameroon" data-fr="Voitures au Cameroun">Cars in Cameroon</div>
+      <div class="section-sub" data-en="All listings verified before going live." data-fr="Toutes les annonces vérifiées avant publication.">All listings verified before going live.</div>
     </div>
     <a href="#" class="btn-primary" id="sellCarBtn3">+ List Your Car Free</a>
   </div>
@@ -631,7 +632,7 @@
   </div>
   <div class="list-body">
     <div class="list-intro">
-      <h2>Sell Your Car Fast</h2>
+      <h2 data-en="Sell Your Car Fast" data-fr="Vendez votre voiture rapidement">Sell Your Car Fast</h2>
       <p>List your car free. Our team verifies it and publishes it within 24 hours. Reach thousands of genuine buyers across Cameroon.</p>
     </div>
 
@@ -761,7 +762,7 @@
       <span class="logo-text" style="color:#fff">Seed<span>Stone</span></span>
     </a>
     <div class="footer-links">
-      <a href="index.html">Properties</a>
+      <a href="index.html" data-en="Properties" data-fr="Propriétés">Properties</a>
       <a href="cars.html">Cars</a>
       <a href="dashboard.html">Dashboard</a>
     </div>
@@ -1323,6 +1324,36 @@
   });
 
   loadCars();
+</script>
+
+<script>
+// ── BILINGUAL EN/FR TOGGLE ──
+function applyLang(lang) {
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = lang === 'fr'
+      ? (el.getAttribute('data-fr') || el.getAttribute('data-en'))
+      : el.getAttribute('data-en');
+  });
+  document.querySelectorAll('[data-ph-en]').forEach(el => {
+    el.placeholder = lang === 'fr'
+      ? (el.getAttribute('data-ph-fr') || el.getAttribute('data-ph-en'))
+      : el.getAttribute('data-ph-en');
+  });
+  const btn = document.getElementById('langToggle');
+  if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
+  localStorage.setItem('ss_lang', lang);
+  document.documentElement.lang = lang;
+}
+function toggleLang() {
+  const current = localStorage.getItem('ss_lang') || 'en';
+  applyLang(current === 'en' ? 'fr' : 'en');
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const lang = localStorage.getItem('ss_lang') || 'en';
+  if (lang === 'fr') applyLang('fr');
+  const btn = document.getElementById('langToggle');
+  if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
+});
 </script>
 </body>
 </html>
