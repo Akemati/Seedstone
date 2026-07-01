@@ -69,14 +69,20 @@
     /* ── HERO ── */
     .hero {
       min-height: 100vh;
-      background: var(--forest);
+      background-color: var(--forest);
+      background-image:
+        linear-gradient(rgba(15, 35, 22, 0.78), rgba(15, 35, 22, 0.86)),
+        url('https://images.unsplash.com/photo-1615463669098-521a22047a1e?w=1920&q=80&fit=crop&auto=format');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       display: flex; align-items: center;
       padding: 100px 5% 60px;
       position: relative; overflow: hidden;
     }
 
     .hero-bg-pattern {
-      position: absolute; inset: 0; opacity: 0.04;
+      position: absolute; inset: 0; opacity: 0.03;
       background-image: radial-gradient(circle, #fff 1px, transparent 1px);
       background-size: 32px 32px; pointer-events: none;
     }
@@ -84,7 +90,7 @@
     .hero-accent {
       position: absolute; right: -80px; top: -80px;
       width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(196,124,62,0.18) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(196,124,62,0.14) 0%, transparent 70%);
       pointer-events: none;
     }
 
