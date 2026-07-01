@@ -897,25 +897,25 @@
       <div class="hero-search">
         <div class="hero-search-field">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-          <select onchange="if(this.value) window.location.href=this.value">
+          <select id="heroType">
             <option value="" data-en="All Property Types" data-fr="Tous les types">All Property Types</option>
-            <option value="#listings">Room</option>
-            <option value="#listings">Self-Contain</option>
-            <option value="#listings">Apartment</option>
-            <option value="#listings">Full House</option>
-            <option value="#listings">Land</option>
-            <option value="#listings">Commercial</option>
+            <option value="Room">Room</option>
+            <option value="Self-Contain">Self-Contain</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Full House">Full House</option>
+            <option value="Land">Land</option>
+            <option value="Commercial Space">Commercial</option>
           </select>
         </div>
         <div class="hero-search-field">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
-          <select onchange="if(this.value) window.location.href=this.value">
+          <select id="heroCity">
             <option value="" data-en="Any City" data-fr="Toute ville">Any City</option>
-            <option value="#listings">Buea</option>
-            <option value="#listings">Limbe</option>
+            <option value="Buea">Buea</option>
+            <option value="Limbe">Limbe</option>
           </select>
         </div>
-        <button class="hero-search-btn" onclick="document.getElementById('listings').scrollIntoView({behavior:'smooth'})" id="heroSearchBtn">
+        <button class="hero-search-btn" onclick="heroSearch()" id="heroSearchBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           Search
         </button>
@@ -923,11 +923,11 @@
 
       <!-- QUICK FILTERS -->
       <div class="hero-filters">
-        <a href="#listings" class="hero-filter-pill active" data-en="🏠 For Rent" data-fr="🏠 À louer">🏠 For Rent</a>
-        <a href="#listings" class="hero-filter-pill" data-en="🏡 For Sale" data-fr="🏡 À vendre">🏡 For Sale</a>
-        <a href="#listings" class="hero-filter-pill" data-en="🌿 Land" data-fr="🌿 Terrain">🌿 Land</a>
+        <a href="#listings" class="hero-filter-pill active" data-en="🏠 For Rent" data-fr="🏠 À louer" onclick="heroFilter('purpose','For Rent',this)">🏠 For Rent</a>
+        <a href="#listings" class="hero-filter-pill" data-en="🏡 For Sale" data-fr="🏡 À vendre" onclick="heroFilter('purpose','For Sale',this)">🏡 For Sale</a>
+        <a href="#listings" class="hero-filter-pill" data-en="🌿 Land" data-fr="🌿 Terrain" onclick="heroFilter('type','Land',this)">🌿 Land</a>
         <a href="cars.html" class="hero-filter-pill" data-en="🚗 Cars" data-fr="🚗 Voitures">🚗 Cars</a>
-        <a href="#listings" class="hero-filter-pill" data-en="🏢 Commercial" data-fr="🏢 Commercial">🏢 Commercial</a>
+        <a href="#listings" class="hero-filter-pill" data-en="🏢 Commercial" data-fr="🏢 Commercial" onclick="heroFilter('type','Commercial Space',this)">🏢 Commercial</a>
       </div>
 
       <div class="hero-actions" style="margin-bottom: 36px;">
@@ -1702,6 +1702,37 @@
   }
 
   // ── REAL-TIME SEARCH ──
+  // ── HERO SEARCH BAR ──
+  function heroSearch() {
+    const type = document.getElementById('heroType').value;
+    const city = document.getElementById('heroCity').value;
+    // Push values into the real search filters
+    if (type) document.getElementById('sType').value = type;
+    if (city) document.getElementById('sCity').value = city;
+    // Clear other filters for a clean search
+    if (!type) document.getElementById('sType').value = '';
+    if (!city) document.getElementById('sCity').value = '';
+    // Apply and scroll
+    applySearch();
+    document.getElementById('listings').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function heroFilter(field, value, el) {
+    // Toggle active pill
+    document.querySelectorAll('.hero-filter-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    // Set correct filter field
+    if (field === 'purpose') {
+      document.getElementById('sPurpose').value = value;
+      document.getElementById('sType').value = '';
+    } else if (field === 'type') {
+      document.getElementById('sType').value = value;
+      document.getElementById('sPurpose').value = '';
+    }
+    applySearch();
+    document.getElementById('listings').scrollIntoView({ behavior: 'smooth' });
+  }
+
   function applySearch() {
     const location = document.getElementById('sLocation').value.trim().toLowerCase();
     const city     = document.getElementById('sCity').value;
