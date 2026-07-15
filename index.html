@@ -1741,6 +1741,19 @@
     const minPrice = parseInt(document.getElementById('sMinPrice').value) || 0;
     const maxPrice = parseInt(document.getElementById('sMaxPrice').value) || Infinity;
 
+    // ── Push to URL so search is shareable ──
+    const params = new URLSearchParams();
+    if (location) params.set('q', location);
+    if (city)     params.set('city', city);
+    if (type)     params.set('type', type);
+    if (purpose)  params.set('purpose', purpose);
+    if (minPrice) params.set('min', minPrice);
+    if (maxPrice < Infinity) params.set('max', maxPrice);
+    const newUrl = params.toString()
+      ? `${window.location.pathname}?${params.toString()}#listings`
+      : window.location.pathname;
+    history.replaceState(null, '', newUrl);
+
     const filtered = allListings.filter(p => {
       const matchLoc     = !location || (p.neighbourhood || '').toLowerCase().includes(location) || (p.city || '').toLowerCase().includes(location) || (p.address || '').toLowerCase().includes(location);
       const matchCity    = !city    || p.city === city;
@@ -2423,6 +2436,25 @@ document.addEventListener('DOMContentLoaded', () => {
   if (lang === 'fr') applyLang('fr');
   const btn = document.getElementById('langToggle');
   if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
+
+  // ── Read URL params and pre-fill search filters ──
+  const params = new URLSearchParams(window.location.search);
+  if (params.toString()) {
+    if (params.get('q'))       document.getElementById('sLocation').value  = params.get('q');
+    if (params.get('city'))    document.getElementById('sCity').value      = params.get('city');
+    if (params.get('type'))    document.getElementById('sType').value      = params.get('type');
+    if (params.get('purpose')) document.getElementById('sPurpose').value   = params.get('purpose');
+    if (params.get('min'))     document.getElementById('sMinPrice').value  = params.get('min');
+    if (params.get('max'))     document.getElementById('sMaxPrice').value  = params.get('max');
+    // Wait for listings to load then apply
+    const waitForListings = setInterval(() => {
+      if (allListings.length > 0) {
+        clearInterval(waitForListings);
+        applySearch();
+        document.getElementById('listings').scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 200);
+  }
 });
 </script>
 
