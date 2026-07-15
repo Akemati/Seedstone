@@ -1742,15 +1742,15 @@
     const maxPrice = parseInt(document.getElementById('sMaxPrice').value) || Infinity;
 
     // ── Push to URL so search is shareable ──
-    const params = new URLSearchParams();
-    if (location) params.set('q', location);
-    if (city)     params.set('city', city);
-    if (type)     params.set('type', type);
-    if (purpose)  params.set('purpose', purpose);
-    if (minPrice) params.set('min', minPrice);
-    if (maxPrice < Infinity) params.set('max', maxPrice);
-    const newUrl = params.toString()
-      ? `${window.location.pathname}?${params.toString()}#listings`
+    const urlParams = new URLSearchParams();
+    if (location) urlParams.set('q', location);
+    if (city)     urlParams.set('city', city);
+    if (type)     urlParams.set('type', type);
+    if (purpose)  urlParams.set('purpose', purpose);
+    if (minPrice) urlParams.set('min', minPrice);
+    if (maxPrice < Infinity) urlParams.set('max', maxPrice);
+    const newUrl = urlParams.toString()
+      ? `${window.location.pathname}?${urlParams.toString()}#listings`
       : window.location.pathname;
     history.replaceState(null, '', newUrl);
 
@@ -1828,6 +1828,20 @@
       btn.classList.add('active');
       currentFilter = btn.textContent.trim();
       loadListings(currentFilter);
+
+      // ── Update URL so tab filter is shareable ──
+      const params = new URLSearchParams();
+      const label = btn.getAttribute('data-en') || btn.textContent.trim();
+      if (label === 'For Rent')  params.set('purpose', 'For Rent');
+      else if (label === 'For Sale') params.set('purpose', 'For Sale');
+      else if (label === 'Land') params.set('type', 'Land');
+      else if (label === 'Buea') params.set('city', 'Buea');
+      else if (label === 'Limbe') params.set('city', 'Limbe');
+      // 'All' clears params
+      const newUrl = params.toString()
+        ? `${window.location.pathname}?${params.toString()}#listings`
+        : window.location.pathname + '#listings';
+      history.replaceState(null, '', newUrl);
     });
   });
 
@@ -2437,7 +2451,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('langToggle');
   if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
 
-  // ── Read URL params and pre-fill search filters ──
+  // ── Read URL params and pre-fill filters on page load ──
   const params = new URLSearchParams(window.location.search);
   if (params.toString()) {
     if (params.get('q'))       document.getElementById('sLocation').value  = params.get('q');
@@ -2446,7 +2460,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (params.get('purpose')) document.getElementById('sPurpose').value   = params.get('purpose');
     if (params.get('min'))     document.getElementById('sMinPrice').value  = params.get('min');
     if (params.get('max'))     document.getElementById('sMaxPrice').value  = params.get('max');
-    // Wait for listings to load then apply
+
+    // Activate matching tab
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      const label = b.getAttribute('data-en') || b.textContent.trim();
+      if (label === params.get('city') || label === params.get('purpose') ||
+         (params.get('type') === 'Land' && label === 'Land')) {
+        document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        currentFilter = b.textContent.trim();
+      }
+    });
+
+    // Wait for listings then apply
     const waitForListings = setInterval(() => {
       if (allListings.length > 0) {
         clearInterval(waitForListings);
