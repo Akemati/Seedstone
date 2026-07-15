@@ -3,7 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SeedStone — Real Estate in Cameroon</title>
+  <title>SeedStone — Find Properties & Cars in Buea & Limbe, Cameroon</title>
+  <!-- ── SEO & SOCIAL SHARING META TAGS ── -->
+  <meta name="description" content="Browse verified houses, rooms, land and cars in Buea and Limbe. No middlemen, no scams — direct contact with real owners."/>
+  <meta name="keywords"    content="real estate Cameroon, property Buea, property Limbe, houses for rent Buea, land for sale Cameroon, cars Cameroon, SeedStone"/>
+  <meta name="author"      content="SeedStone"/>
+  <meta name="robots"      content="index, follow"/>
+
+  <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+  <meta property="og:type"        content="website"/>
+  <meta property="og:site_name"   content="SeedStone"/>
+  <meta property="og:title"       content="SeedStone — Find Properties & Cars in Buea & Limbe, Cameroon"/>
+  <meta property="og:description" content="Browse verified houses, rooms, land and cars in Buea and Limbe. No middlemen, no scams — direct contact with real owners."/>
+  <meta property="og:url"         content="https://seedstone.site/"/>
+  <meta property="og:image"       content="https://images.unsplash.com/photo-1659947234309-804b7fa01cf2?w=1200&h=630&fit=crop&auto=format"/>
+  <meta property="og:image:width"  content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:locale"      content="en_CM"/>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image"/>
+  <meta name="twitter:site"        content="@seedstone1"/>
+  <meta name="twitter:title"       content="SeedStone — Find Properties & Cars in Buea & Limbe, Cameroon"/>
+  <meta name="twitter:description" content="Browse verified houses, rooms, land and cars in Buea and Limbe. No middlemen, no scams — direct contact with real owners."/>
+  <meta name="twitter:image"       content="https://images.unsplash.com/photo-1659947234309-804b7fa01cf2?w=1200&h=630&fit=crop&auto=format"/>
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://seedstone.site/"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1741,19 +1767,6 @@
     const minPrice = parseInt(document.getElementById('sMinPrice').value) || 0;
     const maxPrice = parseInt(document.getElementById('sMaxPrice').value) || Infinity;
 
-    // ── Push to URL so search is shareable ──
-    const urlParams = new URLSearchParams();
-    if (location) urlParams.set('q', location);
-    if (city)     urlParams.set('city', city);
-    if (type)     urlParams.set('type', type);
-    if (purpose)  urlParams.set('purpose', purpose);
-    if (minPrice) urlParams.set('min', minPrice);
-    if (maxPrice < Infinity) urlParams.set('max', maxPrice);
-    const newUrl = urlParams.toString()
-      ? `${window.location.pathname}?${urlParams.toString()}#listings`
-      : window.location.pathname;
-    history.replaceState(null, '', newUrl);
-
     const filtered = allListings.filter(p => {
       const matchLoc     = !location || (p.neighbourhood || '').toLowerCase().includes(location) || (p.city || '').toLowerCase().includes(location) || (p.address || '').toLowerCase().includes(location);
       const matchCity    = !city    || p.city === city;
@@ -1828,20 +1841,6 @@
       btn.classList.add('active');
       currentFilter = btn.textContent.trim();
       loadListings(currentFilter);
-
-      // ── Update URL so tab filter is shareable ──
-      const params = new URLSearchParams();
-      const label = btn.getAttribute('data-en') || btn.textContent.trim();
-      if (label === 'For Rent')  params.set('purpose', 'For Rent');
-      else if (label === 'For Sale') params.set('purpose', 'For Sale');
-      else if (label === 'Land') params.set('type', 'Land');
-      else if (label === 'Buea') params.set('city', 'Buea');
-      else if (label === 'Limbe') params.set('city', 'Limbe');
-      // 'All' clears params
-      const newUrl = params.toString()
-        ? `${window.location.pathname}?${params.toString()}#listings`
-        : window.location.pathname + '#listings';
-      history.replaceState(null, '', newUrl);
     });
   });
 
@@ -2450,37 +2449,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (lang === 'fr') applyLang('fr');
   const btn = document.getElementById('langToggle');
   if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
-
-  // ── Read URL params and pre-fill filters on page load ──
-  const params = new URLSearchParams(window.location.search);
-  if (params.toString()) {
-    if (params.get('q'))       document.getElementById('sLocation').value  = params.get('q');
-    if (params.get('city'))    document.getElementById('sCity').value      = params.get('city');
-    if (params.get('type'))    document.getElementById('sType').value      = params.get('type');
-    if (params.get('purpose')) document.getElementById('sPurpose').value   = params.get('purpose');
-    if (params.get('min'))     document.getElementById('sMinPrice').value  = params.get('min');
-    if (params.get('max'))     document.getElementById('sMaxPrice').value  = params.get('max');
-
-    // Activate matching tab
-    document.querySelectorAll('.tab-btn').forEach(b => {
-      const label = b.getAttribute('data-en') || b.textContent.trim();
-      if (label === params.get('city') || label === params.get('purpose') ||
-         (params.get('type') === 'Land' && label === 'Land')) {
-        document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
-        b.classList.add('active');
-        currentFilter = b.textContent.trim();
-      }
-    });
-
-    // Wait for listings then apply
-    const waitForListings = setInterval(() => {
-      if (allListings.length > 0) {
-        clearInterval(waitForListings);
-        applySearch();
-        document.getElementById('listings').scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 200);
-  }
 });
 </script>
 
